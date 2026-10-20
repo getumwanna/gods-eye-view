@@ -2,8 +2,24 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { BROWSER_CSP, createBrowserViteConfig } from '../../build/vite.js';
-import standaloneConfig, * as compatibility from '../../vite.config.js';
+import hubConfig, * as compatibility from '../../vite.config.js';
+import standaloneConfig from '../../server/standalone/vite.config.js';
 import * as providers from '../../server/providers/local.js';
+
+test('hub wrapper adds isolated HTML input while preserving standalone security and plugins', () => {
+  const direct = standaloneConfig({ mode: 'test' });
+  const hub = hubConfig({ mode: 'test' });
+  const names = (config) => config.plugins.map((plugin) => plugin.name);
+  assert.deepEqual(names(hub).slice(0, direct.plugins.length), names(direct));
+  assert.ok(names(hub).slice(direct.plugins.length).every((name) => name.startsWith('@tailwindcss/')));
+  assert.equal(Object.keys(hub.build.rollupOptions.input).length, 2);
+  assert.match(hub.build.rollupOptions.input.globe, /\/index\.html$/);
+  assert.match(hub.build.rollupOptions.input.hub, /\/hub\/index\.html$/);
+  assert.equal(direct.build.rollupOptions?.input, undefined);
+  assert.deepEqual(hub.server, direct.server);
+  assert.deepEqual(hub.preview, direct.preview);
+  assert.deepEqual(hub.define, direct.define);
+});
 
 test('explicit build inputs preserve browser-only defines, plugin order and loopback protections', () => {
   const plugin = { name: 'fixture-provider' };
@@ -84,7 +100,7 @@ test('build helper does not discover environment values or construct local provi
   }
 });
 
-test('root config retains existing named exports and standalone provider order', () => {
+test('direct standalone config retains named exports and provider order', () => {
   for (const [name, value] of Object.entries(providers))
     assert.equal(compatibility[name], value, name);
   const config = standaloneConfig({ mode: 'test' });

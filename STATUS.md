@@ -1,6 +1,6 @@
 # Geospatial Intelligence Hub status
 
-Updated October 20, 2026, America/New_York. **Phase 1 implementation is conditionally approved, but held before milestone 1: B's license is unclear and baseline results are unavailable. Phase 2 is not approved.**
+Updated October 20, 2026, America/New_York. **Phase 1 implementation approved; official MIT shadcn/ui selected; missing Phase 0 baselines explicitly waived, not passed. Milestone 1 implemented and checked; milestone 2 underway. Phase 2 is not approved.**
 
 ## Completed and verified
 
@@ -15,28 +15,28 @@ Updated October 20, 2026, America/New_York. **Phase 1 implementation is conditio
 - User confirmed that the globe renders at `http://localhost:4173/`. This is user-verified visual evidence, not an automated screenshot or per-layer feed test.
 - Delivered the [Phase 0 gap analysis](docs/custom/PHASE-0-AUDIT.md), source/key/coverage inventory, conflicts, and proposed phase sequencing.
 - User approved the audit and explicitly resolved the seven design/scope questions below. Approval is not a new test result or an implementation authorization.
-- User selected B (Arun Dass), conditional on its license/dependencies; directed a report on A if B is unclear/restrictive/heavy; approved Phase 1 with the exact six-file upstream allowlist, four ordered milestones, upstream diff checkpoint after milestone 1, and final acceptance stop.
+- Earlier, the user conditionally selected B (Arun Dass); the public component-license review could not establish permission, so B/A adoption was held. This historical hold is superseded by the explicit official shadcn/ui choice; neither 21st component was adopted.
 - Completed the [component review and token contrast calculations](docs/custom/PHASE-1-COMPONENT-REVIEW.md). B has no explicit component grant in available public evidence; A is also license-unclear. Neither was adopted.
 - Corrected the planned Refreshed tokens to teal `#2DD4BF` dark / `#0F766E` light; kept accent `#38BDF8`. Calculated text contrast is 9.49–10.32:1 on proposed dark surfaces and 5.23–5.47:1 on proposed light surfaces. This is a specification calculation, not a rendered UI test.
-- No upstream files, dependencies, provider configuration, or product assets changed. Six documentation files now comprise project records; raw logs and preview captures remain ignored locally.
+- The user subsequently approved official MIT shadcn/ui and explicitly waived all missing Phase 0 baseline checks. Milestone 1 now changes only the six approved upstream files, adds the isolated hub foundation, and passes the checks recorded in [Phase 1 validation](docs/custom/PHASE-1-VALIDATION.md). Existing locked package versions remain unchanged; approved hub dependencies were added.
 
 ## Phase 0 acceptance
 
 | Criterion | State | Evidence / remaining work |
 | --- | --- | --- |
-| App runs unmodified at localhost:4173 in keyless mode; doctor passes | Verified with stated limits | Doctor passes; loopback listener/HTTP verified; user reports rendered globe. Individual layer loading remains unverified |
-| Existing suite result recorded | Recorded; browser coverage incomplete | Unit/allocation suite and build pass; browser tracking and other browser gates not run |
+| App runs unmodified at localhost:4173 in keyless mode; doctor passes | Verified with stated limits | Doctor passes; loopback listener/HTTP verified; user reports rendered globe. Individual layer loading remains unverified and was explicitly waived as a Phase 0 baseline requirement |
+| Existing suite result recorded | Recorded; browser coverage incomplete | Unit/allocation suite and build pass; missing Phase 0 browser gates were explicitly waived, not passed |
 | Pin recorded; fork has upstream remote | Verified | `CUSTOMIZATION.md`, fork API identity, local remotes and fetched commit |
-| Keyless layer loading vs key requirements recorded | Partial | Complete source/key inventory supplied; individual live layer outcomes not observed |
+| Keyless layer loading vs key requirements recorded | Source inventory complete; missing runtime baseline waived | Complete source/key inventory supplied; individual live layer outcomes not observed; user explicitly waived the missing Phase 0 baseline |
 | Gap table delivered and approved | Approved by user | Explicit audit approval recorded in the next user message after the Phase 0 checkpoint |
 
-## Verification still open
+## Verification state and current work
 
-1. **Tracking/browser checks — unavailable:** STATUS contained no new baseline results; when asked, the user answered “I don't have it.” `npm run test:track` remains unverified. The earlier automatic localhost denial remains recorded; no workaround or new browser result is claimed.
-2. **Individual layer check — unavailable:** no per-layer outcomes were supplied. Source availability is not proof of current loading. Preserve unknown/failure states rather than zeros.
-3. **FPS baseline — unavailable, not waived:** the implementation-approval message still included bracketed alternatives rather than a clear waiver, and the user has no results. No explicit waiver or new measurement is recorded.
-4. **Component license gate — held:** B's public license/source fields are empty; no explicit grant was located. A's fallback details were reviewed and are also license-unclear. Both declare only `lucide-react` beyond the planned React/Tailwind foundation; dependency weight alone does not resolve the missing permission.
-5. **Milestones:** milestone 1 has not started; therefore there are no upstream implementation diffs to show. Preserve conditional approval, resolve the active gates, then work milestones 1–4 in order and stop for Phase 1 acceptance.
+1. **Historical Phase 0 baselines — explicitly waived, not passed:** browser/tracking checks, individual live-layer outcomes, GPU/FPS measurements, and all other missing Phase 0 baseline checks remain unverified. The earlier user answer “I don't have it” was followed by an explicit waiver. Historical unit/build/doctor receipts remain unchanged.
+2. **Component choice — resolved:** official MIT shadcn/ui Radix sidebar approved; B/A public-license findings remain historical. No 21st component was adopted.
+3. **Milestone 1 — implemented and checked:** six upstream path diffs shown to the user in `docs/custom/PHASE-1-M1-UPSTREAM.patch`. Config tests: 8 passed; foundation tests: 3 passed; contrast calculation test: 1 passed; typecheck, package/import boundaries, doctor, root build, and panel build passed. See the validation record for exact receipts and limits.
+4. **Milestones 2–4 — underway/pending:** implement the approved shell, additive globe hooks, then validation/setup. Prospective Phase 1 checks are not waived by the Phase 0 waiver.
+5. **Phase gate:** continue within the exact six-file upstream allowlist; stop for Phase 1 acceptance after all criteria are met or explicitly waived. Phase 2 remains unauthorized.
 
 ## User decisions accepted with the Phase 0 audit
 
@@ -52,7 +52,7 @@ Updated October 20, 2026, America/New_York. **Phase 1 implementation is conditio
 
 ## Future work (not implemented)
 
-- **Phase 1:** approved six-file scope in the plan; B selected conditionally, currently stopped by missing license evidence and baseline. Sibling hub, shared tokens, handoff and feed/key presentation are unimplemented. No component was adopted, installed, or retrieved through a quota-based 21st action.
+- **Phase 1:** approved exact six-file scope in the plan. Milestone 1 foundation implemented and checked; official shadcn shell work is underway. Remaining shared-token rendering, handoff, globe feed/key presentation, and phase-level validation remain pending until their milestone evidence exists.
 - **Phase 2:** canonical `content/sources.json`; searchable Knowledge Center/Data Sources/Case Studies; shared-cache dashboard with region filters, source/freshness/coverage, and honest unavailable states. Add upcoming-launch query; current upstream query is past-only.
 - **Phase 3:** home region; named saved views/presets/entity links; self-contained workspace import/export including scenes/custom datasets and excluding secrets; persistence around the existing GeoJSON/KML/KMZ/GPX importer; global palette; AI setup content. Recorder/history and Ask Library are optional, separately reviewed work.
 - **Phase 4:** desktop/mobile testing; measured performance comparison; complete dependency/data/media/security audit; choose hosting topology and document deployment. Desktop packaging remains optional.

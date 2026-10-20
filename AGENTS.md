@@ -2,17 +2,17 @@
 
 ## Scope and authorization
 
-The user requested a local hub that wraps and extends God's Eye View. The Phase 0 audit and Phase 1 implementation plan are approved. Phase 1 is **conditional on component license/dependency review and baseline resolution**, using the exact six-file upstream allowlist in `docs/custom/PHASE-1-PLAN.md`. Shell B (Arun Dass) is selected conditionally. If its license is unclear/restrictive or dependencies are heavy, report A's details and stop rather than implement a fallback. The current review found no explicit component license grant for B or A, so implementation/dependency installation remain on hold. See `docs/custom/PHASE-1-COMPONENT-REVIEW.md`.
+The user explicitly approved Phase 1 implementation with the exact six-file upstream allowlist, replaced the 21st.dev selection with the official MIT-licensed shadcn/ui Radix sidebar, and explicitly waived all missing Phase 0 baseline checks on October 20, 2026. The waived checks remain unperformed/unverified; they are not passing results. Phase 1 acceptance remains at the end of the phase. Phase 2 is not authorized.
 
-At session start read `CUSTOMIZATION.md`, `STATUS.md`, and `docs/custom/PHASE-0-AUDIT.md`; inspect HEAD, branch, status, and diff. Read the current upstream `docs/CURRENT-STATE.md`, `DATA_SOURCES.md`, `SECURITY.md`, `CONTRIBUTING.md`, and `TESTING.md` for the feature being considered.
+Approved upstream files: `package.json`, `package-lock.json`, `vite.config.js`, `src/main.js`, `style.css`, `src/tooling/viteBuild.test.mjs`. No other existing upstream file may change without an approved amendment. New hub/custom files follow `docs/custom/PHASE-1-PLAN.md`. Work through milestones 1–4 in order; the milestone 1 six-file diff has been shown in `docs/custom/PHASE-1-M1-UPSTREAM.patch`. Do not add another approval pause within the approved scope.
 
-Before each new phase, present a short file-level plan and wait for explicit approval. Phase 1 approval is now recorded; Phase 2 is not approved. The user said they do not have the outstanding tracking/manual layer/FPS results. No explicit baseline waiver has been recorded from the bracketed alternatives. Address those results or an explicit waiver before implementation. After milestone 1 show the six upstream path diffs, then continue milestones in order; stop for acceptance at the end of Phase 1. Do not add another milestone-1 approval gate unless the authorized scope must change.
+At each session start read `CUSTOMIZATION.md`, `STATUS.md`, `docs/custom/PHASE-0-AUDIT.md`, `docs/custom/PHASE-1-PLAN.md`, and `docs/custom/PHASE-1-VALIDATION.md`; inspect HEAD, branch, status, and diff. Read the relevant upstream runtime/security/source/testing documents. Before a new phase, present a short file-level plan and wait for explicit approval. The earlier B/A license hold is historical and was resolved by choosing official shadcn; neither 21st component was adopted.
 
 ## Architecture
 
 - Existing globe: vanilla JavaScript, CesiumJS, Vite, standalone entry at `/`.
 - Root `vite.config.js` delegates to `server/standalone/vite.config.js`; provider middleware is under `server/providers/`.
-- Future hub: sibling React/TypeScript entry, proposed `/hub/`, using Tailwind, shadcn/ui, and reviewed 21st.dev components. It must share the existing local server and provider acquisition/cache ownership.
+- Future hub: sibling React/TypeScript entry, proposed `/hub/`, using Tailwind, shadcn/ui, and the official MIT shadcn/ui Radix sidebar. It must share the existing local server and provider acquisition/cache ownership.
 - Use GEV's validated share URLs for cross-shell navigation. Preserve full v2 state for saved presets; the portable view API models a narrower subset.
 - New content belongs under `content/`; proposed shared design tokens under `design/`; custom glue under `src/custom/` or a narrow hub directory. These folders are future work, not Phase 0 deliverables.
 - Do not migrate or iframe the globe. Keep hub dependencies and Tailwind resets out of the globe graph.
@@ -51,6 +51,8 @@ Do not use `scripts/dev-fresh.sh` for a deliberately keyless check: the macOS la
 
 ## Known verification boundary
 
-During Phase 0, automatic browser approval rejected access to `http://localhost:4173/`. Do not work around that denial through another browser, raw CDP, a browser-driving shell script, or indirect page execution. The user separately confirmed that the globe renders. Automated browser gates, individual layer load checks, and GPU/FPS measurements remain unverified. Reassess permitted tooling with the user before attempting those checks in a later session.
+During Phase 0, automatic browser approval rejected access to `http://localhost:4173/`. Do not work around that denial using another browser, raw CDP, browser-driving shell scripts, or indirect page execution. The user separately confirmed the globe renders.
 
-Phase 0 audit and conditional Phase 1 implementation approval are recorded; missing verification is not a passing result or a waiver. `STATUS.md` is the authoritative local work list. Preserve accent `#38BDF8`; Refreshed is planned as distinct teal `#2DD4BF` (dark) / `#0F766E` (light), with actual rendered contrast still to be checked after implementation. The license-review stop condition is active; no product changes have started.
+The user subsequently waived all missing Phase 0 baseline checks, including automated browser/tracking gates, individual live-layer outcomes, and GPU/FPS measurements. This resolves the preimplementation gate; it does not turn those checks into passes or waive the new Phase 1 validation criteria. Preserve the historical audit and report future tool denials honestly.
+
+Milestone 1 implementation checks are recorded in `docs/custom/PHASE-1-VALIDATION.md`; later milestone and rendered checks remain pending. `STATUS.md` is the current work list. Preserve accent `#38BDF8` and distinct Refreshed teal `#2DD4BF` (dark) / `#0F766E` (light). Calculated contrast is recorded; rendered contrast still needs implementation-stage verification.

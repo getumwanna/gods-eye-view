@@ -1,14 +1,27 @@
 # Phase 1 component gate and token correction
 
-Reviewed October 20, 2026, America/New_York. **Stop before milestone 1.** Phase 1 implementation is approved conditionally, but B's license has not been established and baseline results are unavailable. No component was adopted, no Phase 1 shell dependencies installed, and none of the six upstream files changed.
+Reviewed and updated October 20, 2026, America/New_York. **Resolved: user selected official MIT shadcn/ui and explicitly waived every missing Phase 0 baseline check. Phase 1 implementation is approved and milestone 1 is complete; milestone 2 is underway. Neither 21st candidate was adopted. Phase 2 remains unauthorized.**
 
-## User direction and outcome
+## Current decision: official MIT shadcn/ui
+
+The user explicitly replaced the 21st selection with the official shadcn/ui Radix sidebar and approved continuing Phase 1 within the exact six-file upstream allowlist. The earlier B/A findings below are preserved as historical public-evidence review, not a current implementation hold.
+
+- Source pin: `ba1503c64472b82256d9de95e2e62c5901a38e8b` in [shadcn-ui/ui](https://github.com/shadcn-ui/ui/commit/ba1503c64472b82256d9de95e2e62c5901a38e8b).
+- Code license: [MIT, copyright 2023 shadcn](https://raw.githubusercontent.com/shadcn-ui/ui/ba1503c64472b82256d9de95e2e62c5901a38e8b/LICENSE.md). Preserve the copyright and permission notice with copied source.
+- Explicit variant: [Radix sidebar](https://ui.shadcn.com/docs/components/radix/sidebar), with source under `apps/v4/registry/new-york-v4/`. The generic documentation URL redirects to Base UI; do not mix variants.
+- Needed source files: `ui/sidebar.tsx`, `ui/button.tsx`, `ui/sheet.tsx`, `ui/input.tsx`, `ui/separator.tsx`, `ui/skeleton.tsx`, `ui/tooltip.tsx`, `hooks/use-mobile.ts`, and `lib/utils.ts`.
+- The official current source imports `cn`, `class-variance-authority`, `lucide-react`, and the `radix-ui` umbrella alongside React. The approved implementation adapts the four used Radix primitives to individual `@radix-ui/react-slot`, `@radix-ui/react-dialog`, `@radix-ui/react-separator`, and `@radix-ui/react-tooltip` imports. This reduces installed scope and must be recorded as an adaptation.
+- Selected direct versions at the read-only review: `cn@0.5.0` (MIT), `class-variance-authority@0.7.1` (Apache-2.0), and `lucide-react@1.60.0` (ISC). The lockfile records the installed Radix primitive versions. `class-variance-authority` brings `clsx` transitively; the current official `utils.ts` simply reexports `cn`.
+
+No 21st component source, preview media, mock dashboard metrics, or marketplace metadata is being adopted. Milestone 1 installed the approved shell dependencies; component integration proceeds in milestone 2.
+
+## Historical 21st selection and review outcome
 
 The user selected B (Arun Dass), subject to license/dependency review, and instructed that an unclear/restrictive license or heavy dependencies must lead to a report on A instead of proceeding. This report follows that condition. A is an evaluated alternative, not an automatically approved substitution.
 
 The user also asked to keep accent `#38BDF8`, give Refreshed a distinct teal/cyan in both themes, and check contrast. The planned values and calculations are below. No token CSS exists yet; this corrects the specification without starting implementation behind an unresolved gate.
 
-## B and requested A fallback
+## Historical B and requested A fallback
 
 | Item | B — selected conditionally | A — requested fallback details |
 | --- | --- | --- |
@@ -26,7 +39,7 @@ These are bounded public-evidence findings, not a claim that a license does not 
 
 [21st's terms](https://21st.dev/terms), sections 2–3, distinguish authors' component rights from marketplace previews/media and impose reuse conditions. They do not supply the missing component-specific permission in this record. No copied preview or demo content is being added to the product or public repository.
 
-Required next evidence is a license/grant covering the chosen component and intended local adaptation/redistribution, or a separately approved licensed alternative. This review does not contact authors, create accounts, accept agreements, or install another shell on the user's behalf.
+Historical next-evidence requirement for the 21st candidates: a component-specific permission grant or an approved licensed alternative was required. The subsequent user choice of official MIT shadcn/ui satisfies the alternative path; neither 21st candidate is adopted.
 
 ## Dependency footprint: what is and is not known
 
@@ -61,12 +74,6 @@ This is a token-pair calculation, **not** a rendered accessibility pass. Actual 
 
 ## Baseline and milestone state
 
-The approval message contained two bracketed baseline alternatives saying results were in STATUS. The actual file still listed them as pending. When asked for the missing results, the user answered **“I don't have it.”**
+The earlier approval message contained bracketed baseline alternatives; when asked for missing results, the user answered “I don't have it.” The subsequent user message explicitly waived **all missing Phase 0 baseline checks**, including browser/tracking checks, individual layer outcomes, and GPU/FPS measurements. These checks remain unperformed/unverified and must never be recorded as passing. Historical unit/build/doctor results remain unchanged.
 
-- `test:track`: no new result available.
-- Manual individual layer outcomes: no new result available.
-- FPS baseline: no new result or explicit waiver available.
-- Earlier unit/build/doctor results remain historical Phase 0 evidence; they do not fill these gaps.
-- The previous automatic localhost browser denial is still recorded; no alternative browser/CDP/harness workaround was attempted.
-
-Implementation approval itself is recorded and is not being requested again. The unresolved component condition and baseline evidence/waiver must be addressed before product changes. **Milestone 1 has not started**, so there are no upstream implementation diffs to present yet. Once eligible, work milestones 1–4 in order, show the six upstream diffs after milestone 1, and stop for Phase 1 acceptance. Phase 2 remains unapproved.
+The user also explicitly chose official MIT shadcn/ui, resolving the component-selection hold. Phase 1 implementation is approved under its exact six-file upstream allowlist. Milestone 1 is complete, its six-file patch was shown to the user, and its checks are in `PHASE-1-VALIDATION.md`. Continue milestones 2–4 in order and stop at Phase 1 acceptance. Phase 2 is not authorized.

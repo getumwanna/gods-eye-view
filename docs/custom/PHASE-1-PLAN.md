@@ -1,12 +1,10 @@
 # Phase 1 file-level plan — foundation
 
-Prepared October 19; reviewed October 20, 2026, America/New_York. **User approved Phase 1 implementation conditionally. Hold before milestone 1 until B's license/dependencies and the missing baseline are resolved. Phase 2 is not approved.** See [the component gate review](PHASE-1-COMPONENT-REVIEW.md).
+Prepared October 19; updated October 20, 2026, America/New_York. **Phase 1 implementation approved. Official MIT shadcn/ui replaces the 21st shortlist; all missing Phase 0 baselines explicitly waived, not passed. Milestone 1 complete; milestone 2 underway. Phase 2 is not approved.** See [component review](PHASE-1-COMPONENT-REVIEW.md) and [validation](PHASE-1-VALIDATION.md).
 
 Baseline: upstream `de2138e84c1778fd98a48b7c9fd0b9788c318946`, documentation checkpoint `b5c24009fdb6feb7f82937e0b38710481c75eaa9`, local branch `hub/phase-0-audit`. Current upstream Vite lock is `6.4.3`; no runtime or dependency files were changed to prepare this plan.
 
-## 1. Accepted decisions and remaining gate
-
-The user reviewed and approved the Phase 0 audit and made these decisions:
+## 1. Accepted decisions and current authorization
 
 | Topic | Accepted direction |
 | --- | --- |
@@ -18,9 +16,9 @@ The user reviewed and approved the Phase 0 audit and made these decisions:
 | Hosting | Unselected until Phase 4; keep localhost-only |
 | Use and terms | Local personal use only. Verify terms before new sources, recording, or hosting; verify selected component/dependency licenses before adoption |
 
-The latest approval claims baseline results in STATUS using bracketed alternatives, but STATUS contained no new results. The user then confirmed **“I don't have it.”** Tracking/manual layer/FPS results remain unavailable; the bracketed alternative is not recorded as an explicit waiver. Use `nvm use 24.22.0` or another supported runtime when those checks are actually performed. This review does not perform browser tests or replace missing evidence with estimates.
+The user explicitly approved Phase 1 implementation with the exact six-file upstream allowlist, replaced the 21st.dev selection with the official MIT-licensed shadcn/ui Radix sidebar, and explicitly waived all missing Phase 0 baseline checks on October 20, 2026. The waived checks remain unperformed/unverified; they are not passing results. Phase 1 acceptance remains at the end of the phase. Phase 2 is not authorized.
 
-The user selected **B**, conditional on license/dependency review, and explicitly approved Phase 1 under the six-file allowlist below. If B's license is unclear/restrictive or dependencies are heavy, report A's details and stop rather than proceed with either component automatically. That stop condition is active: both available public component records lack an explicit license grant. Review actual baseline results or an explicit waiver before implementation.
+The previous bracketed baseline alternatives and the later “I don't have it” answer are historical. The newest explicit waiver resolves that baseline gate without supplying measurement results. The B/A permission hold was resolved by choosing official shadcn/ui; no 21st component is adopted.
 
 ## 2. Phase 1 outcome and boundaries
 
@@ -32,7 +30,7 @@ The source-detail links needed by key badges will land on a small explanatory ro
 
 ## 3. Exact expected upstream edit allowlist: six files
 
-“Upstream” here means a file present in the pinned original repository. These are proposed edits, not edits already made. **No other upstream file is expected to change.** If implementation shows that this list must grow, present the concrete amendment for approval before changing an additional upstream file.
+“Upstream” here means a file present in the pinned original repository. These are the approved edits; milestone 1 has produced the concrete diff in `PHASE-1-M1-UPSTREAM.patch`. **No other upstream file is expected to change.** If implementation shows that this list must grow, present the concrete amendment for approval before changing an additional upstream file.
 
 | Upstream file | Exact planned responsibility | Preservation requirement |
 | --- | --- | --- |
@@ -51,7 +49,7 @@ No changes are planned to `build/vite.js`, `server/standalone/vite.config.js`, p
 
 ## 4. Planned new files
 
-This is the concrete new-file budget. The selected 21st.dev shell will be adapted into the fixed `sidebar.tsx` owner rather than bringing its demo application, data, accounts or page routes into GEV. If its dependency/license review requires a different new-file set, document that adjustment before adoption; the six-file upstream allowlist remains fixed.
+This is the approved new-file budget. Official MIT shadcn/ui Radix source replaces the 21st selection; include its necessary companion primitives, mobile hook, class-name helper, and retained license notice. Keep all new code under the hub/custom owners and keep the six-file upstream allowlist fixed.
 
 | New file | Purpose |
 | --- | --- |
@@ -66,7 +64,7 @@ This is the concrete new-file budget. The selected 21st.dev shell will be adapte
 | `hub/src/main.tsx` | React mount plus shared branding/theme initialization |
 | `hub/src/App.tsx` | Hash routes under `/hub/`; no extra server routing |
 | `hub/src/components/HubShell.tsx` | Globe/Dashboard/Library/Settings navigation, header, accessible collapse behavior |
-| `hub/src/components/ui/sidebar.tsx` | The single selected 21st.dev shell/navigation adaptation |
+| `hub/src/components/ui/sidebar.tsx` | The official MIT shadcn/ui Radix sidebar adaptation |
 | `hub/src/components/ui/button.tsx` | Minimal reviewed shadcn button primitive |
 | `hub/src/lib/utils.ts` | Hub-only class composition helper |
 | `hub/src/pages/Dashboard.tsx` | Honest Phase 2 empty state and globe handoff; no live summaries yet |
@@ -95,7 +93,7 @@ This is the concrete new-file budget. The selected 21st.dev shell will be adapte
 
 Existing project-owned documentation to update during implementation: `AGENTS.md`, `CUSTOMIZATION.md`, `STATUS.md`, and this plan's implementation/validation references. The Phase 0 audit remains a historical snapshot; decisions and new results belong in current status.
 
-No listed product/config/test file has been created. The original planning checkpoint created this plan and updated three project-owned records. The October 20 review adds `docs/custom/PHASE-1-COMPONENT-REVIEW.md`, records conditional approval and the token correction, and keeps implementation on hold. Preview screenshots stay in ignored QA evidence.
+Historical planning checkpoint: no implementation files existed when the original plan and conditional component review were prepared. The latest approval resolved both holds; milestone 1 has now created the hub foundation, installed the approved dependencies, and passed its recorded checks. Preview screenshots remain ignored QA evidence. See `PHASE-1-VALIDATION.md` for current implementation state.
 
 ## 5. Implementation design to approve
 
@@ -146,7 +144,9 @@ Use the existing `src/view/index.js` portable helpers for newly authored basic v
 
 Phase 1 offers a plain “Open globe” action and a validated existing-share-link handoff. Source-guide links may generate a basic supported layer view. The back-to-hub control uses a fixed same-origin destination. Do not add named saved-view storage or promise instantaneous capture of private share-manager state; those are separate Phase 3 concerns. Do not include keys in links, accept arbitrary external navigation, or call private codec methods.
 
-## 6. Visual 21st.dev shortlist — B selected conditionally
+## 6. Historical 21st.dev shortlist — superseded by official shadcn/ui
+
+**Historical review only.** Neither B nor A was adopted. The user subsequently selected the official MIT shadcn/ui Radix sidebar at commit `ba1503c64472b82256d9de95e2e62c5901a38e8b`. Use the official source and its needed Button, Sheet, Input, Separator, Skeleton, Tooltip, mobile hook, and class-name helper. The earlier recommendation/retrieval instructions below no longer govern adoption. No further 21st retrieval is authorized or needed for Phase 1. See `PHASE-1-COMPONENT-REVIEW.md` for the source/license/dependency decision.
 
 All three canonical catalog previews were viewed in the browser. The screenshots show **third-party catalog demo content**, including sample business figures, names and account controls; none is live GEV data or an implemented hub. Adoption removes those values/content. All options will use the same shared tokens and four project navigation items.
 
@@ -162,7 +162,7 @@ All three canonical catalog previews were viewed in the browser. The screenshots
 
 ![Option A: public catalog visual preview, sample content only](/Users/getumwanna/Documents/GEV/qa-artifacts/phase-1-shortlist/A-sonu-dashboard.png)
 
-### B — Arun Dass — recommended
+### B — Arun Dass — historical recommendation, not adopted
 
 ![Option B: public catalog visual preview, sample content only](/Users/getumwanna/Documents/GEV/qa-artifacts/phase-1-shortlist/B-arun-sidebar.png)
 
@@ -172,14 +172,16 @@ All three canonical catalog previews were viewed in the browser. The screenshots
 
 These captures are ignored local QA evidence, not redistributed application assets. A fresh clone can use the canonical preview links; screenshots themselves are not committed. B and A remain **uncleared for adoption** because no explicit component license grant was found. This is missing evidence, not a conclusion that either has a restrictive license. Do not infer GEV's MIT license applies.
 
-Retrieval boundary: no Copy/CLI/Remix/install action, registry API, API key or quota-consuming component tool was used. A public catalog response and automatically exposed page panels included embedded source; that incidental source was not used or copied into component files. No selected component implementation exists. After visual selection and explicit implementation approval, verify the selected license/dependencies, retrieve only that selected component through the authorized mechanism, and record provenance before integration. Do not fetch all three candidates.
+Historical 21st retrieval boundary: no Copy/CLI/Remix/install action, registry API key, or quota-consuming component tool was used. Incidental public-page source was not adopted. The latest user decision replaces every shortlist candidate with official MIT shadcn/ui; no 21st retrieval or adoption is needed.
 
 The request's command-menu candidates are deferred to the Phase 3 global-palette plan. No menu component is needed or retrieved for this Phase 1 shell.
 
+Official companion new-file scope: `hub/src/components/ui/{button,sheet,input,separator,skeleton,tooltip}.tsx`, the mobile hook, and the class-name helper may accompany the sidebar within the approved hub ownership. Keep the MIT source notice and provenance in `design/COMPONENTS.md`; do not introduce demo data as live content.
+
 ## 7. Small implementation milestones after approval
 
-1. **Build and tokens:** after the active license/baseline gates clear, review/lock only needed dependencies; add sibling entry and shared tokens; preserve root/panel builds and security headers. **Show the user the six upstream path diffs after this milestone**, then continue in order. Do not add a new approval pause unless the allowed scope must change.
-2. **Selected shell:** retrieve only the approved, licensed shell; add four working navigation entries, theme toggle and honest empty states; complete `design/COMPONENTS.md`.
+1. **Build and tokens — complete:** source/license and baseline gates were resolved by the latest user decision. Approved dependencies are locked; sibling entry and shared tokens are present; root/panel builds and foundation checks pass. The six upstream path diffs were shown in `PHASE-1-M1-UPSTREAM.patch`. Globe-hook scaffolding remains inactive until milestone 3. Continue in order without another approval pause unless scope must change.
+2. **Official shadcn shell — underway:** integrate the approved MIT Radix sidebar and necessary companions; add four working navigation entries, theme toggle, and honest empty states; complete `design/COMPONENTS.md` with source pin, notice, dependencies, and import adaptations.
 3. **Globe hooks:** early brand/theme binding, fixed back link, passive feed strip and safe key-presence guidance; no provider polling/caches/source changes.
 4. **Handoff and evidence:** full v2 preservation, user/browser verification, production and panel builds, current status/setup/ledger. Commit the working phase and stop for acceptance.
 
@@ -187,7 +189,7 @@ The Phase 2 plan will design acquisition ownership, passive summaries, browser-d
 
 ## 8. Meaningful validation and acceptance
 
-No runtime tests were rerun for this documentation-only planning turn. The earlier baseline remains historical evidence until the user's pending checks arrive.
+Milestone 1 checks have now run and are recorded in `PHASE-1-VALIDATION.md`. The original Phase 0 receipts remain historical; all missing Phase 0 baseline checks were explicitly waived, not passed. Prospective Phase 1 checks below remain required unless separately waived.
 
 After separately approved implementation:
 

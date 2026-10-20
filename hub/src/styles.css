@@ -1,0 +1,22 @@
+@layer theme, base, components, utilities;
+@import '../../design/tokens.css';
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities) source(none);
+@source './';
+@source '../index.html';
+
+html[data-gih-surface='hub'] {
+  background: var(--gih-bg);
+  color: var(--gih-text);
+  font-family: var(--gih-font-sans);
+}
+
+[data-gih-surface='hub'] body { margin: 0; }
+[data-gih-surface='hub'] * { box-sizing: border-box; }
+[data-gih-surface='hub'] a { color: var(--gih-link); }
+[data-gih-surface='hub'] :focus-visible {
+  outline: 2px solid var(--gih-focus);
+  outline-offset: 3px;
+}
+.gih-foundation { max-width: 58rem; margin: 12vh auto; padding: 2rem; }
+.gih-eyebrow { font: 0.75rem var(--gih-font-mono); color: var(--gih-muted); }

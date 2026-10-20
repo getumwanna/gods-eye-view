@@ -1,0 +1,44 @@
+html[data-gev-hub-customization] {
+  --bg-dark: var(--gih-bg);
+  --glass-bg: var(--gih-panel);
+  --glass-border: var(--gih-border);
+  --glass-border-hover: var(--gih-muted);
+  --text-primary: var(--gih-text);
+  --text-secondary: var(--gih-muted);
+  --text-dim: var(--gih-muted);
+  --menu-bg: var(--gih-panel);
+  --accent: var(--gih-accent);
+  --accent-glow: transparent;
+  --font-sans: var(--gih-font-sans);
+  --font-mono: var(--gih-font-mono);
+  --panel-radius: var(--gih-radius);
+  --btn-radius: var(--gih-radius-sm);
+}
+
+[data-gev-hub-customization] #title-bar h1 {
+  max-width: 23rem;
+  font: 600 clamp(0.9rem, 1.5vw, 1.3rem) var(--gih-font-sans);
+  letter-spacing: 0.025em;
+  text-shadow: none;
+}
+[data-gev-hub-customization] .title-glow { display: none; }
+[data-gev-hub-customization] .gih-back-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 1000;
+  padding: 0.45rem 0.7rem;
+  color: var(--gih-text);
+  background: var(--gih-panel);
+  border: 1px solid var(--gih-border);
+  border-radius: var(--gih-radius-sm);
+  text-decoration: none;
+  font: 0.75rem var(--gih-font-sans);
+}
+[data-gev-hub-customization] .gih-back-link:focus-visible {
+  outline: 2px solid var(--gih-focus);
+  outline-offset: 3px;
+}
+@media (max-width: 640px) {
+  [data-gev-hub-customization] #title-bar { max-width: 55vw; }
+}
