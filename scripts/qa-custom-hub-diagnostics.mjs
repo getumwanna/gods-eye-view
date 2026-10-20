@@ -39,7 +39,7 @@ export function classifyQaResponse({ url, origin, status, statusText, resourceTy
   let parsed;
   try { parsed = new URL(url); } catch { return null; }
   if (parsed.origin !== origin || parsed.pathname.startsWith('/api/') || parsed.pathname === '/mcp') return null;
-  if (parsed.pathname.startsWith('/node_modules/.vite/')) {
+  if (['/node_modules/.vite/', '/node_modules/.vite-custom-hub/'].some(prefix => parsed.pathname.startsWith(prefix))) {
     return { kind: 'optimized-dependency', status, outdated: status === 504 && statusText === 'Outdated Optimize Dep' };
   }
   if (resourceType === 'document') return { kind: 'document', status };

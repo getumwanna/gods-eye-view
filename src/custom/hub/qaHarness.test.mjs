@@ -74,6 +74,18 @@ test('mounted globe controls are not actionable until real startup restoration r
   }
 });
 
+test('the dedicated hub optimizer keeps redacted outdated-dependency diagnostics', () => {
+  const failure = classifyQaResponse({
+    url: 'http://localhost:4174/node_modules/.vite-custom-hub/deps/react_jsx-dev-runtime.js?v=TEST_ONLY',
+    origin: 'http://localhost:4174',
+    status: 504,
+    statusText: 'Outdated Optimize Dep',
+    resourceType: 'script',
+  });
+  assert.deepEqual(failure, { kind: 'optimized-dependency', status: 504, outdated: true });
+  assert.equal(JSON.stringify(failure).includes('TEST_ONLY'), false);
+});
+
 test('a failed Vite dependency is diagnosed without copying its URL or response text', () => {
   const response = { url: 'http://localhost:4173/node_modules/.vite/deps/tailwind-merge.js?v=TEST_ONLY', origin: 'http://localhost:4173', status: 504, statusText: 'Outdated Optimize Dep', resourceType: 'script' };
   const failure = classifyQaResponse(response);
