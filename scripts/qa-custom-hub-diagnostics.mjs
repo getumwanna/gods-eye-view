@@ -4,6 +4,35 @@ export function hubIsReady() {
     && Boolean(document.querySelector('nav[aria-label="Main navigation"]') && document.querySelector('#globe-share-link'));
 }
 
+/** Controls mount before restoration finishes; the cover must release clicks. */
+export function globeControlsUncovered() {
+  const cover = document.getElementById('loading-screen');
+  return Boolean(document.querySelector('.gih-globe-tools') && cover?.classList.contains('hidden')
+    && getComputedStyle(cover).pointerEvents === 'none');
+}
+
+/** Cesium's anchor may be zero-size while its positioned credit content paints. */
+export function creditsAreVisible() {
+  const root = document.getElementById('cesium-credits');
+  const visible = node => {
+    if (!node) return false;
+    const rect = node.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0 || rect.right <= 0 || rect.bottom <= 0
+      || rect.left >= document.documentElement.clientWidth || rect.top >= document.documentElement.clientHeight) return false;
+    for (let current = node; current; current = current.parentElement) {
+      const style = getComputedStyle(current);
+      if (style.display === 'none' || ['hidden', 'collapse'].includes(style.visibility)
+        || (style.opacity !== '' && Number(style.opacity) === 0)) return false;
+    }
+    const hit = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+    return Boolean(hit && (node.closest('a') || node).contains(hit));
+  };
+  const inlineCredits = [...(root?.querySelector('.cesium-credit-textContainer')?.children || [])]
+    .filter(node => node.textContent.trim() || node.querySelector('img'));
+  return visible(root?.querySelector('.cesium-credit-logoContainer img'))
+    && visible(root?.querySelector('.cesium-credit-expand-link')) && inlineCredits.every(visible);
+}
+
 /** Classify failed local responses without retaining URLs or response content. */
 export function classifyQaResponse({ url, origin, status, statusText, resourceType }) {
   if (!Number.isInteger(status) || status < 400 || status > 599) return null;

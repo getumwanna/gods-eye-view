@@ -2,9 +2,77 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { runInNewContext } from 'node:vm';
 import { CdpMouse, CdpKeyboard } from 'puppeteer';
+import { readFileSync } from 'node:fs';
+import { JSDOM } from 'jsdom';
 import { replaceQaInput } from '../../../scripts/qa-custom-hub-input.mjs';
 import { validateGlobeLink } from '../shared/shareHandoff.js';
-import { classifyQaResponse, qaFailureCode, scriptErrorResult } from '../../../scripts/qa-custom-hub-diagnostics.mjs';
+import { globeControlsUncovered, creditsAreVisible, classifyQaResponse, qaFailureCode, scriptErrorResult } from '../../../scripts/qa-custom-hub-diagnostics.mjs';
+import { startApplicationChrome } from '../../app/startupChrome.js';
+
+test('credit visibility checks rendered content when its anchor has no box', () => {
+  const dom = new JSDOM('<div id="cesium-credits"><span class="cesium-credit-logoContainer"><img></span><a class="cesium-credit-expand-link">Data attribution</a></div>');
+  const document = dom.window.document;
+  const root = document.getElementById('cesium-credits');
+  const logo = root.querySelector('img');
+  const attribution = root.querySelector('a');
+  Object.defineProperties(document.documentElement, { clientWidth: { value: 1440 }, clientHeight: { value: 960 } });
+  const rect = { left: 36, top: 900, right: 174, bottom: 928, width: 138, height: 28 };
+  logo.getBoundingClientRect = () => rect;
+  attribution.getBoundingClientRect = () => ({ ...rect, left: 190, right: 290, width: 100 });
+  document.elementFromPoint = x => x < 180 ? logo : attribution;
+  const visible = runInNewContext(`(${creditsAreVisible.toString()})`, { document, getComputedStyle: dom.window.getComputedStyle.bind(dom.window) });
+  try {
+    assert.equal(root.getBoundingClientRect().width, 0);
+    assert.equal(visible(), true);
+    root.style.display = 'none';
+    assert.equal(visible(), false, 'hidden ancestry hides the credits');
+    root.style.display = '';
+    logo.style.visibility = 'hidden';
+    assert.equal(visible(), false, 'the logo must remain visible');
+    logo.style.visibility = '';
+    attribution.style.opacity = '0';
+    assert.equal(visible(), false, 'the attribution control must remain visible');
+    attribution.style.opacity = '';
+    document.elementFromPoint = () => document.body;
+    assert.equal(visible(), false, 'an overlay must not cover the credit content');
+    document.elementFromPoint = x => x < 180 ? logo : attribution;
+    attribution.getBoundingClientRect = () => ({ ...rect, left: 1500, right: 1638 });
+    assert.equal(visible(), false, 'offscreen attribution is not visible');
+  } finally { dom.window.close(); }
+});
+
+test('mounted globe controls are not actionable until real startup restoration releases its cover', async (t) => {
+  const styles = readFileSync(new URL('../../ui/styles/controls.css', import.meta.url), 'utf8');
+  const coverCss = styles.match(/#loading-screen \{[\s\S]*?\}/)[0] + styles.match(/#loading-screen\.hidden \{[\s\S]*?\}/)[0];
+  const dom = new JSDOM(`<style>${coverCss}</style><nav class="gih-globe-tools"></nav><div id="loading-screen"></div>`);
+  const document = dom.window.document;
+  const ready = runInNewContext(`(${globeControlsUncovered.toString()})`, {
+    document, getComputedStyle: dom.window.getComputedStyle.bind(dom.window),
+  });
+  let finishRestore;
+  const initialRestorePromise = new Promise(resolve => { finishRestore = resolve; });
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  const stop = startApplicationChrome({
+    loadingScreen: document.getElementById('loading-screen'),
+    styleManager: { initialRestorePromise }, dataManager: {}, signal: new AbortController().signal,
+    initializeWelcome: () => null, initializeSettings: () => null,
+  });
+  try {
+    assert.ok(document.querySelector('.gih-globe-tools'), 'the previous mount-only wait already passes');
+    assert.equal(ready(), false);
+    t.mock.timers.tick(1000);
+    await new Promise(setImmediate);
+    assert.equal(ready(), false, 'minimum delay alone does not finish restoration');
+    finishRestore();
+    await new Promise(setImmediate);
+    assert.equal(ready(), true);
+    assert.equal(dom.window.getComputedStyle(document.getElementById('loading-screen')).pointerEvents, 'none');
+  } finally {
+    await stop();
+    t.mock.timers.reset();
+    dom.window.close();
+  }
+});
 
 test('a failed Vite dependency is diagnosed without copying its URL or response text', () => {
   const response = { url: 'http://localhost:4173/node_modules/.vite/deps/tailwind-merge.js?v=TEST_ONLY', origin: 'http://localhost:4173', status: 504, statusText: 'Outdated Optimize Dep', resourceType: 'script' };

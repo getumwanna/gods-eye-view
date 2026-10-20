@@ -1,6 +1,6 @@
 # Phase 1 validation record
 
-Updated October 20, 2026, America/New_York. Phase 1 implementation is approved. All four milestones are implemented and checked; user acceptance remains pending a passing user-run QA rerun after the installed-Puppeteer input API correction. Phase 2a planning is authorized separately; no Phase 2 implementation is authorized.
+Updated October 20, 2026, America/New_York. Phase 1 implementation is approved. All four milestones are implemented and checked; user acceptance remains pending a passing user-run QA rerun after the globe loading-cover and credit-geometry corrections. Phase 2a planning is authorized separately; no Phase 2 implementation is authorized.
 
 ## Authorization and historical baseline boundary
 
@@ -168,3 +168,24 @@ The earlier input test incorrectly assumed that passing `clickCount` meant three
 Evidence: before the helper change, the strengthened input test reproduces the exact-value failure (`input-api-before-fix.log`). After the one-option correction, the focused QA diagnostics/input, real App readiness/rendering, and full-state handoff group passes **14/14**, zero failures (`input-api-after-fix.log`), on Node 24.22.0. Harness/helper syntax checks pass. Both logs are under `.gev-logs/phase1-2026-10-20/qa-review/`. An independent in-memory controlled-React/Input check also reproduced failure with the old option and exact DOM/state replacement with the corrected option. These are offline checks, not a full browser QA receipt.
 
 **All four user runs (7/9, 1/9, 0/9, 6/9) remain recorded as failed. Phase 1 awaits a fresh passing user-run `npm run qa:hub` result. Phase 2a remains planning only.**
+
+## Fifth user QA receipt — loading cover and rendered credit geometry
+
+The latest user output is **8/9 passed**. Matching receipt: `.gev-logs/qa-custom-hub-2026-10-20T16-36-34-378Z.json`, timestamp `2026-10-20T16:36:34.379Z`. All hub checks and the complete synthetic full-v2/all-layers-off handoff pass. Only the combined globe presentation check fails at `setup-guidance` with `readiness-timeout`. The receipt records zero browser page errors, no failed local assets, two allowed local setup reads, and ten blocked acquisition requests; blocked requests are not evidence of delivered provider data.
+
+**Confirmed timeout cause:** the existing application mounts the custom controls before its startup loading cover stops intercepting pointer input. `startApplicationChrome` waits for initial restoration and a 1,000 ms minimum before adding `.hidden`. The loader is a fixed full-viewport surface at z-index 1000; the custom tools are below it. The status disclosure starts open at desktop width, so its text assertion can pass beneath the cover while the following close/setup clicks hit the cover. The harness previously waited only for DataManager and mounted tools.
+
+Direct observation through the permitted original in-app path reproduced the exact state: tools mounted, cover not hidden, cover pointer events `auto`, the setup summary did not receive pointer hits, and the center hit target belonged to the loading cover. No synthetic feed observations or forced disclosure state were used.
+
+Correction: an exported DOM predicate waits for the real cover's `.hidden` state and computed `pointer-events: none` before `globeReady`. After clicking the real status close button, the harness also waits for that disclosure to close before opening Setup. This follows the upstream browser gates' loading-screen readiness contract and adds no arbitrary sleep or product timing change.
+
+**Additional remaining-assertion correction:** proactive live inspection found the old credit-box assertion would fail after setup succeeded. The outer `#cesium-credits` can legitimately be **0 x 0**: Cesium appends an absolutely positioned `.cesium-widget-credits` child. Its actual logo image and “Data attribution” control remain visibly rendered. The upstream credit QA likewise inspects rendered descendants. The corrected predicate requires the logo, attribution control, and any populated inline credits to have visible geometry, visible ancestor styles, viewport intersection, and an unobstructed hit target. Hidden, removed, offscreen, transparent, or covered required credit content fails; a zero-size positioning anchor does not. No attribution or stylesheet was changed.
+
+Verification:
+
+- A regression uses the actual `startApplicationChrome` implementation and loading-cover CSS with a controlled restoration promise and timer. Mounted tools remain non-actionable until the cover releases them.
+- A credit regression exercises a zero-box anchor with visible content, plus hidden ancestors, hidden logo, transparent attribution, offscreen attribution, and an obstructing overlay. These are test-only layout fixtures, not live data.
+- Harness/diagnostics syntax checks pass. The focused diagnostics/input/readiness, real App rendering, and full-state handoff group passes **16/16**, zero failures, on Node 24.22.0. Evidence: `.gev-logs/phase1-2026-10-20/qa-review/globe-cover-credits-focused.log`.
+- The exact exported predicates both return true on the live uncovered globe. Native interaction then closes status, opens Provider setup, shows the Library guide link, verifies visible/unobstructed logo and attribution, and returns successfully to Dashboard. Local proof: `qa-artifacts/phase-1/provider-setup-after-cover.png`. This is targeted permitted-browser evidence, not execution of the CLI harness. No credential forms were opened or configured.
+
+Only custom QA code/tests and project records changed. Product behavior, dependencies, original-upstream files, provider acquisition, and Phase 2 work remain unchanged. **All five user runs (7/9, 1/9, 0/9, 6/9, 8/9) remain preserved as failed records. Phase 1 awaits a fresh passing user-run `npm run qa:hub` receipt.**
