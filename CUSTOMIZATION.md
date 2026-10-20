@@ -85,3 +85,9 @@ Only the six approved existing-upstream paths changed. Existing locked package v
 The user requested review/removal of `cn@0.5.0`. Its inclusion followed the pinned official shadcn helper, but no package-specific API is needed. `package.json` and `package-lock.json` now remove `cn`, promote the existing `clsx@2.1.1` to an exact direct dependency, and add exact `tailwind-merge@3.7.0`. Both are MIT. No unrelated locked package version changed or disappeared.
 
 Custom edits: local helper in `hub/src/lib/utils.ts`, one meaningful regression in `src/custom/hub/router.test.mjs`, component provenance/review, this ledger, `STATUS.md`, and `PHASE-1-VALIDATION.md`. `npm ci`, hub typecheck, allocation-gated tests (8,261 passes, one platform skip), both builds, boundaries, and doctor passed. The existing six-file upstream intersection is unchanged. The user's `qa:hub` output is still required for Phase 1 acceptance.
+
+### Phase 2a planning checkpoint — no implementation
+
+At the user's request, `docs/custom/PHASE-2A-PLAN.md` separates the descriptive Library work from future 2b acquisition/dashboard work. It proposes exactly two original-upstream package-file edits for maintained Markdown/search/schema libraries, with all feature implementation in project-owned files. No Phase 2 dependency was installed and no content registry, article, case, source, endpoint, or dashboard implementation was created. `AGENTS.md` and `STATUS.md` now preserve the pending Phase 1 QA condition and the planning-only boundary.
+
+A short isolated upstream-sync rehearsal is proposed after 2a ships and before 2b planning. Read-only upstream research does not change the current pin. No rehearsal branch, merge/rebase, or update adoption was performed. Phase 2b receives no implementation plan at this checkpoint.

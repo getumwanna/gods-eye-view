@@ -1,6 +1,6 @@
 # Phase 1 validation record
 
-Updated October 20, 2026, America/New_York. Phase 1 implementation is approved. All four milestones are implemented and checked; user acceptance remains pending. Phase 2 is not authorized.
+Updated October 20, 2026, America/New_York. Phase 1 implementation is approved. All four milestones are implemented and checked; user acceptance remains pending the user-run QA receipt. Phase 2a planning is authorized separately; no Phase 2 implementation is authorized.
 
 ## Authorization and historical baseline boundary
 

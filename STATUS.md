@@ -1,6 +1,6 @@
 # Geospatial Intelligence Hub status
 
-Updated October 20, 2026, America/New_York. **Phase 1 implementation and all four milestones complete; awaiting user acceptance. Official MIT shadcn/ui adopted. Missing Phase 0 baselines explicitly waived, not passed. Phase 2 is not approved.**
+Updated October 20, 2026, America/New_York. **Phase 1 dependency review resolved; acceptance awaits the user-run QA receipt. Missing Phase 0 baselines remain explicitly waived, not passed. Phase 2a plan prepared for review only; no Phase 2 implementation approved. Phase 2b planning is deferred until 2a ships.**
 
 ## Completed and verified
 
@@ -36,7 +36,7 @@ Updated October 20, 2026, America/New_York. **Phase 1 implementation and all fou
 2. **Component choice — resolved:** official MIT shadcn/ui Radix sidebar approved; B/A public-license findings remain historical. No 21st component was adopted.
 3. **Milestone 1 — implemented and checked:** six upstream path diffs shown to the user in `docs/custom/PHASE-1-M1-UPSTREAM.patch`. Config tests: 8 passed; foundation tests: 3 passed; contrast calculation test: 1 passed; typecheck, package/import boundaries, doctor, root build, and panel build passed. See the validation record for exact receipts and limits.
 4. **Phase 1 acceptance — pending user QA:** the `cn` review is resolved: local `clsx` + `tailwind-merge` helper, clean `npm ci`, hub typecheck, allocation-gated suite (**8,261 passed, 1 platform skip, 0 failures**), both builds, boundaries, and doctor passed. The user will run `npm run qa:hub` and paste output for `PHASE-1-VALIDATION.md`; no result has been received. Earlier in-app browser checks remain historical evidence. Acceptance is not yet recorded.
-5. **Phase gate:** continue within the exact six-file upstream allowlist; stop for Phase 1 acceptance after all criteria are met or explicitly waived. Phase 2 remains unauthorized.
+5. **Phase gates:** record the user-run `qa:hub` output and resolve its outcome before recording Phase 1 acceptance. [Phase 2a file-level plan](docs/custom/PHASE-2A-PLAN.md) is prepared only; its proposed upstream allowlist is `package.json` and `package-lock.json`. Implementation requires explicit approval after Phase 1 acceptance. Plan Phase 2b only after 2a ships; upstream-sync rehearsal is a proposal, not an executed update.
 
 ## User decisions accepted with the Phase 0 audit
 
@@ -52,7 +52,8 @@ Updated October 20, 2026, America/New_York. **Phase 1 implementation and all fou
 
 ## Future work (not implemented)
 
-- **Phase 2:** canonical `content/sources.json`; searchable Knowledge Center/Data Sources/Case Studies; shared-cache dashboard with region filters, source/freshness/coverage, and honest unavailable states. Add upcoming-launch query; current upstream query is past-only.
+- **Phase 2a — plan only, awaiting approval:** canonical `content/sources.json` and schema, generated Data Sources directory, admitted upstream docs and original Knowledge articles, six case pages, Library-local search. See `docs/custom/PHASE-2A-PLAN.md` for exact files and proposed two-file upstream allowlist. No content/code/dependencies have been added for 2a.
+- **Phase 2b — plan later, after 2a ships:** acquisition ownership, passive read-only summaries, browser-direct adapters, upcoming-launch query, and dashboard. Rehearse upstream sync on a separate branch before 2b; execution and adoption require separate approval.
 - **Phase 3:** home region; named saved views/presets/entity links; self-contained workspace import/export including scenes/custom datasets and excluding secrets; persistence around the existing GeoJSON/KML/KMZ/GPX importer; global palette; AI setup content. Recorder/history and Ask Library are optional, separately reviewed work.
 - **Phase 4:** desktop/mobile testing; measured performance comparison; complete dependency/data/media/security audit; choose hosting topology and document deployment. Desktop packaging remains optional.
 - `branding.json`, `design/COMPONENTS.md`, shared token files, hub code, `content/`, `custom-data/`, `SETUP.md`, and deployment guides are future deliverables, not files claimed complete in Phase 0.
