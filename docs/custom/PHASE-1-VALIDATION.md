@@ -1,6 +1,6 @@
 # Phase 1 validation record
 
-Updated October 20, 2026, America/New_York. Phase 1 implementation is approved. Milestone 1 is implemented and its checks below passed; milestones 2–4 and phase-level acceptance remain pending. Phase 2 is not authorized.
+Updated October 20, 2026, America/New_York. Phase 1 implementation is approved. Milestones 1–2 are implemented and their checks below passed; milestones 3–4 and phase-level acceptance remain pending. Phase 2 is not authorized.
 
 ## Authorization and historical baseline boundary
 
@@ -35,3 +35,10 @@ Root and panel builds report the existing large-chunk warning. Build times are t
 - Final scope review: only the six approved upstream paths plus documented new/project-owned files; no provider acquisition redesign, widened bind, exposed secrets, or Phase 2 work.
 
 Stop at Phase 1 acceptance after every criterion is met or explicitly waived.
+
+## Milestone 2 — official sidebar shell
+
+- Official shadcn pin `ba1503c64472b82256d9de95e2e62c5901a38e8b`, full MIT notice in `hub/SHADCN-LICENSE.md`, adaptations and pinned source links in `design/COMPONENTS.md`. No 21st implementation adopted.
+- Four router/server-render tests passed with network forbidden; hub TypeScript check and production build passed.
+- Milestone 1 commit `2c33dd4b` also built successfully from a clean git archive with the installed locked dependency tree (4.54 s); an entrypoint staging race was corrected before continuing.
+- The original in-app browser path now permits Phase 1 access. The hub Dashboard rendered at `/hub/` on October 20; broader interaction/layout checks follow in milestone 4. This does not retrospectively pass the waived Phase 0 baseline.

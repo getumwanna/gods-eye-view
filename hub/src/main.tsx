@@ -1,16 +1,14 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { applyTheme } from '../../src/custom/shared/theme.js';
+import { branding } from '../../src/custom/shared/branding.js';
+import { App } from './App';
 import './styles.css';
 
 applyTheme();
+document.documentElement.style.setProperty('--gih-accent', branding.accent);
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <main className="gih-foundation">
-      <p className="gih-eyebrow">GEV Hub · Foundation</p>
-      <h1>Geospatial Intelligence Hub</h1>
-      <p>The navigation shell is being prepared. The existing globe is available.</p>
-      <a href="/">Open globe</a>
-    </main>
+    <App />
   </React.StrictMode>,
 );

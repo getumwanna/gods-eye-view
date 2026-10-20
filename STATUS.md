@@ -1,6 +1,6 @@
 # Geospatial Intelligence Hub status
 
-Updated October 20, 2026, America/New_York. **Phase 1 implementation approved; official MIT shadcn/ui selected; missing Phase 0 baselines explicitly waived, not passed. Milestone 1 implemented and checked; milestone 2 underway. Phase 2 is not approved.**
+Updated October 20, 2026, America/New_York. **Phase 1 implementation approved; official MIT shadcn/ui selected; missing Phase 0 baselines explicitly waived, not passed. Milestones 1–2 implemented and checked; milestone 3 underway. Phase 2 is not approved.**
 
 ## Completed and verified
 

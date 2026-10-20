@@ -65,3 +65,7 @@ Visual catalog captures for the Phase 1 shortlist are local review evidence in i
 6. Never commit credentials, raw logs, caches, generated builds, provider payloads, or unlicensed media.
 
 See [the Phase 0 audit](docs/custom/PHASE-0-AUDIT.md) and [current status](STATUS.md).
+
+### Phase 1 milestone 2
+
+Implemented only new hub components/pages/router, official shadcn companions and MIT notice, the component provenance ledger, shared layer/source-guide metadata, and four router/render tests. Existing upstream paths remain the same six. Dashboard and Library explain Phase 2 availability; there are no fabricated feed metrics.
