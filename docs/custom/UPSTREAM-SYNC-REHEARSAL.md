@@ -1,6 +1,6 @@
 # Frozen upstream-sync rehearsal report
 
-October 20, 2026. **Rehearsal results remain hub 9/9 and synthetic tracking 109/0/0. Adopted shipping pin `064d51f7` has all non-browser gates passing; shipping hub 9/9 is matched to its receipt and the user reports all Street Level manual checks passed. Shipping tracking is incomplete after 88 passing assertions and a fatal navigation/context error; a rerun is required.** Root 4173 is in temporary HMR-off verification mode. Keep rehearsal 4174/logs; no Phase 2a implementation has started.
+October 20, 2026. **Approved shipping integration verified:** hub 9/9 matched to its receipt, manual Street Level smoke passed, and final tracking 109/0/0 by direct user report. Earlier88-pass interrupted shipping run remains preserved. Rehearsal 4174 was verified and stopped; its worktree/logs are retained. Phase 2a post-pin/Ajv review is delivered in `PHASE-2A-REVERIFICATION.md`; no implementation started.
 
 ## Inputs, result, and isolation
 
@@ -233,3 +233,11 @@ npm run test:track -- --url http://localhost:4173 --offline-imagery
 ```
 
 No repeat of already-passing hub/manual checks is required for this unchanged-source HMR-off rerun. Do not edit runtime/configuration files during the run. Keep rehearsal PID 55130 on 4174 and every prior failure/pass log until the tracking result completes. After verified shipping integration, stop only the verified 4174 listener, preserve logs, and prepare the Phase 2a reverification/Ajv (a)/(b) review before milestone 1. Return to the standard approved dev launch when active implementation resumes; HMR-off is an operational verification mode, not a checked-in product change.
+
+## Final shipping verification, rehearsal shutdown and review handoff
+
+The user's latest direct message reports **109 passed / 0 failed / 0 skipped** for the shipping tracking rerun. No final transcript/receipt was attached, so this is explicitly user-reported; do not replace or relabel the earlier interrupted output. Matched shipping hub 9/9 and the prior direct all-pass Street Level manual report complete the approved integration gates. Product code remains unchanged from fd136b60 on adopted pin 064d51f7.
+
+Verified command/cwd/listener for rehearsal PID 55130 on `[::1]:4174`, then stopped only that process. Timestamp 2026-10-20T19:41:08.391625Z (15:41 EDT). Confirmed no 4174 listener; shipping PID 65423 remains on `[::1]:4173` in HMR-off verification mode. Rehearsal worktree `/Users/getumwanna/.codex/worktrees/upstream-sync-rehearsal/GEV` remains intact. Its94 log files total 59,428,182 bytes; exact relative paths, byte lengths and SHA-256 hashes are retained in `/Users/getumwanna/Documents/GEV/.gev-logs/post-pin-review/rehearsal-log-retention.json`. No logs or worktree were removed.
+
+`PHASE-2A-REVERIFICATION.md` now contains the required frozen-pin source/key/coverage/doc-section review and measured Ajv(a)/(b) comparison, including precise 63-path recommended inventory, dependency candidates and acceptance gates. Recommended dev-only lazy Ajv has zero incremental production compiler payload, while actual isolated dev prebundle is 269,412 raw / 50,631 gzip / 42,829 Brotli bytes excluding schemas/adapter/maps. The proper server-side alternative needs an extra original tooling-test edit; it cannot silently fit the approved two-file upstream allowlist. Generated projection and Ajv-role proposals await review. No Phase 2a implementation or Phase 2b work has started; restore normal HMR before future Library isolation/recovery tests.
