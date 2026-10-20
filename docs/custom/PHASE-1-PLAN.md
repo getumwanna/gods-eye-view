@@ -1,6 +1,6 @@
 # Phase 1 file-level plan — foundation
 
-Prepared October 19; updated October 20, 2026, America/New_York. **Phase 1 implementation approved. Official MIT shadcn/ui replaces the 21st shortlist; all missing Phase 0 baselines explicitly waived, not passed. Milestone 1 complete; milestone 2 underway. Phase 2 is not approved.** See [component review](PHASE-1-COMPONENT-REVIEW.md) and [validation](PHASE-1-VALIDATION.md).
+Prepared October 19; updated October 20, 2026, America/New_York. **Phase 1 implementation approved. Official MIT shadcn/ui replaces the 21st shortlist; all missing Phase 0 baselines explicitly waived, not passed. All four milestones implemented; user acceptance pending. Phase 2 is not approved.** See [component review](PHASE-1-COMPONENT-REVIEW.md) and [validation](PHASE-1-VALIDATION.md).
 
 Baseline: upstream `de2138e84c1778fd98a48b7c9fd0b9788c318946`, documentation checkpoint `b5c24009fdb6feb7f82937e0b38710481c75eaa9`, local branch `hub/phase-0-audit`. Current upstream Vite lock is `6.4.3`; no runtime or dependency files were changed to prepare this plan.
 
@@ -180,10 +180,10 @@ Official companion new-file scope: `hub/src/components/ui/{button,sheet,input,se
 
 ## 7. Small implementation milestones after approval
 
-1. **Build and tokens — complete:** source/license and baseline gates were resolved by the latest user decision. Approved dependencies are locked; sibling entry and shared tokens are present; root/panel builds and foundation checks pass. The six upstream path diffs were shown in `PHASE-1-M1-UPSTREAM.patch`. Globe-hook scaffolding remains inactive until milestone 3. Continue in order without another approval pause unless scope must change.
-2. **Official shadcn shell — underway:** integrate the approved MIT Radix sidebar and necessary companions; add four working navigation entries, theme toggle, and honest empty states; complete `design/COMPONENTS.md` with source pin, notice, dependencies, and import adaptations.
-3. **Globe hooks:** early brand/theme binding, fixed back link, passive feed strip and safe key-presence guidance; no provider polling/caches/source changes.
-4. **Handoff and evidence:** full v2 preservation, user/browser verification, production and panel builds, current status/setup/ledger. Commit the working phase and stop for acceptance.
+1. **Build and tokens — complete:** dependencies locked, isolated sibling entry/tokens added, security and root/panel builds preserved. The six upstream diffs were shown after this milestone in `PHASE-1-M1-UPSTREAM.patch`.
+2. **Official shadcn shell — complete:** official MIT sidebar/companions, four navigation entries, themes, honest empty states and source guides; provenance and adaptations recorded in `design/COMPONENTS.md`.
+3. **Globe hooks — complete:** early branding/theme, back link, passive status, safe key-presence guidance and lifecycle cleanup. No provider polling/cache/source owner changed.
+4. **Handoff and evidence — complete:** full v2 preservation, original in-app browser review, native units/allocation, root/panel builds, setup and current ledger/status recorded. Stop for Phase 1 acceptance.
 
 The Phase 2 plan will design acquisition ownership, passive summaries, browser-direct-source migration, completeness/coverage semantics, regional metrics and globe-loaded versus cached-catalog satellite counts. Do not start that service design or implementation in this phase.
 

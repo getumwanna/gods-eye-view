@@ -66,15 +66,19 @@ export function mountFeedStrip({ documentRef, dataManager, container, signal }) 
   const panel = documentRef.createElement('div');
   panel.className = 'gih-custom-popup';
   panel.setAttribute('role', 'region');
+  // i18n-ignore: Phase 1 custom status-region accessibility text is intentionally English.
   panel.setAttribute('aria-label', 'Active layer status');
   const panelHeading = documentRef.createElement('div');
   panelHeading.className = 'gih-popup-heading';
   const panelTitle = documentRef.createElement('strong');
+  // i18n-ignore: Phase 1 custom status headings are intentionally English; core globe localization is preserved.
   panelTitle.textContent = 'Active layer status';
   const closeButton = documentRef.createElement('button');
   closeButton.type = 'button';
   closeButton.className = 'gih-popup-close';
+  // i18n-ignore: Phase 1 custom dismissal controls are intentionally English.
   closeButton.textContent = 'Close';
+  // i18n-ignore: Phase 1 custom dismissal accessibility text is intentionally English.
   closeButton.setAttribute('aria-label', 'Close active layer status');
   const close = () => { root.open = false; summary.focus(); };
   closeButton.addEventListener('click', close);
@@ -82,6 +86,7 @@ export function mountFeedStrip({ documentRef, dataManager, container, signal }) 
   const list = documentRef.createElement('div');
   const empty = documentRef.createElement('p');
   empty.className = 'gih-status-note';
+  // i18n-ignore: Phase 1 custom status guidance is intentionally English; core globe localization is preserved.
   empty.textContent = 'No active layers. Use the existing layer controls to choose a feed.';
   panel.append(panelHeading, list, empty);
   root.append(summary, panel);

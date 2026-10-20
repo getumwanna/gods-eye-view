@@ -2,7 +2,7 @@
 
 ## Scope and authorization
 
-The user explicitly approved Phase 1 implementation with the exact six-file upstream allowlist, replaced the 21st.dev selection with the official MIT-licensed shadcn/ui Radix sidebar, and explicitly waived all missing Phase 0 baseline checks on October 20, 2026. The waived checks remain unperformed/unverified; they are not passing results. Phase 1 acceptance remains at the end of the phase. Phase 2 is not authorized.
+Phase 1 implementation is complete and awaiting user acceptance. Stop here; do not begin Phase 2 or additional product work without the applicable approval. The user explicitly approved Phase 1 implementation with the exact six-file upstream allowlist, replaced the 21st.dev selection with the official MIT-licensed shadcn/ui Radix sidebar, and explicitly waived all missing Phase 0 baseline checks on October 20, 2026. The waived checks remain unperformed/unverified; they are not passing results. Phase 1 acceptance remains at the end of the phase. Phase 2 is not authorized.
 
 Approved upstream files: `package.json`, `package-lock.json`, `vite.config.js`, `src/main.js`, `style.css`, `src/tooling/viteBuild.test.mjs`. No other existing upstream file may change without an approved amendment. New hub/custom files follow `docs/custom/PHASE-1-PLAN.md`. Work through milestones 1–4 in order; the milestone 1 six-file diff has been shown in `docs/custom/PHASE-1-M1-UPSTREAM.patch`. Do not add another approval pause within the approved scope.
 
@@ -51,8 +51,8 @@ Do not use `scripts/dev-fresh.sh` for a deliberately keyless check: the macOS la
 
 ## Known verification boundary
 
-During Phase 0, automatic browser approval rejected access to `http://localhost:4173/`. Do not work around that denial using another browser, raw CDP, browser-driving shell scripts, or indirect page execution. The user separately confirmed the globe renders.
+During Phase 0, automatic browser approval rejected access to `http://localhost:4173/`. Do not work around that denial using another browser, raw CDP, browser-driving shell scripts, or indirect page execution. The user separately confirmed the globe renders. On October 20 the original in-app browser path permitted Phase 1 inspection. CUA checks of the hub/globe, themes, handoff, setup and narrow layout passed; see the validation record. This does not retrospectively pass the waived Phase 0 baseline. Do not bypass any new denial with another driver.
 
 The user subsequently waived all missing Phase 0 baseline checks, including automated browser/tracking gates, individual live-layer outcomes, and GPU/FPS measurements. This resolves the preimplementation gate; it does not turn those checks into passes or waive the new Phase 1 validation criteria. Preserve the historical audit and report future tool denials honestly.
 
-Milestone 1 implementation checks are recorded in `docs/custom/PHASE-1-VALIDATION.md`; later milestone and rendered checks remain pending. `STATUS.md` is the current work list. Preserve accent `#38BDF8` and distinct Refreshed teal `#2DD4BF` (dark) / `#0F766E` (light). Calculated contrast is recorded; rendered contrast still needs implementation-stage verification.
+All four Phase 1 milestones and final checks are recorded in `docs/custom/PHASE-1-VALIDATION.md`. `STATUS.md` is the current work list. Accent remains `#38BDF8`; Refreshed is `#2DD4BF` dark / `#0F766E` light. Token contrast and both rendered colors were verified. The CLI harness itself is authored/syntax-checked, not executed. Stop for Phase 1 acceptance; Phase 2 remains unauthorized.

@@ -1,6 +1,6 @@
 # Geospatial Intelligence Hub status
 
-Updated October 20, 2026, America/New_York. **Phase 1 implementation approved; official MIT shadcn/ui selected; missing Phase 0 baselines explicitly waived, not passed. Milestones 1–3 implemented and checked; milestone 4 underway. Phase 2 is not approved.**
+Updated October 20, 2026, America/New_York. **Phase 1 implementation and all four milestones complete; awaiting user acceptance. Official MIT shadcn/ui adopted. Missing Phase 0 baselines explicitly waived, not passed. Phase 2 is not approved.**
 
 ## Completed and verified
 
@@ -35,7 +35,7 @@ Updated October 20, 2026, America/New_York. **Phase 1 implementation approved; o
 1. **Historical Phase 0 baselines — explicitly waived, not passed:** browser/tracking checks, individual live-layer outcomes, GPU/FPS measurements, and all other missing Phase 0 baseline checks remain unverified. The earlier user answer “I don't have it” was followed by an explicit waiver. Historical unit/build/doctor receipts remain unchanged.
 2. **Component choice — resolved:** official MIT shadcn/ui Radix sidebar approved; B/A public-license findings remain historical. No 21st component was adopted.
 3. **Milestone 1 — implemented and checked:** six upstream path diffs shown to the user in `docs/custom/PHASE-1-M1-UPSTREAM.patch`. Config tests: 8 passed; foundation tests: 3 passed; contrast calculation test: 1 passed; typecheck, package/import boundaries, doctor, root build, and panel build passed. See the validation record for exact receipts and limits.
-4. **Milestones 2–4 — underway/pending:** implement the approved shell, additive globe hooks, then validation/setup. Prospective Phase 1 checks are not waived by the Phase 0 waiver.
+4. **Phase 1 acceptance — pending:** all four implementation milestones are complete. Full unit/allocation suite: 8,260 passed, 1 platform skip, 0 failures. Typecheck, doctor, boundaries, root/panel builds and original in-app browser checks pass. The authored CLI browser harness has not been executed; see the validation record. Stop for acceptance; Phase 2 remains unauthorized.
 5. **Phase gate:** continue within the exact six-file upstream allowlist; stop for Phase 1 acceptance after all criteria are met or explicitly waived. Phase 2 remains unauthorized.
 
 ## User decisions accepted with the Phase 0 audit
@@ -52,7 +52,6 @@ Updated October 20, 2026, America/New_York. **Phase 1 implementation approved; o
 
 ## Future work (not implemented)
 
-- **Phase 1:** approved exact six-file scope in the plan. Milestone 1 foundation implemented and checked; official shadcn shell work is underway. Remaining shared-token rendering, handoff, globe feed/key presentation, and phase-level validation remain pending until their milestone evidence exists.
 - **Phase 2:** canonical `content/sources.json`; searchable Knowledge Center/Data Sources/Case Studies; shared-cache dashboard with region filters, source/freshness/coverage, and honest unavailable states. Add upcoming-launch query; current upstream query is past-only.
 - **Phase 3:** home region; named saved views/presets/entity links; self-contained workspace import/export including scenes/custom datasets and excluding secrets; persistence around the existing GeoJSON/KML/KMZ/GPX importer; global palette; AI setup content. Recorder/history and Ask Library are optional, separately reviewed work.
 - **Phase 4:** desktop/mobile testing; measured performance comparison; complete dependency/data/media/security audit; choose hosting topology and document deployment. Desktop packaging remains optional.

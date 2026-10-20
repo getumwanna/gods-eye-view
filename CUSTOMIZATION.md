@@ -45,7 +45,7 @@ The concrete milestone 1 patch shown to the user is `docs/custom/PHASE-1-M1-UPST
 
 ## Phase 1 source and validation records
 
-Official shadcn/ui source is pinned at `ba1503c64472b82256d9de95e2e62c5901a38e8b`; its MIT notice must accompany copied code. Radix primitive imports are adapted to the four needed packages instead of the full `radix-ui` umbrella. `docs/custom/PHASE-1-COMPONENT-REVIEW.md` records the selection and dependency evidence. `docs/custom/PHASE-1-VALIDATION.md` records milestone checks; ignored logs remain under `.gev-logs/phase1-2026-10-20/`. Component attribution belongs in `design/COMPONENTS.md` as the shell is integrated.
+Official shadcn/ui source is pinned at `ba1503c64472b82256d9de95e2e62c5901a38e8b`; its MIT notice must accompany copied code. Radix primitive imports are adapted to the four needed packages instead of the full `radix-ui` umbrella. `docs/custom/PHASE-1-COMPONENT-REVIEW.md` records the selection and dependency evidence. `docs/custom/PHASE-1-VALIDATION.md` records milestone checks; ignored logs remain under `.gev-logs/phase1-2026-10-20/`. Component attribution is recorded in `design/COMPONENTS.md`.
 
 ## Local installation artifacts
 
@@ -57,7 +57,7 @@ Visual catalog captures for the Phase 1 shortlist are local review evidence in i
 
 ## Future customization rules
 
-1. Phase 0 audit and Phase 1 implementation approval are recorded. The user explicitly waived missing Phase 0 baselines and selected official MIT shadcn/ui. Keep waivers distinct from passes; neither 21st candidate is adopted. Continue approved milestones and stop at Phase 1 acceptance.
+1. Phase 0 audit and Phase 1 implementation approval are recorded. The user explicitly waived missing Phase 0 baselines and selected official MIT shadcn/ui. Keep waivers distinct from passes; neither 21st candidate is adopted. All four approved milestones are complete; stop for Phase 1 acceptance.
 2. Prefer new hub/custom modules over upstream edits. Record each eventual upstream edit here with its purpose and owning phase.
 3. Preserve the standalone vanilla/Cesium globe. Add a separate React hub entry on the same local server; retain share links as the handoff contract.
 4. Preserve upstream Host/origin checks, localhost binding, attribution, responsible-use restrictions, and provider request budgets.
@@ -73,3 +73,9 @@ Implemented only new hub components/pages/router, official shadcn companions and
 ### Phase 1 milestone 3
 
 New custom globe modules bind branding/theme before gaze initialization, install a back link and owned passive disclosures at application ready, read existing DataManager activity, and project one abortable same-origin setup-status read into presence/unknown only. No provider polling, cache owner, source implementation or credential form changed. Lifecycle tests cover destroy/failed/embedded cleanup. Scoped CSS positions desktop disclosures away from native rails and bounds narrow overlays; explicit dismissal preserves keyboard access.
+
+### Phase 1 milestone 4
+
+Added the user-run `scripts/qa-custom-hub.mjs` and `qa:hub` command, five full-state handoff regressions, and `SETUP.md`. The custom CSS imports precede the final Cyber stylesheet to retain upstream cascade policy. English-only custom chrome labels use the upstream explicit i18n opt-out convention; state strings are computed separately from DOM text assignment so the Material Symbols scanner does not mistake them for glyphs. Light globe title/dock text has readable backing/colors; the narrow title backing fits its logo and the left panel stack starts below the owned control row.
+
+Only the six approved existing-upstream paths changed. Existing locked package versions remain unchanged. Phase 1 is ready for acceptance; no Phase 2 service, source manifest, acquisition/cache redesign, recorder, hosting or deployment was started.

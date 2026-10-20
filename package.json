@@ -55,7 +55,8 @@
     "check:boundaries": "node scripts/check-import-directions.mjs && node scripts/check-package-boundaries.mjs",
     "qa:transit": "node scripts/qa-transit.mjs",
     "mcp": "node server/mcp/stdio.js",
-    "typecheck:hub": "tsc -p hub/tsconfig.json"
+    "typecheck:hub": "tsc -p hub/tsconfig.json",
+    "qa:hub": "node scripts/qa-custom-hub.mjs"
   },
   "dependencies": {
     "@jtarrio/signals": "^0.10.0",

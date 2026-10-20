@@ -125,7 +125,37 @@ html[data-gev-hub-customization] {
 [data-gev-hub-customization] .gih-power-button:disabled { cursor: default; color: var(--gih-muted); }
 [data-gev-hub-customization] .gih-globe-tools :focus-visible { outline: 2px solid var(--gih-focus); outline-offset: 3px; }
 body.ui-clean-view .gih-globe-tools, body.recording-mode .gih-globe-tools { display: none; }
+/* A map can be black or bright independently of the UI theme. Back the light
+   brand with its own surface without changing its measured layout/rail bounds.
+   Cyber retains its upstream presentation, including its chosen sensor colors. */
+html[data-gev-hub-customization][data-gih-theme='light']:not([data-ui-theme='cyber']) #title-bar {
+  background: var(--gih-panel);
+  border-radius: var(--gih-radius-sm);
+  box-shadow: 0 0 0 .5rem var(--gih-panel);
+  outline: 1px solid var(--gih-border);
+  outline-offset: .5rem;
+}
+html[data-gev-hub-customization][data-gih-theme='light']:not([data-ui-theme='cyber']) #title-bar h1 { color: var(--gih-text); }
+html[data-gev-hub-customization][data-gih-theme='light']:not([data-ui-theme='cyber']) #title-bar .subtitle { color: var(--gih-muted); }
+/* Only the light location/preset surfaces: the voice dock and HUD keep their
+   independently styled dark/sensor backgrounds and source/status colors. */
+html[data-gev-hub-customization][data-gih-theme='light']:not([data-ui-theme='cyber']) #command-dock :is(.panel-title, .location-toolbar-label, .btn-label, .location-mini-city) { color: var(--gih-text); }
+html[data-gev-hub-customization][data-gih-theme='light']:not([data-ui-theme='cyber']) #command-dock :is(.btn-key, .panel-mini-label, .location-mini-poi) { color: var(--gih-muted); }
+html[data-gev-hub-customization][data-gih-theme='light']:not([data-ui-theme='cyber']) #command-dock .dock-label-icon { background-color: var(--gih-muted); filter: none; }
+html[data-gev-hub-customization][data-gih-theme='light']:not([data-ui-theme='cyber']) #command-dock :is(#location-bar, #control-panel):hover :is(.panel-title, .location-toolbar-label) { color: var(--gih-link); }
 @media (max-width: 720px) {
+  [data-gev-hub-customization] #left-panel-stack { top: 92px; }
+  html[data-gev-hub-customization][data-gih-theme='light']:not([data-ui-theme='cyber']) #title-bar {
+    background: transparent;
+    box-shadow: none;
+    outline: none;
+  }
+  html[data-gev-hub-customization][data-gih-theme='light']:not([data-ui-theme='cyber']) #title-bar h1 {
+    width: fit-content;
+    background: var(--gih-panel);
+    box-shadow: 0 0 0 4px var(--gih-panel);
+    border-radius: .4rem;
+  }
   [data-gev-hub-customization] #title-bar { max-width: calc(100vw - 40px); }
   [data-gev-hub-customization] #title-bar h1 { max-width: calc(100vw - 175px); font-size: 15px; gap: 7px; }
   [data-gev-hub-customization] #title-bar .title-logo { width: 28px; flex-shrink: 0; }

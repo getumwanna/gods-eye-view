@@ -36,6 +36,7 @@ export function installHubGlobeCustomization(application, {
     mounted = true;
     const container = documentRef.createElement('nav');
     container.className = 'gih-globe-tools';
+    // i18n-ignore: Phase 1 custom controls are intentionally English; core globe localization is preserved.
     container.setAttribute('aria-label', 'Hub and feed controls');
     const title = documentRef.getElementById('title-bar');
     if (!title) container.dataset.floating = 'true';

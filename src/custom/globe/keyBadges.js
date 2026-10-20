@@ -101,19 +101,24 @@ export function mountKeyBadges({ documentRef, dataManager, keyAccess, container,
   root.name = 'gih-globe-details';
   const summary = documentRef.createElement('summary');
   summary.className = 'gih-tool-summary';
+  // i18n-ignore: Phase 1 custom setup navigation is intentionally English; core globe localization is preserved.
   summary.textContent = 'Provider setup';
   const panel = documentRef.createElement('div');
   panel.className = 'gih-custom-popup';
   panel.setAttribute('role', 'region');
+  // i18n-ignore: Phase 1 custom setup-region accessibility text is intentionally English.
   panel.setAttribute('aria-label', 'Provider setup guidance');
   const panelHeading = documentRef.createElement('div');
   panelHeading.className = 'gih-popup-heading';
   const panelTitle = documentRef.createElement('strong');
+  // i18n-ignore: Phase 1 custom setup headings are intentionally English; core globe localization is preserved.
   panelTitle.textContent = 'Provider setup';
   const closeButton = documentRef.createElement('button');
   closeButton.type = 'button';
   closeButton.className = 'gih-popup-close';
+  // i18n-ignore: Phase 1 custom dismissal controls are intentionally English.
   closeButton.textContent = 'Close';
+  // i18n-ignore: Phase 1 custom dismissal accessibility text is intentionally English.
   closeButton.setAttribute('aria-label', 'Close provider setup guidance');
   const close = () => { root.open = false; summary.focus(); };
   closeButton.addEventListener('click', close);
@@ -125,6 +130,7 @@ export function mountKeyBadges({ documentRef, dataManager, keyAccess, container,
   const list = documentRef.createElement('div');
   const allGuides = documentRef.createElement('a');
   allGuides.href = '/hub/#/library';
+  // i18n-ignore: Phase 1 custom setup-directory navigation is intentionally English.
   allGuides.textContent = 'Provider setup guides';
   panel.append(panelHeading, note, surface, list, allGuides);
   root.append(summary, panel);
@@ -139,20 +145,26 @@ export function mountKeyBadges({ documentRef, dataManager, keyAccess, container,
   const render = () => {
     if (disposed) return;
     const models = getKeyGuidanceModels(rows, presence);
-    summary.textContent = models.some((model) => model.state === 'attention') ? 'Setup · Attention'
+    const summaryText = models.some((model) => model.state === 'attention') ? 'Setup · Attention'
       : models.some((model) => model.state === 'missing') ? 'Setup · Needs key'
         : models.length ? 'Setup · Unknown' : 'Provider setup';
+    // i18n-ignore: Phase 1 custom setup-presence wording is intentionally English, separate from localized core health.
+    summary.textContent = summaryText;
     summary.title = summary.textContent;
-    note.textContent = presence.state === 'ready'
+    const noteText = presence.state === 'ready'
       ? 'Configured means a credential is present, not that it is valid or the provider is healthy.'
       : ['idle', 'loading'].includes(presence.state)
         ? 'Checking local configuration presence. No provider request is made.'
         : 'Configuration status is unavailable here. Required keys remain Unknown.';
+    // i18n-ignore: Phase 1 custom configuration-presence explanations are intentionally English.
+    note.textContent = noteText;
     const powerState = powerUp?.getState() || 'initializing';
-    surface.textContent = powerState === 'ready'
+    const surfaceText = powerState === 'ready'
       ? 'POWER UP opens the original local provider settings.'
       : powerState === 'initializing' ? 'Provider settings are initializing.'
         : 'POWER UP is unavailable on this server. Use the provider setup documentation.';
+    // i18n-ignore: Phase 1 custom English explanation names the existing POWER UP control without changing its localization.
+    surface.textContent = surfaceText;
     const ids = new Set(models.map((model) => model.id));
     for (const [id, item] of items) {
       if (!ids.has(id)) { item.button.removeEventListener('click', item.open); item.article.remove(); items.delete(id); }
@@ -172,6 +184,7 @@ export function mountKeyBadges({ documentRef, dataManager, keyAccess, container,
         const button = documentRef.createElement('button');
         button.type = 'button';
         button.className = 'gih-power-button';
+        // i18n-ignore: POWER UP is the existing upstream provider-settings control name, retained in the English custom UI.
         button.textContent = 'POWER UP';
         const open = () => powerUp?.open();
         button.addEventListener('click', open);
@@ -192,28 +205,31 @@ export function mountKeyBadges({ documentRef, dataManager, keyAccess, container,
         item.links.replaceChildren(...model.sources.map((source) => {
           const link = documentRef.createElement('a');
           link.href = source.href;
+          // i18n-ignore: Source product names and Phase 1 custom setup-guide navigation remain English.
           link.textContent = `${source.name} setup guide`;
           return link;
         }));
       }
       item.button.disabled = powerState !== 'ready';
+      // i18n-ignore: Phase 1 custom provider-settings tooltip text is intentionally English.
       item.button.title = powerState === 'ready' ? 'Open existing GEV provider settings'
         : powerState === 'initializing' ? 'Provider settings are initializing' : 'Provider settings unavailable';
       if (list.children[index] !== item.article) list.insertBefore(item.article, list.children[index] || null);
     });
     const oldEmpty = panel.querySelector('.gih-keys-empty');
+    const emptyText = layerStateUnavailable
+      ? 'Layer state is unavailable, so setup requirements cannot be evaluated.'
+      : 'No required-key setup issue is currently reported. Optional providers are described in the setup guides.';
     if (models.length) oldEmpty?.remove();
     else if (!oldEmpty) {
       const empty = documentRef.createElement('p');
       empty.className = 'gih-keys-empty';
-      empty.textContent = layerStateUnavailable
-        ? 'Layer state is unavailable, so setup requirements cannot be evaluated.'
-        : 'No required-key setup issue is currently reported. Optional providers are described in the setup guides.';
+      // i18n-ignore: Phase 1 custom setup empty-state explanations are intentionally English.
+      empty.textContent = emptyText;
       panel.insertBefore(empty, allGuides);
     } else if (oldEmpty) {
-      oldEmpty.textContent = layerStateUnavailable
-        ? 'Layer state is unavailable, so setup requirements cannot be evaluated.'
-        : 'No required-key setup issue is currently reported. Optional providers are described in the setup guides.';
+      // i18n-ignore: Phase 1 custom setup empty-state explanations are intentionally English.
+      oldEmpty.textContent = emptyText;
     }
   };
   const read = () => {
