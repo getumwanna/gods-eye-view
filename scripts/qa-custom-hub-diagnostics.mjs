@@ -1,3 +1,9 @@
+/** Self-contained so Puppeteer can serialize this exact tested predicate. */
+export function hubIsReady() {
+  return document.querySelector('main #main-content h1')?.textContent === 'Dashboard'
+    && Boolean(document.querySelector('nav[aria-label="Main navigation"]') && document.querySelector('#globe-share-link'));
+}
+
 /** Classify failed local responses without retaining URLs or response content. */
 export function classifyQaResponse({ url, origin, status, statusText, resourceType }) {
   if (!Number.isInteger(status) || status < 400 || status > 599) return null;

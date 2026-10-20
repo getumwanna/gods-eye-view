@@ -1,6 +1,6 @@
 # Phase 1 validation record
 
-Updated October 20, 2026, America/New_York. Phase 1 implementation is approved. All four milestones are implemented and checked; user acceptance remains pending a passing user-run QA rerun after the server startup recovery and harness corrections. Phase 2a planning is authorized separately; no Phase 2 implementation is authorized.
+Updated October 20, 2026, America/New_York. Phase 1 implementation is approved. All four milestones are implemented and checked; user acceptance remains pending a passing user-run QA rerun after the corrected, DOM-verified readiness predicate. Phase 2a planning is authorized separately; no Phase 2 implementation is authorized.
 
 ## Authorization and historical baseline boundary
 
@@ -137,3 +137,20 @@ Harness improvements: new `scripts/qa-custom-hub-diagnostics.mjs` classifies fai
 Verification: harness/diagnostics syntax checks pass; the focused QA-input/diagnostics, hub router/render, and full-state handoff group passes **13/13**, zero failures, on Node 24.22.0. Evidence: `.gev-logs/phase1-2026-10-20/qa-review/startup-focused.log`. Product code, dependencies, and original-upstream files are unchanged by this recovery. The earlier full-suite/build/install receipts remain historical results, not newly repeated checks.
 
 **Phase 1 still awaits a passing user-run `npm run qa:hub` receipt after this recovery. Both reported failed runs remain recorded as failed. No Phase 2 implementation is authorized.**
+
+## Third user QA receipt — incorrect readiness selector
+
+The user's third output reports **0/9 passed**, with all checks blocked at `hub-render` and reason `readiness-timeout`. Matching receipt: `.gev-logs/qa-custom-hub-2026-10-20T16-27-29-926Z.json`, timestamp `2026-10-20T16:27:29.927Z`. The document status is 200; every local document/module/optimized-dependency failure counter is zero, and page-error count is zero. The prior Vite recovery did not establish that the newly added readiness predicate was correct.
+
+**Confirmed cause: an agent-introduced selector error.** The predicate required `main#main-content h1`. The actual shell is `<main data-slot="sidebar-inset"><div id="main-content"><h1>Dashboard</h1>…`, so that selector can never match (`hub/src/components/HubShell.tsx`, `SidebarInset` in `hub/src/components/ui/sidebar.tsx`). This made the new startup gate fail even when Dashboard rendered normally.
+
+Correction: export a self-contained `hubIsReady()` from the existing custom QA diagnostics module and pass that exact function to Puppeteer's `waitForFunction`. It uses `main #main-content h1`, plus the navigation and share input. Product markup, runtime, dependencies, server configuration, and original-upstream files remain unchanged.
+
+Verification:
+
+- The exact serialized `hubIsReady()` is tested against the **real App server-rendered markup** using the already installed JSDOM. Dashboard passes; Library, Settings, and an empty root fail. Removing the heading, navigation, or share input independently fails readiness. The test also confirms the obsolete selector cannot match the actual shell. No fake app markup or new dependency is used.
+- Through the permitted original in-app browser path, the same exported predicate evaluated against the live rendered Dashboard returns **true**; the obsolete selector matches **zero** elements. This is direct DOM verification of the corrected gate, not a CLI browser-harness run.
+- Syntax checks pass. The QA-input/diagnostics, real App routing/rendering/readiness, and full-state handoff group passes **14/14**, zero failures, on Node 24.22.0. Evidence: `.gev-logs/phase1-2026-10-20/qa-review/readiness-dom-focused.log`.
+- A separate read-only audit of the remaining harness assertions against current markup/APIs found no further deterministic selector mismatch. Browser interaction, responsive layout, GPU initialization and credit visibility still require the actual user-run gate; this audit is not a declaration that all nine pass.
+
+**All three user results (7/9, 1/9, 0/9) remain recorded as failed. Await a fresh passing user-run `npm run qa:hub` receipt. Phase 1 is pending; Phase 2a remains planning only.**

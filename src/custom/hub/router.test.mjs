@@ -8,6 +8,9 @@ import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { parseHubRoute, routeTitle } from '../../../hub/src/router.js';
 import { cn } from '../../../hub/src/lib/utils.ts';
+import { JSDOM } from 'jsdom';
+import { runInNewContext } from 'node:vm';
+import { hubIsReady } from '../../../scripts/qa-custom-hub-diagnostics.mjs';
 
 test('local class helper composes conditional inputs and lets later utilities override conflicts', () => {
   assert.equal(cn('p-2', ['px-4', false], { hidden: false, 'font-semibold': true }, null, undefined, 'px-6'), 'p-2 font-semibold px-6');
@@ -53,6 +56,31 @@ function render(hash) {
   globalThis.window = { location: { hash } };
   return renderToStaticMarkup(React.createElement(App));
 }
+
+test('browser QA readiness matches the real rendered hub without requiring main-content to be a main element', () => {
+  for (const [hash, expected] of [['#/dashboard', true], ['#/library', false], ['#/settings', false]]) {
+    const dom = new JSDOM(render(hash));
+    try {
+      const document = dom.window.document;
+      assert.equal(document.querySelector('main#main-content h1'), null, 'the old predicate could never match the real shell');
+      const browserPredicate = runInNewContext(`(${hubIsReady.toString()})`, { document });
+      assert.equal(browserPredicate(), expected, hash);
+      if (expected) {
+        for (const selector of ['#globe-share-link', 'nav[aria-label="Main navigation"]', '#main-content h1']) {
+          const element = document.querySelector(selector);
+          const placeholder = document.createTextNode('');
+          element.replaceWith(placeholder);
+          assert.equal(browserPredicate(), false, `readiness requires ${selector}`);
+          placeholder.replaceWith(element);
+        }
+      }
+    } finally { dom.window.close(); }
+  }
+  const blank = new JSDOM('<div id="root"></div>');
+  try {
+    assert.equal(runInNewContext(`(${hubIsReady.toString()})`, { document: blank.window.document })(), false);
+  } finally { blank.window.close(); }
+});
 
 test('dashboard renders accessible navigation and an honest share handoff without provider acquisition', () => {
   const html = render('#/dashboard');

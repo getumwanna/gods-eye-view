@@ -24,7 +24,7 @@ import puppeteer from 'puppeteer';
 import { chromeExecutablePath } from './qa-chrome.mjs';
 import { branding } from '../src/custom/shared/branding.js';
 import { replaceQaInput } from './qa-custom-hub-input.mjs';
-import { classifyQaResponse, qaFailureCode, scriptErrorResult } from './qa-custom-hub-diagnostics.mjs';
+import { hubIsReady, classifyQaResponse, qaFailureCode, scriptErrorResult } from './qa-custom-hub-diagnostics.mjs';
 
 const argument = process.argv.find(value => value.startsWith('--base-url='));
 const supplied = argument?.slice('--base-url='.length) || process.env.QA_BASE_URL || 'http://localhost:4173';
@@ -132,8 +132,7 @@ try {
     hubStartup.documentStatus = response?.status() ?? null;
     assert.ok(response && (response.ok() || response.status() === 304));
     checkpoint = 'hub-render';
-    await page.waitForFunction(() => document.querySelector('main#main-content h1')?.textContent === 'Dashboard'
-      && document.querySelector('nav[aria-label="Main navigation"]') && document.querySelector('#globe-share-link'), { timeout: 30_000 });
+    await page.waitForFunction(hubIsReady, { timeout: 30_000 });
     hubStartup.ready = true;
     hubStartup.checkpoint = 'hub-ready';
   } catch (error) {
