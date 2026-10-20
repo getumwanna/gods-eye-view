@@ -1,6 +1,6 @@
 # Phase 1 validation record
 
-Updated October 20, 2026, America/New_York. Phase 1 implementation is approved. All four milestones are implemented and checked; user acceptance remains pending a passing user-run QA rerun after the globe loading-cover and credit-geometry corrections. Phase 2a planning is authorized separately; no Phase 2 implementation is authorized.
+Updated October 20, 2026, America/New_York. **Phase 1 accepted by the user after `npm run qa:hub` passed all 9 checks.** The dependency review is resolved and all four milestones are complete. Phase 2a remains planning only; no Phase 2 implementation is authorized. Earlier pending/failure sections below are historical evidence, superseded by the final acceptance record.
 
 ## Authorization and historical baseline boundary
 
@@ -189,3 +189,15 @@ Verification:
 - The exact exported predicates both return true on the live uncovered globe. Native interaction then closes status, opens Provider setup, shows the Library guide link, verifies visible/unobstructed logo and attribution, and returns successfully to Dashboard. Local proof: `qa-artifacts/phase-1/provider-setup-after-cover.png`. This is targeted permitted-browser evidence, not execution of the CLI harness. No credential forms were opened or configured.
 
 Only custom QA code/tests and project records changed. Product behavior, dependencies, original-upstream files, provider acquisition, and Phase 2 work remain unchanged. **All five user runs (7/9, 1/9, 0/9, 6/9, 8/9) remain preserved as failed records. Phase 1 awaits a fresh passing user-run `npm run qa:hub` receipt.**
+
+## Final user-run QA and Phase 1 acceptance — October 20, 2026
+
+The user reported **`npm run qa:hub`: 9/9 passed** and explicitly requested that Phase 1 be marked accepted. The matching local assertion-only receipt is `.gev-logs/qa-custom-hub-2026-10-20T16-48-33-898Z.json`, timestamp **2026-10-20T16:48:33.899Z**. All nine assertion flags are true and the overall `passed` flag is true. The command was run by the user, not the agent.
+
+The passing checks cover hub routes and phase boundaries; source setup links; dark/light persistence; desktop collapse/focus; mobile Escape/focus/overflow; rejected external and credential-shaped share links; intact full-v2 synthetic all-layers-off handoff; globe branding/status/setup/credits; and absence of unhandled browser JavaScript errors.
+
+The receipt records hub startup ready with HTTP 200, zero page errors, zero failed local document/module/optimized-dependency responses, two permitted local setup reads, and eight blocked acquisition requests. These are restricted UI regression checks, not a live-feed, tracking, provider-availability, or GPU/FPS baseline. No raw provider payloads or credentials are included. Node/browser versions are not supplied by this receipt.
+
+**Phase 1 is accepted.** Both review conditions are resolved: the `cn` dependency was replaced and verified as recorded above, and the user-run browser gate now passes. The five preceding failed receipts and their corrections remain preserved as historical evidence. Missing Phase 0 baselines remain explicitly waived, not passed.
+
+**Authorization stops here:** Phase 2a remains a proposal for planning/review only. Its implementation, dependency installation, registry/articles/cases/search content, Phase 2b planning/implementation, and upstream-sync rehearsal execution remain unapproved. No Phase 2 work is begun by recording this acceptance.

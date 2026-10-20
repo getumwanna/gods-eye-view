@@ -1,6 +1,6 @@
 # Phase 2a — Library and source directory file-level plan
 
-October 20, 2026. **Proposal only; implementation and dependency installation are not approved.** Phase 1 still awaits the user's `qa:hub` receipt. Its dependency review correction is recorded separately in `PHASE-1-VALIDATION.md` and commit `7f21ab83`.
+October 20, 2026. **Proposal only; implementation and dependency installation are not approved.** Phase 1 was accepted by the user after the 9/9 `qa:hub` receipt on October 20; this Phase 2a proposal remains unapproved for implementation. Its dependency review correction is recorded separately in `PHASE-1-VALIDATION.md` and commit `7f21ab83`.
 
 ## Scope and phase gates
 
@@ -8,7 +8,7 @@ Phase 2a delivers the descriptive source registry, Data Sources directory, Knowl
 
 Phase 2b will be planned **after 2a ships and is accepted**. Its future scope is acquisition ownership, read-only summaries, browser-direct adapters, an upcoming-launch query, and the dashboard. This document does not design or authorize those services. Recording, new data feeds, global Cmd/Ctrl+K, saved workspace features, AI search, and hosting remain outside 2a.
 
-Implementation may start only after Phase 1's acceptance condition is resolved and this file-level plan is explicitly approved. Work in the four milestones below, commit each with its evidence, and stop for Phase 2a acceptance. A request to prepare this plan does not authorize its code or dependencies.
+Phase 1's acceptance condition is resolved. Phase 2a implementation may start only after this file-level plan is explicitly approved. Work in the four milestones below, commit each with its evidence, and stop for Phase 2a acceptance. A request to prepare this plan does not authorize its code or dependencies.
 
 ## Upstream edit allowlist — exactly two files proposed
 

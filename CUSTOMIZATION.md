@@ -3,7 +3,7 @@
 ## Provenance
 
 - Request: Geospatial Intelligence Hub, v2, October 19, 2026.
-- Authorized scope: The user explicitly approved Phase 1 implementation with the exact six-file upstream allowlist, replaced the 21st.dev selection with the official MIT-licensed shadcn/ui Radix sidebar, and explicitly waived all missing Phase 0 baseline checks on October 20, 2026. The waived checks remain unperformed/unverified; they are not passing results. Phase 1 acceptance remains at the end of the phase. Phase 2 is not authorized.
+- Authorized scope: The user explicitly approved Phase 1 implementation with the exact six-file upstream allowlist, replaced the 21st.dev selection with the official MIT-licensed shadcn/ui Radix sidebar, and explicitly waived all missing Phase 0 baseline checks on October 20, 2026. The waived checks remain unperformed/unverified; they are not passing results. Phase 1 was accepted by the user on October 20 after a 9/9 user-run QA result. Phase 2a is planning only; no Phase 2 implementation is authorized.
 - Upstream: https://github.com/bilawalsidhu/gods-eye-view
 - User-owned fork: https://github.com/getumwanna/gods-eye-view
 - Verified upstream pin: `de2138e84c1778fd98a48b7c9fd0b9788c318946`.
@@ -57,7 +57,7 @@ Visual catalog captures for the Phase 1 shortlist are local review evidence in i
 
 ## Future customization rules
 
-1. Phase 0 audit and Phase 1 implementation approval are recorded. The user explicitly waived missing Phase 0 baselines and selected official MIT shadcn/ui. Keep waivers distinct from passes; neither 21st candidate is adopted. All four approved milestones are complete; stop for Phase 1 acceptance.
+1. Phase 0 audit and Phase 1 implementation approval are recorded. The user explicitly waived missing Phase 0 baselines and selected official MIT shadcn/ui. Keep waivers distinct from passes; neither 21st candidate is adopted. All four approved milestones are complete and Phase 1 is accepted; stop before Phase 2 implementation.
 2. Prefer new hub/custom modules over upstream edits. Record each eventual upstream edit here with its purpose and owning phase.
 3. Preserve the standalone vanilla/Cesium globe. Add a separate React hub entry on the same local server; retain share links as the handoff contract.
 4. Preserve upstream Host/origin checks, localhost binding, attribution, responsible-use restrictions, and provider request budgets.
@@ -121,3 +121,9 @@ Code edits are confined to `scripts/qa-custom-hub-input.mjs`, `scripts/qa-custom
 The user reports 8/9, with only setup guidance timing out. Confirmed via the permitted in-app path that mounted controls were still under the real full-screen loading cover; initial open status text allowed passive checks to pass while clicks were intercepted. The custom harness now waits for cover release and confirms status closes before Setup. Live verification of the remaining credit condition also exposed a false parent-box assumption: Cesium's absolutely positioned child can paint credits from a zero-size outer anchor. The harness now checks actual logo/attribution/inline content visibility and hit reachability. No product timing, CSS, credits, or provider behavior changed.
 
 Code changes are confined to `scripts/qa-custom-hub.mjs`, `scripts/qa-custom-hub-diagnostics.mjs`, and `src/custom/hub/qaHarness.test.mjs`; project records are updated. Actual startup/CSS and credit-geometry regressions join the focused group: 16 pass, syntax checks pass. Exact predicates plus status close, setup open/guide, visible credits, and back navigation pass in the permitted browser. CLI acceptance still awaits the user's passing receipt; all five failed results remain preserved. No original-upstream path, dependency, credential, or Phase 2 implementation changed.
+
+### Phase 1 accepted — final user-run QA receipt
+
+On October 20, 2026, the user reported all nine `qa:hub` checks passing and explicitly requested Phase 1 acceptance. The matching assertion-only receipt is `.gev-logs/qa-custom-hub-2026-10-20T16-48-33-898Z.json`, timestamp `2026-10-20T16:48:33.899Z`; all nine assertions and overall `passed` are true. `PHASE-1-VALIDATION.md` records the result and scope. The dependency review and browser acceptance conditions are resolved. Historical failed receipts and waived Phase 0 gaps remain preserved.
+
+This documentation checkpoint updates the validation record, `STATUS.md`, `AGENTS.md`, this ledger, and the stale Phase 1 prerequisite in `PHASE-2A-PLAN.md`. No application code, dependency, original-upstream file, or runtime configuration changes. Phase 2a remains planning only; no implementation, content/dependency installation, Phase 2b planning, or upstream-sync rehearsal execution is authorized. No new tests or browser runs are needed for this documentation-only acceptance record.
