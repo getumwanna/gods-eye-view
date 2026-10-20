@@ -1,6 +1,6 @@
 # Phase 2a — Library and source directory file-level plan
 
-October 20, 2026. **Proposal only; implementation and dependency installation are not approved.** Phase 1 was accepted by the user after the 9/9 `qa:hub` receipt on October 20; this Phase 2a proposal remains unapproved for implementation. Its dependency review correction is recorded separately in `PHASE-1-VALIDATION.md` and commit `7f21ab83`.
+October 20, 2026. **Approved by the user with conditions; implementation has not started.** Phase 1 is accepted after the user-run 9/9 `qa:hub` result. Phase 2a must wait for the separately approved upstream-sync rehearsal, report/adoption decision, and post-pin plan revalidation. Exact dependency versions remain subject to milestone 1 review. Phase 2b planning stays deferred until 2a ships and is accepted.
 
 ## Scope and phase gates
 
@@ -8,20 +8,20 @@ Phase 2a delivers the descriptive source registry, Data Sources directory, Knowl
 
 Phase 2b will be planned **after 2a ships and is accepted**. Its future scope is acquisition ownership, read-only summaries, browser-direct adapters, an upcoming-launch query, and the dashboard. This document does not design or authorize those services. Recording, new data feeds, global Cmd/Ctrl+K, saved workspace features, AI search, and hosting remain outside 2a.
 
-Phase 1's acceptance condition is resolved. Phase 2a implementation may start only after this file-level plan is explicitly approved. Work in the four milestones below, commit each with its evidence, and stop for Phase 2a acceptance. A request to prepare this plan does not authorize its code or dependencies.
+Before milestone 1, follow `UPSTREAM-SYNC-PLAN.md`: obtain rehearsal execution approval, run it in isolation, stop for user report review and an adoption decision, then reverify this plan against the adopted or retained pin. Check layer IDs, key IDs and credential boundaries, source/coverage facts, admitted documentation sections, dependency compatibility, and exact file paths. Present all changes and resolve any amendment approvals before implementation. Work through the four milestones in order. At milestones 2 and 3, stop for editorial review before committing. Stop again for Phase 2a acceptance at the end.
 
-## Upstream edit allowlist — exactly two files proposed
+## Upstream edit allowlist — exactly two files approved for Phase 2a
 
 “Upstream” means paths present in the original GEV pin `de2138e84c1778fd98a48b7c9fd0b9788c318946`, not custom files now tracked in this fork.
 
 | Existing upstream path | Proposed change |
 | --- | --- |
-| `package.json` | Exact reviewed Library dependency versions and a `check:library` command pointing at the new local validator |
+| `package.json` | Exact reviewed Library dependency versions, `check:library`, and content-validation preflights for both production build commands; never for `dev` |
 | `package-lock.json` | Lock that reviewed dependency graph, preserving unrelated versions |
 
 No upstream application, layer, provider, scene, security, documentation, stylesheet, or test file is proposed for editing. In particular, leave `vite.config.js`, `src/main.js`, `style.css`, and `src/tooling/viteBuild.test.mjs` unchanged during 2a. Record the two package edits in `CUSTOMIZATION.md`.
 
-A literal zero-file option would replace direct upstream-document rendering with prewritten summaries or require maintaining a Markdown/search implementation. It changes the requested product or adds avoidable maintenance. The two-file proposal preserves the requested Markdown documentation and uses maintained libraries. Approval of this plan would approve only these two upstream paths; any additional upstream edit requires an amendment.
+The user approved only these two original-upstream paths for Phase 2a; any additional original-upstream edit requires an amendment. Rehearsal import/repair limits are separate and proposed in `UPSTREAM-SYNC-PLAN.md`.
 
 Proposed direct dependencies, **not installed by this planning work**:
 
@@ -31,29 +31,42 @@ Proposed direct dependencies, **not installed by this planning work**:
 | `remark-gfm` | Existing documentation tables and other GFM syntax |
 | `unified`, `remark-parse` | Public parser APIs shared by section extraction and search text; declare direct imports rather than relying on transitive packages |
 | `minisearch` | Local full-text index, field weighting, and prefix matching |
-| `ajv` (development dependency) | Validate the authored source/content manifests against JSON Schema at config load and in the explicit check command; never ship it in either browser graph |
+| `ajv` (development dependency, original proposal) | Node-side schema validation for the explicit check command and production build gates. This original role cannot also provide full schema validation inside the development Library; the pending role amendment below must be resolved before milestone 1 |
 
 These projects publish MIT licenses: [React Markdown](https://github.com/remarkjs/react-markdown), [remark/GFM](https://github.com/remarkjs/remark-gfm), [unified](https://github.com/unifiedjs/unified), [remark parser](https://github.com/remarkjs/remark), [MiniSearch](https://github.com/lucaong/minisearch), [Ajv](https://github.com/ajv-validator/ajv). Milestone 1 must review and record exact compatible versions, transitive licenses, Node/React compatibility, install scripts, audit findings, and installed/bundled size before adopting them. Keep the Phase 1 local `clsx` + `tailwind-merge` helper. Do not add MDX, raw-HTML execution, a remote search service, or another UI library.
+
+## Validation boundary and pending post-pin amendments
+
+`npm run check:library` must fail on invalid authored content. Both production commands, `npm run build` and `npm run build:panel`, must run that check as a strict preflight and exit nonzero on failure. The root hub build must also enforce validation from a Rollup-only `buildStart` hook under `build.rollupOptions.plugins` in the existing project-owned wrapper. Do not add another top-level Vite plugin or change the upstream plugin-prefix test. The Node validator must defer content/schema reads, parsing and validation until the check or production hook runs; importing its module during config evaluation must not validate anything. Do not infer development versus production from `process.argv` or `NODE_ENV`, and do not add validation to the dev command or config-loading path.
+
+**Invalid content must never prevent development-server startup or stop the globe.** In development, validation errors belong inside Library routes only. The shell, Dashboard, Settings and globe must continue working. The Library must show an accessible content-error state rather than silently displaying stale content. Its guarded loader must catch malformed content/schema JSON, invalid schemas and records, missing files/sections, unsafe references, asynchronous imports and rendering failures. Content edits, deletions and recovery through HMR/reload must preserve that isolation.
+
+The mandatory post-pin review must settle two proposed implementation amendments before milestone 1. They are explicitly pending; the approved inventory and original dependency category recorded above are not silently amended by this document:
+
+- Proposed new project-owned path: `src/custom/shared/sourceRegistry.generated.js`, a deterministic validated metadata projection from canonical `content/sources.json`. The already planned `scripts/check-custom-library.mjs --write-projection` could generate it without another command file. Existing globe metadata APIs would import only this last validated projection, never editable JSON, Markdown or schema code. It is generated output, not a second authored authority. Checks and production builds would reject a stale projection; invalid development edits would leave globe metadata intact. Approval would change the original **62-path inventory to 63 paths**, with the same two original-upstream files.
+- Proposed dependency-role amendment: classify Ajv as a **lazy Library-only runtime dependency** so the browser can enforce the full source/content schemas in development. Load it only inside the caught Library loader, never in the shell or globe graph. The original development-only, never-browser proposal is incompatible with that full-schema development requirement; structural guards alone do not satisfy it. Review the exact version, license, runtime role and bundle cost after the pin decision and obtain approval for the amendment before adoption.
+
+These choices remain part of the required post-pin plan review. No generated projection, browser validator, planned dependency or Phase 2a content is created by this documentation update.
 
 ## Exact project-owned existing files to change
 
 | Path | Responsibility |
 | --- | --- |
-| `build/customHub.js` | Invoke local content validation through `withHubConfig`; preserve standalone configuration and plugin prefix |
+| `build/customHub.js` | Add a build-only Rollup validation hook under `build.rollupOptions.plugins`; never validate content while evaluating Vite config. Preserve the standalone configuration and top-level Vite plugin prefix |
 | `hub/src/App.tsx` | Lazy Library routes and document loading/error states |
 | `hub/src/router.js` | Bounded knowledge/case/search routes; preserve existing source routes and unknown-route behavior |
 | `hub/src/components/HubShell.tsx` | Library active navigation, route title and focus behavior |
 | `hub/src/pages/Library.tsx` | Replace Library placeholders with real section navigation and scoped search |
 | `hub/src/pages/SourceGuide.tsx` | Render the canonical directory record while retaining setup actions and old URLs |
 | `hub/src/styles.css` | Articles, accessible tables, citations, results, disclosures; existing tokens in both themes |
-| `src/custom/shared/layerMetadata.js` | Derive existing source/layer metadata exports from `content/sources.json`; remove parallel authored source-name/layer facts |
+| `src/custom/shared/layerMetadata.js` | Preserve source/layer metadata APIs and derive their facts from the canonical registry through a validated projection. Do not import editable content or browser schema validation into the globe graph; settle the generated-projection amendment described above before implementation |
 | `src/custom/hub/router.test.mjs` | Route/real-application rendering coverage, with an admitted-file raw-import test adapter |
 | `src/custom/globe/feedStrip.test.mjs` | Preserve existing metadata API contracts while testing the canonical-registry projection |
 | `scripts/qa-custom-hub.mjs` | Add bounded Library navigation/search/handoff checks and evidence of zero Library-originated provider calls |
 | `AGENTS.md`, `CUSTOMIZATION.md`, `STATUS.md`, `SETUP.md` | Approved scope, source provenance, authoring/check commands, acceptance and update procedures |
 
 
-## New files to create after approval
+## Approved new-file inventory — implementation remains gated
 
 ```text
 content/sources.json
@@ -143,7 +156,7 @@ The explicit `library.json` manifest supplies stable IDs/slugs, content kind/cat
 
 Initial upstream text admission is limited to selected sections of `README.md`, `docs/CURRENT-STATE.md`, `DATA_SOURCES.md`, `SECURITY.md`, `CONTRIBUTING.md`, `TESTING.md`, and `THIRD_PARTY_NOTICES.md`. Record the selected headings/hashes in the manifest and fail validation if an admitted section disappears or changes without review. Treat current authoritative runtime/source/security docs as primary; preserve historical labels on historical notes. Do not crawl all repository Markdown. MCP integration remains Phase 3; 2a can link its setup documentation without implementing an integration.
 
-Use explicit static Vite `?raw` imports/lazy imports in `upstreamDocuments.ts` for the admitted paths. Filter admitted README sections before exposing them as Library pages. Markdown is bundled locally at build time and rendered by React Markdown in the browser; this is not a promise of prerendered HTML. A pure validator called from the existing custom config checks manifests and paths; **no new Vite content plugin** is needed. Keep the upstream test requiring appended plugins to be Tailwind plugins unchanged. The project-owned SSR adapter resolves only the admitted `.md?raw` imports, with repository containment checks; use the real production corpus in integration tests.
+Use fixed, explicitly admitted Vite raw-text globs in `upstreamDocuments.ts` and the Library catalog for Markdown, JSON manifests and schemas. A deleted admitted file must become a missing catalog entry handled by the Library loader, rather than an unresolved direct import. Parse JSON, compile/validate schemas, check manifest references and select admitted sections inside caught Library loading code; never import editable JSON through the JSON compiler. Filter admitted README sections before exposing Library pages. Markdown is bundled locally at build time and rendered by React Markdown in the browser; this does not promise prerendered HTML. Keep the Library loader behind its route boundary, with caught asynchronous and rendering failures and HMR handling that replaces content with either valid data or the Library error state. The project-owned SSR adapter resolves only these admitted raw-text inputs with repository containment checks and uses the real production corpus in integration tests.
 
 The nine original Knowledge articles cover the topics in their filenames. The two Spatial Intelligence pieces must first be read from their primary pages, then summarized in original language with author/title/date/link and a clear distinction between article claims and features verified in this checkout:
 
@@ -188,23 +201,23 @@ Boost titles/headings/tags over body text; support type/category/source filters,
 
 ## Four implementation milestones and acceptance
 
-1. **Registry and directory.** Review/pin dependencies; add schema, canonical source/product/value bindings, validator, compatibility adapter, directory, and old-route preservation. Prove complete layer coverage, unknown states, safe setup references, and no acquisition. Show the two upstream package diffs and dependency footprint in `PHASE-2A-DEPENDENCIES.md`.
-2. **Knowledge Center and search.** Admit the bounded upstream corpus, author original guides/summaries, add safe rendering/links, and build the local index. Verify real-corpus results, stable headings, provenance, changed-input rejection, route/focus behavior, and lazy graph isolation.
-3. **Cases.** Author all six original pages, label interactivity and limits, verify share-link restored scope, and retain required notices. No new dataset or media asset is acquired. Missing exact replay support yields an honest partial/view-only action.
-4. **Validation and review.** Run clean `npm ci`, `npm run check:library`, hub typecheck, `GEV_REQUIRE_ALLOCATION_GATE=1 npm test`, boundaries, doctor, and both production builds on supported Node. Run the extended `qa:hub` only through a permitted browser path; record actual outcomes and any explicit waiver. Review the final upstream diff and ledger, then stop for acceptance.
+**Prerequisite stop:** the rehearsal report/adoption decision and post-pin plan revalidation above must be complete. Resolve any file-list, allowlist, or dependency-role amendments before milestone 1. This planning checkpoint does not start implementation.
 
-Keep each milestone buildable: manifests and static imports reference only content files already present in that milestone, not articles scheduled for a later commit. Admit additional files as their content and evidence are reviewed.
+1. **Registry and directory.** Review exact dependency versions, licenses, compatibility, install scripts, audit findings, and bundle costs before adoption/installation; record the review in `PHASE-2A-DEPENDENCIES.md`. Add schemas, canonical source/product/value bindings, explicit validator, globe-safe metadata adapter, directory, and old-route compatibility. Verify invalid content fails checks/builds while dev and the globe remain usable. Show the two original-upstream diffs, then commit this buildable milestone.
+2. **Knowledge Center.** Admit the reviewed upstream doc sections and author the nine original guides/summaries. Check rendering/links, real-corpus results, stable headings, provenance, changed-input rejection, route/focus behavior, and lazy graph isolation. Measure corpus/search/bundle costs. **Stop before committing:** list every new article with its local path and primary references. Explicitly identify the two Spatial Intelligence summaries and the original URLs above for the user's comparison. Wait for editorial review, resolve requested changes, rerun affected checks, and commit only after that review is resolved.
+3. **Cases.** Author all six original pages; label interactivity limits, verify each share-link's actual restored scope, and preserve notices. No new dataset or media asset is acquired; missing exact replay support yields an honest partial/view-only action. Run milestone checks, then **stop before committing:** list all six pages with local paths, evidence links, limitations, and globe CTA scope. Wait for user editorial review, resolve requested changes, rerun affected checks, and commit only after that review is resolved.
+4. **Validation and acceptance review.** Run clean `npm ci`, `npm run check:library`, hub typecheck, `GEV_REQUIRE_ALLOCATION_GATE=1 npm test`, boundaries, doctor, and both production builds on supported Node. Preserve the established browser boundary: the CLI `qa:hub` harness remains user-run; use only permitted browser tooling for agent checks. Record actual outcomes and any explicit new waiver. Review the final upstream diff and customization ledger, commit the validation checkpoint, then stop for user acceptance.
 
-Focused tests must exercise schema failures and references; all existing layers and mixed value labels; both projections changing from one registry fixture; unsafe links/HTML and path/symlink escapes; retained notices and no automatic media; real-corpus/Unicode/empty/long search queries; result anchors and deterministic ranking; unknown coverage/health; full existing handoffs; and zero provider/API calls originating from Library. Provider fixtures are tests, never displayed as live content. Browser acceptance includes dark/light, desktop/mobile, keyboard access, readable tables, empty states, and every published case CTA. No redundant documentation-only tests are needed for this plan itself.
+Keep each milestone buildable: manifests and raw-content admission lists reference only content already present in that milestone, not articles scheduled for a later commit. Admit additional files as content and evidence are reviewed. The milestone 2/3 editorial stops are pre-commit gates, not reviews deferred until the end of the phase.
+
+Focused tests must exercise schema failures and references; all existing layers and mixed value labels; both projections changing from one registry fixture; unsafe links/HTML and path/symlink escapes; retained notices and no automatic media; real-corpus/Unicode/empty/long search queries; result anchors and deterministic ranking; unknown coverage/health; full existing handoffs; and zero provider/API calls originating in Library. Negative validation tests must include malformed JSON, invalid schema definitions and schema fields, missing admitted files or sections, rejected paths, dangling references, and stale generated metadata. Each invalid case must fail `check:library` and both production build commands. During development the same cases must leave the server running, Dashboard and Settings usable, and the globe usable with its last validated metadata; only Library displays an accessible error state. Test invalid edits and file deletion while the server is already running, then restore the inputs and verify Library recovery through HMR/reload without uncaught errors or a server-wide Vite error overlay. Provider fixtures are tests, never displayed as live content. Browser acceptance includes dark/light, desktop/mobile, keyboard access, readable tables, empty/error states, and every published case CTA. No redundant documentation-only tests are needed for this plan itself.
 
 Phase 2a is accepted only when the registry covers every current layer, the directory and compatibility APIs share it, admitted upstream docs and original articles render with provenance, all six honest case pages are present, Library search works across the published corpus, required checks are recorded, and the user accepts the phase. Unverified checks remain explicit gaps, never implied passes.
 
-## Upstream-sync rehearsal proposal — before Phase 2b
+## Upstream-sync rehearsal — prerequisite before Phase 2a
 
-Perform only after 2a ships, under a separately approved short execution plan. Create an isolated `codex/upstream-sync-rehearsal` branch/worktree from the accepted 2a SHA, leave the shipping branch untouched, and freeze a freshly verified upstream target SHA before merging. Current baseline remains `de2138e84c1778fd98a48b7c9fd0b9788c318946`.
+The user moved the rehearsal ahead of Phase 2a implementation. Its short execution plan is `docs/custom/UPSTREAM-SYNC-PLAN.md`; execution still requires approval. It starts from the reviewed shipping planning checkpoint in a separate `codex/upstream-sync-rehearsal` branch/worktree, preserving the authoritative pin until the user reviews the report and decides on adoption.
 
-Read-only research on October 20 found upstream main at `064d51f7be2675f1c69e16068e9c49d1a60144d1`: **72 commits and 151 changed files** beyond the pin. This snapshot must be rechecked when rehearsal is approved. The [pinned comparison](https://github.com/bilawalsidhu/gods-eye-view/compare/de2138e84c1778fd98a48b7c9fd0b9788c318946...064d51f7be2675f1c69e16068e9c49d1a60144d1) overlaps only `package.json` among our six upstream customizations; do not predict six textual conflicts. It removes an old panel-resize QA command and changes panel/StreetLevel behavior, satellite-cache freshness, camera sources/key requirements, and documentation. These require semantic review even where the merge is clean.
+The current pin is `de2138e84c1778fd98a48b7c9fd0b9788c318946`; read-only October 20 remote inspection confirmed candidate target `064d51f7be2675f1c69e16068e9c49d1a60144d1`. The prior comparison counted 72 commits and 151 changed files; refresh the inventory after the approved fetch. Freeze the reviewed target, inventory conflicts, review all six accepted Phase 1 customization boundaries, run the target's required gates, and produce `docs/custom/UPSTREAM-SYNC-REHEARSAL.md`. Incoming upstream changes and bounded manual repairs have separate limits in the execution plan. No new source is activated by the rehearsal.
 
-The rehearsal should merge that frozen target into the isolated branch, inventory actual conflicts, review the six customization boundaries and 2a source/doc hashes against new upstream facts, and run the new upstream-required gates plus hub typecheck, boundaries, doctor, both builds, Library validation and permitted browser checks. Any additional original-upstream repair path needs a reviewed allowlist amendment. Keep new provider use disabled pending its terms/configuration review.
-
-Record before/after SHAs, affected custom files, required registry/editorial revisions, test/browser results and unresolved issues in a future `docs/custom/UPSTREAM-SYNC-REHEARSAL.md`. Review that report and decide whether to adopt the update before planning 2b. Rehearsal does not advance the authoritative pin or merge into the shipping branch; adoption requires separate approval. If declined, retain its report and abandon the isolated branch without resetting shipping work. **No rehearsal branch, merge, rebase, pin advance, or Phase 2b plan is executed by this document.**
+**Stop for report review and a separate adoption decision.** Adoption is not implicit in rehearsal approval. After that decision, reverify this entire plan against the adopted or retained pin, including layer IDs, key IDs, coverage/source claims, admitted files/sections, provenance, dependencies, and the exact implementation inventory. List changes before milestone 1 and resolve any amendments, including the pending projection-file and Ajv-role review. Phase 2b receives no plan until 2a ships and is accepted. No rehearsal execution, pin advance, or Phase 2a implementation has occurred in this documentation checkpoint.
