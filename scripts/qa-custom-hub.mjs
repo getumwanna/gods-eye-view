@@ -199,7 +199,9 @@ try {
   await check('share form rejects external destinations and credential-shaped query fields', async () => {
     await route('#/dashboard', 'Dashboard');
     for (const rejected of ['https://example.invalid/#v=2&lat=0&lon=0&alt=100', `${origin}/?api_key=TEST_ONLY_NOT_A_KEY`]) {
+      checkpoint = 'replace-rejected-share-input';
       assert.equal(await replaceQaInput(page, '#globe-share-link', rejected), true);
+      checkpoint = 'reject-share-destination';
       await clickText('button', 'Open shared view');
       await page.waitForSelector('#share-error[role="alert"]');
       assert.equal(new URL(page.url()).pathname, '/hub/');

@@ -1,6 +1,6 @@
 # Phase 1 validation record
 
-Updated October 20, 2026, America/New_York. Phase 1 implementation is approved. All four milestones are implemented and checked; user acceptance remains pending a passing user-run QA rerun after the corrected, DOM-verified readiness predicate. Phase 2a planning is authorized separately; no Phase 2 implementation is authorized.
+Updated October 20, 2026, America/New_York. Phase 1 implementation is approved. All four milestones are implemented and checked; user acceptance remains pending a passing user-run QA rerun after the installed-Puppeteer input API correction. Phase 2a planning is authorized separately; no Phase 2 implementation is authorized.
 
 ## Authorization and historical baseline boundary
 
@@ -154,3 +154,17 @@ Verification:
 - A separate read-only audit of the remaining harness assertions against current markup/APIs found no further deterministic selector mismatch. Browser interaction, responsive layout, GPU initialization and credit visibility still require the actual user-run gate; this audit is not a declaration that all nine pass.
 
 **All three user results (7/9, 1/9, 0/9) remain recorded as failed. Await a fresh passing user-run `npm run qa:hub` receipt. Phase 1 is pending; Phase 2a remains planning only.**
+
+## Fourth user QA receipt — Puppeteer click option mismatch
+
+The latest user result is **6/9 passed**. Matching receipt: `.gev-logs/qa-custom-hub-2026-10-20T16-31-06-069Z.json`, timestamp `2026-10-20T16:31:06.070Z`. Startup is ready with document status 200, all failed-resource counters zero, and no unhandled page errors. The first five UI checks pass. Both share-input checks fail exact-value assertions; the dependent globe check is blocked. The negative check's stale `hub-route-heading` checkpoint did not mean navigation failed.
+
+**Confirmed cause:** the installed Puppeteer **25.10.0** mouse click implementation takes `count` and overwrites the lower-level `clickCount` from that value. The custom input helper supplied `{ clickCount: 3 }`, so the default `count: 1` produced one click. Backspace then removed one character instead of the previous complete URL. The first empty-field submission can work, while replacing the existing value fails. The official [MouseClickOptions reference](https://pptr.dev/api/puppeteer.mouseclickoptions) documents `count`; the installed implementation is in `node_modules/puppeteer-core/src/cdp/Input.ts`.
+
+Correction: `scripts/qa-custom-hub-input.mjs` now uses **`{ count: 3 }`**. Negative input replacement and destination rejection also get their own fixed checkpoints in the main harness. Exact-value and URL preservation assertions are retained. No product code or dependency changed.
+
+The earlier input test incorrectly assumed that passing `clickCount` meant three clicks. It is strengthened to use the **actual installed Puppeteer mouse and keyboard classes**, exported by the direct `puppeteer` dependency, with an in-memory transport. It checks the emitted click counts `[1, 2, 3]` and drives the selection model from those events. No browser, remote-debugging connection, or network transport is opened. This avoids teaching the stub the same wrong API assumption as the helper.
+
+Evidence: before the helper change, the strengthened input test reproduces the exact-value failure (`input-api-before-fix.log`). After the one-option correction, the focused QA diagnostics/input, real App readiness/rendering, and full-state handoff group passes **14/14**, zero failures (`input-api-after-fix.log`), on Node 24.22.0. Harness/helper syntax checks pass. Both logs are under `.gev-logs/phase1-2026-10-20/qa-review/`. An independent in-memory controlled-React/Input check also reproduced failure with the old option and exact DOM/state replacement with the corrected option. These are offline checks, not a full browser QA receipt.
+
+**All four user runs (7/9, 1/9, 0/9, 6/9) remain recorded as failed. Phase 1 awaits a fresh passing user-run `npm run qa:hub` result. Phase 2a remains planning only.**
