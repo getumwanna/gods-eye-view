@@ -65,7 +65,7 @@ Use the app for learning and exploration, never navigation, emergency response o
 
 ## Camera-pack adoption policy
 
-The user approved upstream `064d51f7` with **Hong Kong and Taiwan camera packs kept disabled** until separate terms review and explicit activation approval. The approved integration implements the persistent policy below in the separate integration worktree; shipping installation and user checks are tracked in `STATUS.md`. The rehearsal retains its launch flags until shipping verification is complete.
+The user approved upstream `064d51f7` with **Hong Kong and Taiwan camera packs kept disabled** until separate terms review and explicit activation approval. The approved integration carries the persistent policy below into shipping at upstream pin `064d51f7be2675f1c69e16068e9c49d1a60144d1`; user verification is tracked in `STATUS.md`. The rehearsal retains its launch flags until shipping verification is complete.
 
 The tracked `build/customProviderPolicy.js`, loaded by the project-owned root wrapper before provider setup, forces `CCTV_HK_ENABLED=0` and `CCTV_TAIWAN_ENABLED=0` on every root dev/secure/preview start, overriding shell/dotenv attempts to enable them. Other packs keep their existing settings. A reviewed source-contract guard stops startup if upstream changes invalidate the disable mechanism. Preserve this hook/check in future upstream updates. Direct launches using the upstream standalone config bypass the hook and are unsupported for shipping; MCP stdio uses the already-running protected server.
 

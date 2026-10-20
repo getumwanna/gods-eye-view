@@ -1,13 +1,13 @@
 # Frozen upstream-sync rehearsal report
 
-October 20, 2026. **User rehearsal reruns passed: `qa:hub` 9/9; synthetic `test:track --offline-imagery` 109 passed / 0 failed / 0 skipped. Adoption and the integration execution plan are approved. The isolated integration candidate implements the camera policy; shipping fast-forward and shipping/browser verification remain pending.** All earlier failed runs remain recorded. Phase 2a implementation has not started.
+October 20, 2026. **Rehearsal reruns passed: `qa:hub` 9/9; synthetic `test:track --offline-imagery` 109 passed / 0 failed / 0 skipped. Approved integration is installed in shipping at new pin `064d51f7be2675f1c69e16068e9c49d1a60144d1`. Shipping non-browser gates pass and localhost:4173 is running; user/browser/manual verification remains pending.** All earlier failed runs are retained. Phase 2a implementation has not started.
 
 ## Inputs, result, and isolation
 
 | Item | Recorded value |
 | --- | --- |
 | Shipping branch / clean starting HEAD | `codex/phase-1-foundation` / `7595ca34884e4f6a8159077b3d44a84e38ce0950` |
-| Initial shipping upstream pin | `de2138e84c1778fd98a48b7c9fd0b9788c318946`; approved integration candidate pin is `064d51f7be2675f1c69e16068e9c49d1a60144d1`, pending shipping fast-forward and verification |
+| Initial / adopted shipping upstream pin | Initial `de2138e84c1778fd98a48b7c9fd0b9788c318946`; adopted `064d51f7be2675f1c69e16068e9c49d1a60144d1` through the approved fast-forward; shipping user verification pending |
 | Approved/fetched upstream target | `064d51f7be2675f1c69e16068e9c49d1a60144d1` |
 | Isolated branch / worktree | `codex/upstream-sync-rehearsal` / `/Users/getumwanna/.codex/worktrees/upstream-sync-rehearsal/GEV` |
 | Initial tested code / merge checkpoint | `4477dd2154b216a2daf73cc696febb48b0e2f313` |
@@ -164,3 +164,31 @@ The passing reruns establish the bounded hub and synthetic tracking results abov
 After approved integration is verified, produce `docs/custom/PHASE-2A-REVERIFICATION.md` against shipping's new pin `064d51f7be2675f1c69e16068e9c49d1a60144d1`: exact layer IDs, key IDs and product-specific credentials, source/coverage claims, admitted doc files/sections and hashes, article/case facts, dependencies, and exact file paths. Present changes before milestone 1 and obtain amendment approvals. The two-file Phase 2a upstream allowlist and milestone 2/3 pre-commit editorial stops remain in force; Phase 2b planning stays deferred until 2a ships and is accepted.
 
 The pending Ajv review compares **(a)** server-side dev validation returning only normalized Library errors against **(b)** lazy hub Ajv and schemas. After candidate-version/license review, measure raw/gzip/Brotli Library chunk costs and initial hub/globe graph impact; compare HMR/recovery, missing/stale inputs, offline behavior, dependency category, server lifecycle, and plugin/allowlist constraints. Isolated measurement fixtures must not become production Library implementation or silently alter dependencies/file approvals. Neither approach is selected yet.
+
+## Shipping integration checkpoint — user verification pending
+
+The approved fast-forward installed code `fd136b60ce9421bd8636692232766a5f7d2226e3` on shipping `codex/phase-1-foundation` from clean HEAD `7595ca34884e4f6a8159077b3d44a84e38ce0950`; adopted upstream target `064d51f7be2675f1c69e16068e9c49d1a60144d1` is an ancestor. The approved plan is retained unchanged as the approval artifact; this checkpoint supersedes its original pre-approval wording. No repair beyond the approved integration file list and no extra original-upstream edit or dependency was required.
+
+Shipping Node 24.22.0/npm 11.19.1 evidence: `npm ci` passed (zero vulnerabilities); provider-policy CLI 6/6 independent offline scenarios; doctor before/after builds; hub typecheck; allocation-gated suite **8,176 passed / 0 failed / 1 platform skip**; import/package boundaries; formatting (1,449 scoped source files); root and panel builds all passed. The integration candidate's four code files also pass explicit Prettier checks. Existing large-chunk warnings remain. Actual shipping logs are retained at `/Users/getumwanna/Documents/GEV/.gev-logs/shipping-integration-2026-10-20/`; candidate and rehearsal logs stay in their worktrees.
+
+All fixture servers/builds completed before forced dependency pre-bundling and root server restart. Shipping listener PID 56935 is `[::1]:4173`; startup acknowledges Hong Kong OFF, Taiwan OFF, and reviewed contracts verified without temporary switch overrides. Credential presence check found zero configured environment/dotenv providers and no dotenv files; no Keychain launcher or credential values were used. Two HTTP-only passes verified 74 document/module/optimizer requests (all 200), with stable finalized `.vite-custom-hub` metadata (23 dependencies, 10 chunks). These do not establish rendered browser readiness, live-feed coverage, or FPS. An initial diagnostic probe percent-encoded an `@` in one optimizer filename and received 404; using Vite's actual unchanged URL passed, with no source repair.
+
+User shipping checks are pending. Run from the actual shipping checkout:
+
+```sh
+cd /Users/getumwanna/Documents/GEV
+source /Users/getumwanna/.nvm/nvm.sh
+nvm use 24.22.0
+QA_BASE_URL=http://localhost:4173 npm run qa:hub
+npm run test:track -- --url http://localhost:4173 --offline-imagery
+open 'http://localhost:4173/'
+```
+
+For the Street Level manual smoke:
+
+1. On default Esri, enable **STREET LEVEL** and expand its panel. With Mapillary unconfigured, expect **KEY REQUIRED** with token guidance. Google Street View is absent on Esri.
+2. Try existing keyless **KARTAVIEW** coverage below about 6 km, or **PANORAMAX** below 60 km in France/Belgium. Open an available coverage line/photo; report missing coverage or a provider error as blocked rather than passed.
+3. Verify provider caption/license and globe credits. **EXPAND → SHRINK** returns to the same panel/photo. **EXPAND → Escape** exits expansion while keeping the photo/panel open. **×** closes the viewer.
+4. At a narrow phone-like window width, verify reachable controls/credits and no horizontal page overflow. Do not configure a new key for these checks.
+
+The existing rehearsal PID 55130 on `[::1]:4174` remains running until shipping user checks resolve. Then stop only its verified listener, keep all rehearsal logs/worktree, and produce the post-pin Phase 2a reverification and measured Ajv (a)/(b) comparison before milestone 1. No Phase 2a implementation, Ajv design selection, or Phase 2b work is included in this checkpoint.

@@ -6,8 +6,8 @@
 - Authorized scope: Phase 1 accepted; Phase 2a conditionally approved. Shipping integration execution is approved under `docs/custom/UPSTREAM-INTEGRATION-PLAN.md`: separate integration worktree, tracked camera policy, fast-forward to reviewed target, and shipping gates. Keep 4174 until user shipping checks resolve, then retain logs and produce the Phase 2a post-pin/Ajv review before milestone 1. No key configuration or Phase 2b work is authorized.
 - Upstream: https://github.com/bilawalsidhu/gods-eye-view
 - User-owned fork: https://github.com/getumwanna/gods-eye-view
-- Verified upstream pin: `de2138e84c1778fd98a48b7c9fd0b9788c318946`.
-- Upstream commit subject: `Merge pull request #1233 from yaka0007/fix/tarktee-datex-catalog-hardening`.
+- Verified upstream pin: `064d51f7be2675f1c69e16068e9c49d1a60144d1` (approved shipping integration; original Phase 0 pin retained in historical checkpoints).
+- Upstream commit subject: `Merge pull request #1237 from 419vive/feat/taiwan-freeway-cctv-pack`.
 - Manifest version at this pin: `0.2.1`. The commit, rather than a floating release name, is the baseline authority.
 - Local checkout: `/Users/getumwanna/Documents/GEV`.
 - Historical Phase 0 milestone branch: `hub/phase-0-audit`.
@@ -170,3 +170,12 @@ The integration worktree `/Users/getumwanna/.codex/worktrees/upstream-integratio
 Exact new files: `build/customProviderPolicy.js`, `scripts/check-custom-provider-policy.mjs`, `src/custom/server/providerPolicy.test.mjs`. Existing project-owned edit: `build/customHub.js`, plus `SETUP.md`, `AGENTS.md`, this ledger, `STATUS.md`, `docs/custom/UPSTREAM-SYNC-REHEARSAL.md`, and `docs/custom/PHASE-2A-PLAN.md`. No additional original-upstream path, dependency, or top-level Vite plugin changed. Both reviewed upstream contract files are hashed, not edited. Policy forces only HK/Taiwan off, including hostile shell/dotenv values across root launches; future contract drift blocks startup for review.
 
 Candidate evidence: `npm ci` passed; provider CLI six scenarios passed; six policy unit tests passed; combined configuration/QA-harness/policy group 21 passed, zero failed/skipped. Logs: `.gev-logs/shipping-integration.ZEjuM7/`. All acquisition in these checks was mocked, with zero HK/Taiwan requests/rows and one Austin control row per scenario. Full checks in the actual shipping checkout and user browser/manual checks remain pending. The two requested key-guide notes are included; no key was requested or configured.
+
+
+### Shipping integration installed — user verification pending
+
+Shipping `codex/phase-1-foundation` fast-forwarded cleanly from `7595ca34884e4f6a8159077b3d44a84e38ce0950` to code checkpoint `fd136b60ce9421bd8636692232766a5f7d2226e3`; target `064d51f7be2675f1c69e16068e9c49d1a60144d1` is an ancestor. The integration worktree and rehearsal worktree remain intact. The approved execution plan is preserved as the approval artifact; this newer checkpoint supersedes its pre-approval status wording. No extra source repair or dependency was needed.
+
+Actual shipping checks under Node 24.22.0/npm 11.19.1: `npm ci` (zero vulnerabilities), six-scenario policy CLI, doctor before/after builds, hub typecheck, allocation-gated unit suite **8,176 passed / 0 failed / 1 platform skip**, import/package boundaries, formatting (1,449 scoped source files), and root/panel builds all passed. Explicit Prettier checks also passed for the four integration code files. Existing large-chunk build warnings remain. Logs: `/Users/getumwanna/Documents/GEV/.gev-logs/shipping-integration-2026-10-20/`; candidate logs remain in the integration worktree.
+
+After all checks, dependencies were pre-bundled and shipping restarted through the root config, without temporary HK/Taiwan shell overrides or Keychain loading. Credential presence inspection found zero configured environment/dotenv providers; no values were logged. Listener PID 56935 is `[::1]:4173`; startup acknowledges both camera packs OFF and verified contracts. Two HTTP-only passes returned 200 for 74 document/module/optimized-asset requests with stable finalized dedicated optimizer metadata (23 dependencies/10 chunks). These are not rendered-browser passes. User shipping hub/tracking/Street Level results are pending; 4174 PID 55130 stays up until those resolve. Phase 2a reverification/Ajv comparison follows verification and precedes milestone 1; no Library implementation or dependency change occurred.
