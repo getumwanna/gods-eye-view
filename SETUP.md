@@ -29,6 +29,8 @@ npm run build:panel
 npm run preview -- --host localhost --port 4173 --strictPort
 ```
 
+After `npm ci` or any dependency change, stop and restart the development server before browser QA. A server left running across installation can serve HTTP 504 “Outdated Optimize Dep” for optimized modules even while `/hub/` returns 200, leaving the app blank. Restart with the same explicit localhost command above; do not start a second listener or delete caches as the first response. The QA harness checks actual hub rendering first and reports safe startup/resource failure codes. A blocked startup remains a failed gate.
+
 Stop an existing listener before running preview on its port. A successful static build is not proof that every live provider works. In preview, key configuration may be **Unknown** and POWER UP may be unavailable; the setup guides remain accessible.
 
 ## Branding and appearance

@@ -5,6 +5,7 @@
  * Start the existing server, then run:
  *   npm run qa:hub
  *   QA_BASE_URL=http://127.0.0.1:4173 QA_HEADFUL=1 npm run qa:hub
+ * Restart the existing server after npm ci or dependency changes.
  *
  * Requires installed Puppeteer/Chrome. Uses a fresh isolated browser context.
  * Does not start a server, configure keys, open key forms or enable layers.
@@ -23,6 +24,7 @@ import puppeteer from 'puppeteer';
 import { chromeExecutablePath } from './qa-chrome.mjs';
 import { branding } from '../src/custom/shared/branding.js';
 import { replaceQaInput } from './qa-custom-hub-input.mjs';
+import { classifyQaResponse, qaFailureCode, scriptErrorResult } from './qa-custom-hub-diagnostics.mjs';
 
 const argument = process.argv.find(value => value.startsWith('--base-url='));
 const supplied = argument?.slice('--base-url='.length) || process.env.QA_BASE_URL || 'http://localhost:4173';
@@ -38,6 +40,8 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const timeout = 90_000;
 const assertions = [];
 const requests = { blockedAcquisition: 0, setupReads: 0 };
+const resources = { failedLocalDocuments: 0, failedLocalModules: 0, failedOptimizedDependencies: 0, outdatedOptimizedDependencies: 0 };
+const hubStartup = { ready: false, documentStatus: null, checkpoint: 'browser-setup', failureCode: null };
 let browser;
 let context;
 let page;
@@ -55,20 +59,26 @@ fixture.hash = new URLSearchParams({
 
 function record(name, passed, detail = {}) {
   assertions.push({ name, passed: Boolean(passed), ...detail });
-  const suffix = detail.blockedBy ? ` (blocked by ${detail.blockedBy})`
-    : detail.checkpoint ? ` (checkpoint: ${detail.checkpoint})` : '';
+  const details = [detail.blockedBy && `blocked by ${detail.blockedBy}`, detail.checkpoint && `checkpoint: ${detail.checkpoint}`, detail.failureCode && `reason: ${detail.failureCode}`].filter(Boolean);
+  const suffix = details.length ? ` (${details.join('; ')})` : '';
   console.log(`[${passed ? 'PASS' : 'FAIL'}] ${name}${suffix}`);
   if (!passed) failed = true;
 }
 
 async function check(name, operation) {
+  if (!hubStartup.ready) {
+    record(name, false, { blockedBy: 'hub-startup', checkpoint: hubStartup.checkpoint, failureCode: hubStartup.failureCode });
+    return;
+  }
   checkpoint = null;
   try { await operation(); record(name, true); }
-  catch { record(name, false, checkpoint ? { checkpoint } : {}); }
+  catch (error) { record(name, false, { ...(checkpoint ? { checkpoint } : {}), failureCode: qaFailureCode(error, resources) }); }
 }
 
 async function route(hash, heading) {
+  checkpoint = 'hub-route-document';
   await page.goto(`${origin}/hub/${hash}`, { waitUntil: 'domcontentloaded', timeout });
+  checkpoint = 'hub-route-heading';
   await page.waitForFunction(expected => document.querySelector('h1')?.textContent === expected, { timeout: 15_000 }, heading);
 }
 
@@ -106,6 +116,30 @@ try {
   });
   page.on('pageerror', () => { pageErrors += 1; });
   page.on('dialog', dialog => { void dialog.dismiss(); });
+  page.on('response', response => {
+    const failure = classifyQaResponse({ url: response.url(), origin, status: response.status(), statusText: response.statusText(), resourceType: response.request().resourceType() });
+    if (failure?.kind === 'document') resources.failedLocalDocuments += 1;
+    if (failure?.kind === 'module-or-style') resources.failedLocalModules += 1;
+    if (failure?.kind === 'optimized-dependency') resources.failedOptimizedDependencies += 1;
+    if (failure?.outdated) resources.outdatedOptimizedDependencies += 1;
+  });
+
+  // Fail once at startup, then mark dependent checks blocked instead of waiting
+  // through every route on a blank page. No-error counts require a rendered app.
+  try {
+    checkpoint = 'hub-document';
+    const response = await page.goto(`${origin}/hub/#/dashboard`, { waitUntil: 'domcontentloaded', timeout });
+    hubStartup.documentStatus = response?.status() ?? null;
+    assert.ok(response && (response.ok() || response.status() === 304));
+    checkpoint = 'hub-render';
+    await page.waitForFunction(() => document.querySelector('main#main-content h1')?.textContent === 'Dashboard'
+      && document.querySelector('nav[aria-label="Main navigation"]') && document.querySelector('#globe-share-link'), { timeout: 30_000 });
+    hubStartup.ready = true;
+    hubStartup.checkpoint = 'hub-ready';
+  } catch (error) {
+    hubStartup.checkpoint = checkpoint;
+    hubStartup.failureCode = qaFailureCode(error, resources);
+  }
 
   await check('fixed hub routes and honest phase boundaries', async () => {
     await route('#/dashboard', 'Dashboard');
@@ -202,7 +236,7 @@ try {
   });
 
   if (!globeReady) {
-    record('globe branding, passive status disclosure, setup guidance and credits survive', false, { blockedBy: 'globe-readiness' });
+    record('globe branding, passive status disclosure, setup guidance and credits survive', false, { blockedBy: hubStartup.ready ? 'globe-readiness' : 'hub-startup' });
   } else {
     await check('globe branding, passive status disclosure, setup guidance and credits survive', async () => {
       checkpoint = 'globe-branding';
@@ -234,16 +268,17 @@ try {
     });
   }
 
-  record('no unhandled browser JavaScript errors during bounded UI checks', pageErrors === 0);
-} catch {
-  record('browser harness setup or execution completed', false);
+  const errorsResult = scriptErrorResult(hubStartup.ready, pageErrors);
+  record('no unhandled browser JavaScript errors during bounded UI checks', errorsResult.passed, errorsResult.blockedBy ? { blockedBy: errorsResult.blockedBy } : {});
+} catch (error) {
+  record('browser harness setup or execution completed', false, { failureCode: qaFailureCode(error, resources) });
 } finally {
   await context?.close().catch(() => {});
   await browser?.close().catch(() => {});
   const directory = path.join(root, '.gev-logs');
   await mkdir(directory, { recursive: true });
   const stamp = new Date().toISOString().replace(/[:.]/g, '-');
-  const evidence = { timestamp: new Date().toISOString(), origin, kind: 'Phase 1 UI regression; acquisition restricted; not a live-feed or FPS baseline', fixture: 'Synthetic URL state only; all layers disabled; no synthetic observation payloads', assertions, requests, pageErrorCount: pageErrors, passed: !failed };
+  const evidence = { timestamp: new Date().toISOString(), origin, kind: 'Phase 1 UI regression; acquisition restricted; not a live-feed or FPS baseline', fixture: 'Synthetic URL state only; all layers disabled; no synthetic observation payloads', assertions, requests, resources, hubStartup, pageErrorCount: pageErrors, passed: !failed };
   await writeFile(path.join(directory, `qa-custom-hub-${stamp}.json`), `${JSON.stringify(evidence, null, 2)}\n`);
   console.log(`Phase 1 UI checks: ${assertions.filter(item => item.passed).length}/${assertions.length} passed. Assertion-only receipt saved under .gev-logs/.`);
   if (failed) process.exitCode = 1;

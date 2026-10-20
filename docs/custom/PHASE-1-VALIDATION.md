@@ -1,6 +1,6 @@
 # Phase 1 validation record
 
-Updated October 20, 2026, America/New_York. Phase 1 implementation is approved. All four milestones are implemented and checked; user acceptance remains pending a passing user-run QA rerun after the harness correction. Phase 2a planning is authorized separately; no Phase 2 implementation is authorized.
+Updated October 20, 2026, America/New_York. Phase 1 implementation is approved. All four milestones are implemented and checked; user acceptance remains pending a passing user-run QA rerun after the server startup recovery and harness corrections. Phase 2a planning is authorized separately; no Phase 2 implementation is authorized.
 
 ## Authorization and historical baseline boundary
 
@@ -117,3 +117,23 @@ Correction is confined to custom QA code:
 Verification on Node 24.22.0: both modified/new harness modules pass `node --check`; the QA-input, hub router/render, and full-state handoff regression group passes **11/11**, zero failures. Local evidence: `.gev-logs/phase1-2026-10-20/qa-review/focused.log`. Product code, dependencies, acquisition rules, and the six-file upstream intersection did not change. The prior clean-install/typecheck/full-suite/build receipts remain historical results for unchanged product code; they were not rerun or relabeled as browser verification.
 
 **Awaiting the user's fresh `npm run qa:hub` output. Neither failed browser check is marked passed. Phase 1 is not accepted; Phase 2a remains planning only.**
+
+## Second user QA receipt — stale Vite dependency startup failure
+
+The user supplied a second `npm run qa:hub` output reporting **1/9 passed**. The matching receipt is `.gev-logs/qa-custom-hub-2026-10-20T16-16-18-120Z.json`, timestamp `2026-10-20T16:16:18.121Z`. Every hub-dependent check failed before the positive input helper was reached; the globe presentation check was blocked by readiness. The receipt again records zero setup reads, zero blocked acquisition requests, and zero page errors. The reported JavaScript-error pass only counted exceptions; it did not establish that the application ran.
+
+**Confirmed cause:** the original long-running Vite process retained stale optimizer state after dependency installation. A read-only traversal of 36 local hub modules found one failed asset: the optimized `tailwind-merge` module returned **HTTP 504, “Outdated Optimize Dep”**. The other optimized modules used a different cache version. The optimizer metadata file was absent from disk. Hub HTML and its entry module returned 200, but that failed dependency prevented React startup. The permitted original in-app browser path also showed a blank hub after reload. This cause is separate from the prior harness input-state defect.
+
+Recovery: stopped only the verified GEV Vite process and restarted with supported Node 24.22.0 and `HOST=localhost PORT=4173 npm run dev -- --strictPort`. No dependency/cache deletion, credential configuration, Keychain launcher, host-gate change, or external exposure was used. No local `.env` ladder files were present; the checked inherited provider variables were unset. The new listener is only `[::1]:4173`. This operational check does not manufacture the waived Phase 0 baseline.
+
+Post-restart evidence:
+
+- All **36** local hub modules return HTTP 200; optimized dependencies use one consistent cache version, including `tailwind-merge`.
+- The permitted in-app browser rendered Dashboard. Submitting the existing synthetic all-layers-off fixture reached the exact initial full v2 URL, then GEV performed its normal URL normalization. The globe rendered with custom branding, the no-active-layers disclosure, OFF layer controls, and visible Cesium/data credits. Returned to Dashboard afterward. These observations are targeted browser recovery checks, not execution of `qa:hub` or a full replacement for its nine assertions.
+- Local screenshot: `qa-artifacts/phase-1/hub-after-optimizer-restart.png` (ignored QA evidence, not an application asset).
+
+Harness improvements: new `scripts/qa-custom-hub-diagnostics.mjs` classifies failed local document/module/optimized-dependency responses into fixed counters/codes. The main harness verifies successful document delivery **and actual hub rendering** before dependent checks; startup failures block those checks immediately. A zero exception count cannot pass on an unrendered app. Receipts retain safe checkpoints, fixed failure categories, status/count data, and readiness state; they do not retain response bodies, raw errors, request URLs, console content, or credentials. Acquisition restrictions remain unchanged. `SETUP.md` now requires restarting the dev server after dependency changes.
+
+Verification: harness/diagnostics syntax checks pass; the focused QA-input/diagnostics, hub router/render, and full-state handoff group passes **13/13**, zero failures, on Node 24.22.0. Evidence: `.gev-logs/phase1-2026-10-20/qa-review/startup-focused.log`. Product code, dependencies, and original-upstream files are unchanged by this recovery. The earlier full-suite/build/install receipts remain historical results, not newly repeated checks.
+
+**Phase 1 still awaits a passing user-run `npm run qa:hub` receipt after this recovery. Both reported failed runs remain recorded as failed. No Phase 2 implementation is authorized.**

@@ -3,6 +3,25 @@ import assert from 'node:assert/strict';
 import { runInNewContext } from 'node:vm';
 import { replaceQaInput } from '../../../scripts/qa-custom-hub-input.mjs';
 import { validateGlobeLink } from '../shared/shareHandoff.js';
+import { classifyQaResponse, qaFailureCode, scriptErrorResult } from '../../../scripts/qa-custom-hub-diagnostics.mjs';
+
+test('a failed Vite dependency is diagnosed without copying its URL or response text', () => {
+  const response = { url: 'http://localhost:4173/node_modules/.vite/deps/tailwind-merge.js?v=TEST_ONLY', origin: 'http://localhost:4173', status: 504, statusText: 'Outdated Optimize Dep', resourceType: 'script' };
+  const failure = classifyQaResponse(response);
+  assert.deepEqual(failure, { kind: 'optimized-dependency', status: 504, outdated: true });
+  assert.equal(qaFailureCode(new Error('TEST_ONLY_DO_NOT_COPY'), { outdatedOptimizedDependencies: 1 }), 'outdated-optimized-dependency');
+  assert.equal(JSON.stringify(failure).includes('TEST_ONLY'), false);
+  for (const url of ['http://localhost:4173/api/setup/status', 'http://localhost:4173/mcp', 'https://provider.example/module.js']) {
+    assert.equal(classifyQaResponse({ ...response, url }), null);
+  }
+  assert.equal(classifyQaResponse({ ...response, status: 200 }), null);
+});
+
+test('zero browser exceptions cannot pass when the hub never rendered', () => {
+  assert.deepEqual(scriptErrorResult(false, 0), { passed: false, blockedBy: 'hub-startup' });
+  assert.deepEqual(scriptErrorResult(true, 0), { passed: true });
+  assert.deepEqual(scriptErrorResult(true, 1), { passed: false });
+});
 
 test('positive handoff replaces the rejected input retained by same-document navigation', async () => {
   const origin = 'http://localhost:4173';
