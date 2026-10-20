@@ -550,3 +550,20 @@ The user requires a normal-HMR shipping tracking pass before implementation. Roo
 The interrupted 88-pass run ended in context destruction at `scripts/track-regression.mjs:3231` during `page.evaluate`, with no planned navigation there. Preserved normal-mode logs show 15 source reload messages, including three at 15:33:10 corresponding to metadata-change timestamps despite unchanged mtimes/content. This makes a dev-server reload interruption the leading explanation. The external metadata writer and exact browser navigation were not recorded, so a conclusive causal claim would exceed the evidence. Normal-mode rerun logs will be retained in `.gev-logs/normal-hmr-2026-10-20.3KpYkt/` and correlated if it fails.
 
 Once normal tracking passes, milestone 1 onward is authorized under the accepted inventory and gates. If it fails, diagnose first. If Library HMR containment later fails its acceptance tests, stop and report; do not weaken it, turn off HMR, disable global overlays or move validation into dev startup to obtain a pass. All other scope/rights/security/editorial boundaries remain.
+
+## Normal mode restored; user-run prerequisite commands
+
+Standard root `HOST=localhost PORT=4173 npm run dev -- --strictPort` is running on `[::1]:4173`, PID 78207. The same-mode resolved configuration has `server.hmr:true` and both camera packs OFF. 76 HTTP-only requests pass with stable finalized metadata; 4174 remains stopped. Logs/configuration/check result are retained under `.gev-logs/normal-hmr-2026-10-20.3KpYkt/`. No product or harness code was changed and no browser harness was run by the agent. All documentation work is complete before handing off the rerun.
+
+Run from shipping; `mktemp` keeps each attempt in a separate retained log:
+
+```sh
+cd /Users/getumwanna/Documents/GEV
+source /Users/getumwanna/.nvm/nvm.sh
+nvm use 24.22.0
+gev_track_log=$(mktemp .gev-logs/normal-hmr-2026-10-20.3KpYkt/test-track.XXXXXX)
+set -o pipefail
+npm run test:track -- --url http://localhost:4173 --offline-imagery 2>&1 | tee "$gev_track_log"
+```
+
+Await the full final tracking summary. If it fails, correlate this log and the normal server log before starting milestone 1. If it passes, the user's conditional implementation approval applies; all 63 paths/two-upstream-file limits, strict validation/HMR containment requirements and milestone 2/3 editorial stops remain.
