@@ -2,11 +2,11 @@
 
 ## Scope and authorization
 
-The user requested a local hub that wraps and extends God's Eye View. The approved work is **Phase 0 only**: fork/pin/install, unmodified runtime checks, baseline tests, and the written gap analysis. The approval does not authorize Phase 1 implementation.
+The user requested a local hub that wraps and extends God's Eye View. The user has reviewed and approved the Phase 0 audit. The currently authorized next work is **the Phase 1 file-level plan and visual 21st.dev shortlist only**. Phase 1 implementation, dependency installation, and component-code retrieval remain unapproved.
 
 At session start read `CUSTOMIZATION.md`, `STATUS.md`, and `docs/custom/PHASE-0-AUDIT.md`; inspect HEAD, branch, status, and diff. Read the current upstream `docs/CURRENT-STATE.md`, `DATA_SOURCES.md`, `SECURITY.md`, `CONTRIBUTING.md`, and `TESTING.md` for the feature being considered.
 
-Before each new phase, present a short plan listing files to create/change and wait for explicit approval. Phase 0 gap approval and any unmet acceptance criteria must be addressed before Phase 1. Stop at every phase gate. A documentation checkpoint is not evidence that a phase has been accepted.
+Before each new phase, present a short plan listing files to create/change and wait for explicit approval. The Phase 0 gap analysis is approved; the user owns the remaining tracking, manual layer, and FPS checks and will paste results into STATUS.md. No FPS waiver has been recorded from the bracketed alternative in the approval message. Address those results or an explicit waiver before implementation. Stop at every phase gate. A documentation checkpoint or visual component choice is not implementation approval.
 
 ## Architecture
 
@@ -41,7 +41,8 @@ Do not use `scripts/dev-fresh.sh` for a deliberately keyless check: the macOS la
 - No fabricated live data or unavailable-as-zero widgets. Test fixtures must stay clearly test-only.
 - Every future displayed value needs Live, Refreshed, Simulated, Estimated, or Static, plus coverage, source, timestamp, and separate health/freshness state. Mixed layers need per-value labels.
 - A source-present feature is not proof of a working live feed. Separate source audit, automated fixtures, actual live observations, user reports, and missing verification.
-- Persistent secret keys stay server-side and outside logs, URLs, version control, and exports. Browser-designated public tokens and ephemeral AI credentials require the exceptions recorded as open questions in the audit; leave them unconfigured until resolved.
+- Persistent secret keys stay server-side and outside logs, URLs, version control, and exports. The user expressly allows provider-designated public client tokens, including Mapillary, and ephemeral AI session credentials in the browser, with appropriate restrictions. This decision does not itself authorize configuring credentials or making paid calls.
+- The user accepted per-value observation kinds with separate feed health; one acquisition owner per source and passive summaries to be designed in Phase 2; separate globe-loaded/cached satellite counts; aircraft/military/satellite tracked bookmarks and vessel view-only bookmarks; unselected hosting until Phase 4; local personal use only, with terms verification before new sources, recording, or hosting.
 - Bind localhost only. Do not weaken Host/origin/forwarding-header gates, expose the server, or deploy without separate approval and the Phase 4 audit.
 - Preserve all map/provider credits and the operational-use disclaimer. Code's MIT license does not license every dataset/media asset. Check each source and recorder retention right separately.
 - No named-person search, face recognition, plate recognition, or individual tracking. ALPR means mapped locations/tags only.
@@ -52,4 +53,4 @@ Do not use `scripts/dev-fresh.sh` for a deliberately keyless check: the macOS la
 
 During Phase 0, automatic browser approval rejected access to `http://localhost:4173/`. Do not work around that denial through another browser, raw CDP, a browser-driving shell script, or indirect page execution. The user separately confirmed that the globe renders. Automated browser gates, individual layer load checks, and GPU/FPS measurements remain unverified. Reassess permitted tooling with the user before attempting those checks in a later session.
 
-Do not mark Phase 0 accepted until the user reviews the gap analysis and any remaining acceptance gaps are explicitly resolved or waived. `STATUS.md` is the authoritative local work list.
+Phase 0 audit approval is recorded; outstanding verification is not a passing result or a waiver. `STATUS.md` is the authoritative local work list. See `docs/custom/PHASE-1-PLAN.md` for the proposed six-file upstream edit allowlist and selection/implementation gates.

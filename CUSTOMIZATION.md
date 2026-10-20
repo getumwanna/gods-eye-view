@@ -3,7 +3,7 @@
 ## Provenance
 
 - Request: Geospatial Intelligence Hub, v2, October 19, 2026.
-- Authorized scope: Phase 0 installation, baseline, and written audit only. The user approved the proposed file-level plan in this chat.
+- Authorized scope: Phase 0 installation/baseline/audit completed and audit approved; Phase 1 planning and visual shortlist only. Implementation is not authorized yet.
 - Upstream: https://github.com/bilawalsidhu/gods-eye-view
 - User-owned fork: https://github.com/getumwanna/gods-eye-view
 - Verified upstream pin: `de2138e84c1778fd98a48b7c9fd0b9788c318946`.
@@ -18,7 +18,7 @@
 
 ## Upstream files touched
 
-**None.** Phase 0 adds documentation only. Application code, lockfile, dependencies declared in the manifest, templates, assets, provider configuration, and existing security controls have not been customized.
+**None.** Work through the Phase 1 planning checkpoint is documentation only. Application code, lockfile, dependencies declared in the manifest, templates, assets, provider configuration, and existing security controls have not been customized. Expected future upstream edits are a proposal in the Phase 1 plan, not edits already made.
 
 ## Added files
 
@@ -28,6 +28,7 @@
 | `docs/custom/PHASE-0-AUDIT.md` | Baseline, layer inventory, requirement gap table, conflicts, and recommended sequencing |
 | `STATUS.md` | Verified state, outstanding verification, dependencies, and phase gates |
 | `AGENTS.md` | Architecture, commands, evidence rules, and authorization boundaries |
+| `docs/custom/PHASE-1-PLAN.md` | Exact proposed upstream/new-file scope, visual component shortlist, implementation and verification gates |
 
 ## Local installation artifacts
 
@@ -35,9 +36,11 @@ Node `24.22.0` was installed in the user's existing nvm installation; commands f
 
 Local evidence logs: `.gev-logs/phase0-2026-10-19/`. These are machine-local receipts, not committed project content. The durable baseline summary is in the audit. No `.env` was created and no provider credentials were configured.
 
+Visual catalog captures for the Phase 1 shortlist are local review evidence in ignored `qa-artifacts/phase-1-shortlist/`, not adopted application assets or component code. Canonical source links are in the plan. A public catalog response automatically included embedded source; it was not used or copied into component files. No registry/API retrieval, install command, or quota-consuming component tool was used.
+
 ## Future customization rules
 
-1. Obtain approval of the Phase 0 gap analysis and a file-level Phase 1 plan before changing application code.
+1. Phase 0 gap analysis is approved. Obtain approval of the Phase 1 file-level plan, the visual shell selection, and the remaining baseline results or explicit waiver before changing application code or retrieving component code.
 2. Prefer new hub/custom modules over upstream edits. Record each eventual upstream edit here with its purpose and owning phase.
 3. Preserve the standalone vanilla/Cesium globe. Add a separate React hub entry on the same local server; retain share links as the handoff contract.
 4. Preserve upstream Host/origin checks, localhost binding, attribution, responsible-use restrictions, and provider request budgets.

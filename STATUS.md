@@ -1,6 +1,6 @@
 # Geospatial Intelligence Hub status
 
-Updated October 19, 2026, America/New_York. This is a Phase 0 checkpoint, **awaiting gap-analysis review**. Phase 1 has not started.
+Updated October 19, 2026, America/New_York. **Phase 0 audit reviewed and approved by the user. Phase 1 plan only is authorized; implementation has not started.**
 
 ## Completed and verified
 
@@ -14,7 +14,9 @@ Updated October 19, 2026, America/New_York. This is a Phase 0 checkpoint, **awai
 - Unmodified development server started using `HOST=localhost PORT=4173 npm run dev -- --strictPort`; listener verified at `[::1]:4173`; HTTP HEAD returned 200 with security headers.
 - User confirmed that the globe renders at `http://localhost:4173/`. This is user-verified visual evidence, not an automated screenshot or per-layer feed test.
 - Delivered the [Phase 0 gap analysis](docs/custom/PHASE-0-AUDIT.md), source/key/coverage inventory, conflicts, and proposed phase sequencing.
-- No upstream files or provider configuration changed. Only four approved documentation files were added; raw installation/test/build/server logs remain ignored locally.
+- User approved the audit and explicitly resolved the seven design/scope questions below. Approval is not a new test result or an implementation authorization.
+- Prepared the [Phase 1 file-level plan and visual shortlist](docs/custom/PHASE-1-PLAN.md); it awaits visual selection and implementation approval.
+- No upstream files or provider configuration changed. Five documentation files now comprise the project planning records; raw logs and shortlist screenshots remain ignored locally.
 
 ## Phase 0 acceptance
 
@@ -24,30 +26,30 @@ Updated October 19, 2026, America/New_York. This is a Phase 0 checkpoint, **awai
 | Existing suite result recorded | Recorded; browser coverage incomplete | Unit/allocation suite and build pass; browser tracking and other browser gates not run |
 | Pin recorded; fork has upstream remote | Verified | `CUSTOMIZATION.md`, fork API identity, local remotes and fetched commit |
 | Keyless layer loading vs key requirements recorded | Partial | Complete source/key inventory supplied; individual live layer outcomes not observed |
-| Gap table delivered and approved | Delivered; approval pending | User must review the audit; approval of the earlier plan was not approval of this result |
+| Gap table delivered and approved | Approved by user | Explicit audit approval recorded in the next user message after the Phase 0 checkpoint |
 
 ## Verification still open
 
-1. **Automated browser access:** automatic approval rejected localhost inspection. No alternate browser/CDP/harness workaround was used. `npm run test:track`, visual UI checks, share restoration, and keyless AI-control behavior have no runtime result from this audit.
-2. **Individual feed loading:** credentials/cadences/coverage in the inventory are source evidence, not observations that every keyless provider currently responds or every layer renders. Record actual results when permitted browser verification is available; do not fill unknowns with zeros or success claims.
-3. **Rendering performance baseline:** no measured cold navigation, GPU renderer, foreground FPS, viewport, or repeatable layer populations. Upstream's historical performance page is not this machine's baseline. Capture before implementation or explicitly waive the Phase 0 comparison baseline.
-4. **Gap approval:** review the complete matrix, conflict recommendations, and priorities. No implementation is authorized yet.
+1. **Tracking/browser checks — user-owned, pending:** the user will run `npm run test:track` and paste results here. The earlier automatic localhost denial remains recorded; no workaround or new automated result is claimed.
+2. **Individual layer check — user-owned, pending:** the user will check layers manually and paste outcomes here. Source availability is not proof of current loading. Preserve provider/coverage failures and do not replace unknowns with zeros.
+3. **FPS baseline — user-owned, pending:** the user will record the manual FPS check. The message also included a bracketed alternative, `[Or: FPS baseline waived.]`; this record does not interpret that template wording as an explicit waiver. No baseline has been measured by the agent. Upstream's historical performance page is not this machine's result.
+4. **Phase 1 authorization:** pick a visual shell and approve the file-level implementation plan separately. Plan preparation does not authorize installation, component retrieval, or code changes.
 
-## Decisions needed before dependent implementation
+## User decisions accepted with the Phase 0 audit
 
-| Question | Recommended resolution | Needed by |
+| Question | Accepted decision | Applies to |
 | --- | --- | --- |
-| Browser credential exceptions | Permit provider-designated public client tokens such as Mapillary and ephemeral AI session credentials, while keeping persistent secrets server-side; retain restrictions | Before any affected keyed integration |
-| Mixed data labels | Assign labels per value: e.g. Simulated cars and Live traffic flow; Estimated camera pose and dated/live frames | Phase 1 metadata design |
-| Shared caches / no extra polling | One acquisition owner per source; passive cache snapshots/subscriptions; add bounded server adapters for browser-direct feeds | Phase 2 dashboard plan |
-| Satellites loaded | Distinguish current globe-session loaded count from cached-catalog count; do not equate them | Phase 2 widget design |
-| Bookmarked entity limits | Keep existing aircraft/military/satellite follow types; vessel bookmarks require a separately scoped codec extension or view-only alternative | Phase 3 |
-| Hosting | Leave unselected; authenticated proxies are not automatically compatible with existing local request gates | Phase 4 |
-| Public/noncommercial/retention terms | Verify each feed, bundled dataset, visual asset, and recording right with its provider; keyless alone is not sufficient | Before new sources, recorder admission, or hosting |
+| Browser credential exceptions | Provider-designated public client tokens, including Mapillary, and ephemeral AI session credentials are allowed; persistent secrets stay server-side | All phases; no credentials enabled by this decision |
+| Mixed data labels | Per-value observation kinds, feed health separately | Phase 1 onward |
+| Shared caches / no extra polling | One acquisition owner per source, passive read-only summaries; design in the Phase 2 plan | Phase 2, no provider redesign in Phase 1 |
+| Satellites loaded | Separate globe-loaded and cached-catalog counts | Phase 2 |
+| Bookmarked entity limits | Track aircraft/military/satellite only; vessel bookmarks are view-only | Phase 3 |
+| Hosting | Unselected until Phase 4 | No deployment or wider bind authorized |
+| Terms / use scope | Local personal use only; verify terms before any new source, recorder, or hosting | All phases; component/dependency licenses also checked before adoption |
 
 ## Future work (not implemented)
 
-- **Phase 1:** approved file-level plan first; sibling hub entry/navigation; branding and shared theme tokens; visual 21st.dev shortlist and component-license ledger; full-share handoff/back link; active-feed strip and linked key guidance. No component code has been retrieved.
+- **Phase 1:** proposed six-file upstream allowlist and visual shortlist are in the plan; sibling hub entry/navigation; branding/shared tokens; full-share handoff/back link; passive feed strip/key guidance. No component files or registry/install retrievals exist. Public catalog pages automatically exposed embedded source, which was not adopted.
 - **Phase 2:** canonical `content/sources.json`; searchable Knowledge Center/Data Sources/Case Studies; shared-cache dashboard with region filters, source/freshness/coverage, and honest unavailable states. Add upcoming-launch query; current upstream query is past-only.
 - **Phase 3:** home region; named saved views/presets/entity links; self-contained workspace import/export including scenes/custom datasets and excluding secrets; persistence around the existing GeoJSON/KML/KMZ/GPX importer; global palette; AI setup content. Recorder/history and Ask Library are optional, separately reviewed work.
 - **Phase 4:** desktop/mobile testing; measured performance comparison; complete dependency/data/media/security audit; choose hosting topology and document deployment. Desktop packaging remains optional.
