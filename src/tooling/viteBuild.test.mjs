@@ -11,7 +11,11 @@ test('hub wrapper adds isolated HTML input while preserving standalone security 
   const hub = hubConfig({ mode: 'test' });
   const names = (config) => config.plugins.map((plugin) => plugin.name);
   assert.deepEqual(names(hub).slice(0, direct.plugins.length), names(direct));
-  assert.ok(names(hub).slice(direct.plugins.length).every((name) => name.startsWith('@tailwindcss/')));
+  assert.ok(
+    names(hub)
+      .slice(direct.plugins.length)
+      .every((name) => name.startsWith('@tailwindcss/')),
+  );
   assert.equal(Object.keys(hub.build.rollupOptions.input).length, 2);
   assert.match(hub.build.rollupOptions.input.globe, /\/index\.html$/);
   assert.match(hub.build.rollupOptions.input.hub, /\/hub\/index\.html$/);

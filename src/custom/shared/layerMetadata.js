@@ -70,7 +70,9 @@ const sourceGuides = Object.freeze([
     }),
   ),
 ]);
-const sourceGuidesById = new Map(sourceGuides.map((guide) => [guide.id, guide]));
+const sourceGuidesById = new Map(
+  sourceGuides.map((guide) => [guide.id, guide]),
+);
 
 /** Known setup guides; no credentials, configuration or feed reads are involved. */
 export function getSourceGuides() {
@@ -85,7 +87,9 @@ export function getSourceGuide(id) {
 /** The source route is always on this local hub, never a caller-supplied URL. */
 export function sourceGuideHref(id) {
   const guide = getSourceGuide(id);
-  return guide ? `/hub/#/library/sources/${encodeURIComponent(guide.id)}` : null;
+  return guide
+    ? `/hub/#/library/sources/${encodeURIComponent(guide.id)}`
+    : null;
 }
 
 const value = (id, label, kind) => Object.freeze({ id, label, kind });
@@ -101,38 +105,180 @@ const defineLayer = (id, valueKinds, sources, requiredKeyId = null) =>
 // Camera frames and radio playback need their existing source/playback state;
 // catalog health or configuration alone cannot establish live media delivery.
 const layers = [
-  defineLayer('flights', [value('observations', 'Aircraft observations', 'Live')], ['opensky', 'adsb-lol']),
-  defineLayer('military', [value('observations', 'Aircraft observations', 'Live')], ['adsb-lol']),
-  defineLayer('local-adsb', [value('observations', 'Receiver observations', 'Live')], ['local-adsb']),
-  defineLayer('ais-live-vessels', [value('observations', 'Received vessel observations', 'Live')], ['aisstream'], 'aisstream'),
-  defineLayer('satellites', [value('position', 'Propagated position', 'Estimated')], ['celestrak']),
-  defineLayer('traffic', [value('vehicles', 'Animated vehicles', 'Simulated')], ['openstreetmap', 'tomtom']),
-  defineLayer('transit', [value('observations', 'Vehicle observations', 'Live')], ['transit']),
-  defineLayer('bikeshare', [value('availability', 'Station availability', 'Live')], ['gbfs']),
-  defineLayer('cctv', [value('pose', 'Camera pose and viewshed', 'Estimated')], ['cctv']),
-  defineLayer('recent-imagery', [value('imagery', 'Dated satellite imagery', 'Refreshed')], ['nasa-gibs', 'nasa-cmr']),
-  defineLayer('street-level', [value('imagery', 'Dated street imagery', 'Static')], ['mapillary', 'google-maps', 'kartaview', 'panoramax']),
-  defineLayer('alpr-cameras', [value('locations', 'Mapped locations', 'Static')], ['openstreetmap']),
-  defineLayer('military-installations', [value('locations', 'Mapped locations', 'Static')], ['openstreetmap', 'openfreemap', 'overture-military-names', 'overpass', 'google-maps']),
-  defineLayer('local-datacenters', [value('locations', 'Bundled mapped locations', 'Static')], ['openstreetmap']),
-  defineLayer('local-dams', [value('locations', 'Bundled mapped locations', 'Static')], ['openstreetmap', 'openinframap']),
-  defineLayer('telegeography-submarine-cables', [value('geometry', 'Bundled cable map', 'Static')], ['telegeography']),
-  defineLayer('rocket-launches', [value('metadata', 'Launch metadata', 'Refreshed'), value('trajectory', 'Replay trajectory', 'Estimated')], ['launch-library', 'celestrak']),
-  defineLayer('earthquakes', [value('observations', 'Earthquake observations', 'Refreshed')], ['usgs']),
-  defineLayer('local-firms', [value('detections', 'Satellite fire detections', 'Refreshed')], ['firms'], 'firms'),
-  defineLayer('fire-perimeters', [value('perimeters', 'Reported perimeters', 'Refreshed')], ['wfigs']),
-  defineLayer('gnss-integrity', [value('score', 'Derived integrity score', 'Estimated')], ['adsb-lol', 'gnss-integrity']),
-  defineLayer('air-quality', [value('observations', 'Station observations', 'Refreshed')], ['eccc-aqhi']),
-  defineLayer('wind', [value('wind', 'Modeled wind', 'Estimated')], ['noaa-gfs', 'ecmwf-ifs']),
-  defineLayer('weather-radar', [value('observations', 'Radar observations', 'Refreshed')], ['noaa-nowcoast']),
-  defineLayer('weather-satellite', [value('observations', 'Satellite observations', 'Refreshed')], ['noaa-nowcoast']),
-  defineLayer('weather-lightning', [value('density', 'Reported lightning density', 'Refreshed')], ['noaa-nowcoast']),
-  defineLayer('weather-cyclones', [value('advisories', 'Cyclone advisories', 'Refreshed')], ['nhc-cphc']),
-  defineLayer('directions', [value('route', 'Computed route', 'Estimated')], ['osrm']),
-  defineLayer('radio', [value('directory', 'Station directory', 'Static')], ['radio-browser']),
-  defineLayer('bhote-koshi-2026', [value('imagery', 'Bundled imagery', 'Static'), value('reconstruction', 'Event reconstruction', 'Estimated')], ['bhote-koshi']),
-  defineLayer('bhote-koshi-locator', [value('locator', 'Bundled scene locator', 'Static')], ['bhote-koshi']),
-  defineLayer('military-awareness', [value('context', 'Derived context', 'Estimated')], ['gev-context']),
+  defineLayer(
+    'flights',
+    [value('observations', 'Aircraft observations', 'Live')],
+    ['opensky', 'adsb-lol'],
+  ),
+  defineLayer(
+    'military',
+    [value('observations', 'Aircraft observations', 'Live')],
+    ['adsb-lol'],
+  ),
+  defineLayer(
+    'local-adsb',
+    [value('observations', 'Receiver observations', 'Live')],
+    ['local-adsb'],
+  ),
+  defineLayer(
+    'ais-live-vessels',
+    [value('observations', 'Received vessel observations', 'Live')],
+    ['aisstream'],
+    'aisstream',
+  ),
+  defineLayer(
+    'satellites',
+    [value('position', 'Propagated position', 'Estimated')],
+    ['celestrak'],
+  ),
+  defineLayer(
+    'traffic',
+    [value('vehicles', 'Animated vehicles', 'Simulated')],
+    ['openstreetmap', 'tomtom'],
+  ),
+  defineLayer(
+    'transit',
+    [value('observations', 'Vehicle observations', 'Live')],
+    ['transit'],
+  ),
+  defineLayer(
+    'bikeshare',
+    [value('availability', 'Station availability', 'Live')],
+    ['gbfs'],
+  ),
+  defineLayer(
+    'cctv',
+    [value('pose', 'Camera pose and viewshed', 'Estimated')],
+    ['cctv'],
+  ),
+  defineLayer(
+    'recent-imagery',
+    [value('imagery', 'Dated satellite imagery', 'Refreshed')],
+    ['nasa-gibs', 'nasa-cmr'],
+  ),
+  defineLayer(
+    'street-level',
+    [value('imagery', 'Dated street imagery', 'Static')],
+    ['mapillary', 'google-maps', 'kartaview', 'panoramax'],
+  ),
+  defineLayer(
+    'alpr-cameras',
+    [value('locations', 'Mapped locations', 'Static')],
+    ['openstreetmap'],
+  ),
+  defineLayer(
+    'military-installations',
+    [value('locations', 'Mapped locations', 'Static')],
+    [
+      'openstreetmap',
+      'openfreemap',
+      'overture-military-names',
+      'overpass',
+      'google-maps',
+    ],
+  ),
+  defineLayer(
+    'local-datacenters',
+    [value('locations', 'Bundled mapped locations', 'Static')],
+    ['openstreetmap'],
+  ),
+  defineLayer(
+    'local-dams',
+    [value('locations', 'Bundled mapped locations', 'Static')],
+    ['openstreetmap', 'openinframap'],
+  ),
+  defineLayer(
+    'telegeography-submarine-cables',
+    [value('geometry', 'Bundled cable map', 'Static')],
+    ['telegeography'],
+  ),
+  defineLayer(
+    'rocket-launches',
+    [
+      value('metadata', 'Launch metadata', 'Refreshed'),
+      value('trajectory', 'Replay trajectory', 'Estimated'),
+    ],
+    ['launch-library', 'celestrak'],
+  ),
+  defineLayer(
+    'earthquakes',
+    [value('observations', 'Earthquake observations', 'Refreshed')],
+    ['usgs'],
+  ),
+  defineLayer(
+    'local-firms',
+    [value('detections', 'Satellite fire detections', 'Refreshed')],
+    ['firms'],
+    'firms',
+  ),
+  defineLayer(
+    'fire-perimeters',
+    [value('perimeters', 'Reported perimeters', 'Refreshed')],
+    ['wfigs'],
+  ),
+  defineLayer(
+    'gnss-integrity',
+    [value('score', 'Derived integrity score', 'Estimated')],
+    ['adsb-lol', 'gnss-integrity'],
+  ),
+  defineLayer(
+    'air-quality',
+    [value('observations', 'Station observations', 'Refreshed')],
+    ['eccc-aqhi'],
+  ),
+  defineLayer(
+    'wind',
+    [value('wind', 'Modeled wind', 'Estimated')],
+    ['noaa-gfs', 'ecmwf-ifs'],
+  ),
+  defineLayer(
+    'weather-radar',
+    [value('observations', 'Radar observations', 'Refreshed')],
+    ['noaa-nowcoast'],
+  ),
+  defineLayer(
+    'weather-satellite',
+    [value('observations', 'Satellite observations', 'Refreshed')],
+    ['noaa-nowcoast'],
+  ),
+  defineLayer(
+    'weather-lightning',
+    [value('density', 'Reported lightning density', 'Refreshed')],
+    ['noaa-nowcoast'],
+  ),
+  defineLayer(
+    'weather-cyclones',
+    [value('advisories', 'Cyclone advisories', 'Refreshed')],
+    ['nhc-cphc'],
+  ),
+  defineLayer(
+    'directions',
+    [value('route', 'Computed route', 'Estimated')],
+    ['osrm'],
+  ),
+  defineLayer(
+    'radio',
+    [value('directory', 'Station directory', 'Static')],
+    ['radio-browser'],
+  ),
+  defineLayer(
+    'bhote-koshi-2026',
+    [
+      value('imagery', 'Bundled imagery', 'Static'),
+      value('reconstruction', 'Event reconstruction', 'Estimated'),
+    ],
+    ['bhote-koshi'],
+  ),
+  defineLayer(
+    'bhote-koshi-locator',
+    [value('locator', 'Bundled scene locator', 'Static')],
+    ['bhote-koshi'],
+  ),
+  defineLayer(
+    'military-awareness',
+    [value('context', 'Derived context', 'Estimated')],
+    ['gev-context'],
+  ),
 ];
 const layersById = new Map(layers.map((layer) => [layer.id, layer]));
 const NO_VALUES = Object.freeze([]);

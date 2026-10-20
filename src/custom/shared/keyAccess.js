@@ -43,7 +43,11 @@ export function createKeyAccess({
     if (disposed) return;
     current = next;
     for (const listener of [...listeners]) {
-      try { listener(current); } catch { /* A view cannot break status ownership. */ }
+      try {
+        listener(current);
+      } catch {
+        /* A view cannot break status ownership. */
+      }
     }
   };
   const destroy = () => {
@@ -61,7 +65,11 @@ export function createKeyAccess({
     subscribe(listener) {
       if (disposed || typeof listener !== 'function') return () => {};
       listeners.add(listener);
-      try { listener(current); } catch { /* Preserve other subscribers. */ }
+      try {
+        listener(current);
+      } catch {
+        /* Preserve other subscribers. */
+      }
       return () => listeners.delete(listener);
     },
     load() {
@@ -85,7 +93,9 @@ export function createKeyAccess({
             } else {
               const keys = projectPresence(await response.json());
               if (!controller.signal.aborted) {
-                publish(keys ? snapshot('ready', keys) : snapshot('unavailable'));
+                publish(
+                  keys ? snapshot('ready', keys) : snapshot('unavailable'),
+                );
               }
             }
           } catch {

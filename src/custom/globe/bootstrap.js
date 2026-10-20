@@ -5,14 +5,17 @@ import { applyGlobeBranding, mountBackToHub } from './branding.js';
 import { mountFeedStrip } from './feedStrip.js';
 import { mountKeyBadges } from './keyBadges.js';
 
-export function installHubGlobeCustomization(application, {
-  documentRef = globalThis.document,
-  windowRef = globalThis.window,
-} = {}) {
-  const embedded = globalThis.GEV_EMBED_INLINE === true || windowRef?.GEV_EMBED_INLINE === true
-    || new URLSearchParams(windowRef?.location?.search || '').get('embed') === '1'
-    || windowRef?.location?.pathname?.startsWith('/panel/')
-    || import.meta.env?.BASE_URL === '/panel/';
+export function installHubGlobeCustomization(
+  application,
+  { documentRef = globalThis.document, windowRef = globalThis.window } = {},
+) {
+  const embedded =
+    globalThis.GEV_EMBED_INLINE === true ||
+    windowRef?.GEV_EMBED_INLINE === true ||
+    new URLSearchParams(windowRef?.location?.search || '').get('embed') ===
+      '1' ||
+    windowRef?.location?.pathname?.startsWith('/panel/') ||
+    import.meta.env?.BASE_URL === '/panel/';
   if (!documentRef || embedded) return () => {};
   const lifetime = new AbortController();
   const disposers = [];
@@ -31,7 +34,10 @@ export function installHubGlobeCustomization(application, {
     delete documentRef.documentElement.dataset.gevHubCustomization;
   };
   const unsubscribe = application.subscribe(({ status }) => {
-    if (['destroying', 'destroyed', 'failed'].includes(status)) { dispose(); return; }
+    if (['destroying', 'destroyed', 'failed'].includes(status)) {
+      dispose();
+      return;
+    }
     if (status !== 'ready' || mounted || disposed) return;
     mounted = true;
     const container = documentRef.createElement('nav');
@@ -48,9 +54,16 @@ export function installHubGlobeCustomization(application, {
       if (restoreFocus) open[0]?.querySelector('summary')?.focus();
       return open.length > 0;
     };
-    const outside = (event) => { if (!container.contains(event.target)) closeDetails(); };
+    const outside = (event) => {
+      if (!container.contains(event.target)) closeDetails();
+    };
     const escape = (event) => {
-      if (event.key === 'Escape' && !event.defaultPrevented && container.contains(event.target) && closeDetails(true)) {
+      if (
+        event.key === 'Escape' &&
+        !event.defaultPrevented &&
+        container.contains(event.target) &&
+        closeDetails(true)
+      ) {
         event.preventDefault();
       }
     };
@@ -73,8 +86,23 @@ export function installHubGlobeCustomization(application, {
     if (!dataManager?.getAll || !dataManager?.subscribeActivity) return;
     const keyAccess = createKeyAccess({ signal: lifetime.signal });
     disposers.push(keyAccess.destroy);
-    disposers.push(mountFeedStrip({ documentRef, dataManager, container, signal: lifetime.signal }));
-    disposers.push(mountKeyBadges({ documentRef, dataManager, keyAccess, container, signal: lifetime.signal }));
+    disposers.push(
+      mountFeedStrip({
+        documentRef,
+        dataManager,
+        container,
+        signal: lifetime.signal,
+      }),
+    );
+    disposers.push(
+      mountKeyBadges({
+        documentRef,
+        dataManager,
+        keyAccess,
+        container,
+        signal: lifetime.signal,
+      }),
+    );
     void keyAccess.load();
   });
   if (disposed) unsubscribe();

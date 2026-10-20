@@ -7,7 +7,9 @@ export function getTheme() {
   try {
     const saved = globalThis.localStorage?.getItem(STORAGE_KEY);
     return saved === 'light' || saved === 'dark' ? saved : fallback;
-  } catch { return fallback; }
+  } catch {
+    return fallback;
+  }
 }
 
 /** Apply theme tokens to this document; sensor/map modes are not modified. */
@@ -23,9 +25,14 @@ export function applyTheme(documentRef = globalThis.document) {
 
 /** Persist only the UI theme, never provider configuration. */
 export function setTheme(value) {
-  if (value !== 'dark' && value !== 'light') throw new TypeError('Unknown theme');
+  if (value !== 'dark' && value !== 'light')
+    throw new TypeError('Unknown theme');
   fallback = value;
-  try { globalThis.localStorage?.setItem(STORAGE_KEY, value); } catch { /* session fallback */ }
+  try {
+    globalThis.localStorage?.setItem(STORAGE_KEY, value);
+  } catch {
+    /* session fallback */
+  }
   applyTheme();
   for (const listener of listeners) listener(value);
 }

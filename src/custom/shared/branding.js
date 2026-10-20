@@ -16,10 +16,15 @@ export function validateBranding(input = {}) {
   return Object.freeze({
     name: text(input.name, defaults.name, 80),
     shortName: text(input.shortName, defaults.shortName, 24),
-    logo: typeof input.logo === 'string' && /^\/custom\/[a-zA-Z0-9_-]+\.(svg|png|webp)$/.test(input.logo)
-      ? input.logo : defaults.logo,
-    accent: typeof input.accent === 'string' && /^#[0-9a-f]{6}$/i.test(input.accent)
-      ? input.accent : defaults.accent,
+    logo:
+      typeof input.logo === 'string' &&
+      /^\/custom\/[a-zA-Z0-9_-]+\.(svg|png|webp)$/.test(input.logo)
+        ? input.logo
+        : defaults.logo,
+    accent:
+      typeof input.accent === 'string' && /^#[0-9a-f]{6}$/i.test(input.accent)
+        ? input.accent
+        : defaults.accent,
   });
 }
 

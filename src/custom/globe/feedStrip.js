@@ -3,30 +3,51 @@ import { snapshotAgeLabel } from '../../data/layerSnapshot.js';
 import { getLayerKindValues } from '../shared/layerMetadata.js';
 
 const HEALTH_LABELS = Object.freeze({
-  nominal: 'ON', loading: 'LOADING', degraded: 'DEGRADED', stale: 'STALE',
-  partial: 'PARTIAL', fallback: 'FALLBACK', unavailable: 'UNAVAILABLE', off: 'OFF',
+  nominal: 'ON',
+  loading: 'LOADING',
+  degraded: 'DEGRADED',
+  stale: 'STALE',
+  partial: 'PARTIAL',
+  fallback: 'FALLBACK',
+  unavailable: 'UNAVAILABLE',
+  off: 'OFF',
 });
-const text = (value) => typeof value === 'string' ? value.trim() : '';
+const text = (value) => (typeof value === 'string' ? value.trim() : '');
 
 function epoch(value, allowIso = false) {
-  const stamp = typeof value === 'number' ? value
-    : allowIso && typeof value === 'string' ? Date.parse(value) : NaN;
-  return Number.isFinite(stamp) && stamp > 0 && !Number.isNaN(new Date(stamp).getTime())
-    ? stamp : null;
+  const stamp =
+    typeof value === 'number'
+      ? value
+      : allowIso && typeof value === 'string'
+        ? Date.parse(value)
+        : NaN;
+  return Number.isFinite(stamp) &&
+    stamp > 0 &&
+    !Number.isNaN(new Date(stamp).getTime())
+    ? stamp
+    : null;
 }
 
 /** Pure projection of existing state; count defaults never become displayed data. */
 export function presentLayer(row, { now = Date.now() } = {}) {
   const stats = row?.stats && typeof row.stats === 'object' ? row.stats : {};
   const transition = ['enabling', 'disabling'].includes(row?.lifecycleState)
-    ? row.lifecycleState.toUpperCase() : null;
-  const active = row?.enabled === true || transition !== null || row?.lifecycleUncertain === true;
+    ? row.lifecycleState.toUpperCase()
+    : null;
+  const active =
+    row?.enabled === true ||
+    transition !== null ||
+    row?.lifecycleUncertain === true;
   const source = text(stats.source) || text(row?.source) || 'Not reported here';
   // Preserve explicit fallback:false, partial and normalized manager error fields.
   const health = active ? layerFeedState({ ...stats, source }) : 'off';
   const healthLabel = HEALTH_LABELS[health] || 'UNKNOWN';
-  const stateLabel = [row?.lifecycleUncertain ? 'UNCERTAIN' : transition, healthLabel]
-    .filter(Boolean).join(' · ');
+  const stateLabel = [
+    row?.lifecycleUncertain ? 'UNCERTAIN' : transition,
+    healthLabel,
+  ]
+    .filter(Boolean)
+    .join(' · ');
   const lastUpdate = epoch(stats.lastUpdate);
   const observedAt = epoch(stats.observedAt, true);
   const advisoryAt = epoch(stats.advisoryAt, true);
@@ -38,14 +59,21 @@ export function presentLayer(row, { now = Date.now() } = {}) {
     health,
     stateLabel,
     source,
-    coverage: text(stats.coverageLabel) || text(stats.coverage) || 'Coverage not reported here',
+    coverage:
+      text(stats.coverageLabel) ||
+      text(stats.coverage) ||
+      'Coverage not reported here',
     kinds: getLayerKindValues(row),
     lastUpdate,
-    updateLabel: lastUpdate === null ? 'Update time unavailable'
-      : `Last updated ${snapshotAgeLabel(lastUpdate, now)}`,
+    updateLabel:
+      lastUpdate === null
+        ? 'Update time unavailable'
+        : `Last updated ${snapshotAgeLabel(lastUpdate, now)}`,
     observation,
-    observationLabel: observation === null ? null
-      : `${advisoryAt !== null && observedAt === null ? 'Advisory issued' : 'Observed/captured'} ${new Date(observation).toISOString()}`,
+    observationLabel:
+      observation === null
+        ? null
+        : `${advisoryAt !== null && observedAt === null ? 'Advisory issued' : 'Observed/captured'} ${new Date(observation).toISOString()}`,
     detail: text(stats.statusMessage),
   });
 }
@@ -55,7 +83,12 @@ const setText = (node, value) => {
 };
 
 /** Passive active-layer presentation with its own bounded UI clock and cleanup. */
-export function mountFeedStrip({ documentRef, dataManager, container, signal }) {
+export function mountFeedStrip({
+  documentRef,
+  dataManager,
+  container,
+  signal,
+}) {
   const windowRef = documentRef.defaultView || globalThis;
   const root = documentRef.createElement('details');
   root.className = 'gih-feed-strip';
@@ -80,14 +113,18 @@ export function mountFeedStrip({ documentRef, dataManager, container, signal }) 
   closeButton.textContent = 'Close';
   // i18n-ignore: Phase 1 custom dismissal accessibility text is intentionally English.
   closeButton.setAttribute('aria-label', 'Close active layer status');
-  const close = () => { root.open = false; summary.focus(); };
+  const close = () => {
+    root.open = false;
+    summary.focus();
+  };
   closeButton.addEventListener('click', close);
   panelHeading.append(panelTitle, closeButton);
   const list = documentRef.createElement('div');
   const empty = documentRef.createElement('p');
   empty.className = 'gih-status-note';
   // i18n-ignore: Phase 1 custom status guidance is intentionally English; core globe localization is preserved.
-  empty.textContent = 'No active layers. Use the existing layer controls to choose a feed.';
+  empty.textContent =
+    'No active layers. Use the existing layer controls to choose a feed.';
   panel.append(panelHeading, list, empty);
   root.append(summary, panel);
   container.append(root);
@@ -115,25 +152,53 @@ export function mountFeedStrip({ documentRef, dataManager, container, signal }) 
     observed.className = 'gih-feed-time';
     const detail = documentRef.createElement('p');
     article.append(heading, kinds, source, coverage, updated, observed, detail);
-    return { article, name, health, kinds, source, coverage, updated, observed, detail };
+    return {
+      article,
+      name,
+      health,
+      kinds,
+      source,
+      coverage,
+      updated,
+      observed,
+      detail,
+    };
   };
   const paint = () => {
     if (disposed) return;
-    const models = rows.map((row) => presentLayer(row)).filter((row) => row.active);
+    const models = rows
+      .map((row) => presentLayer(row))
+      .filter((row) => row.active);
     const ids = new Set(models.map((row) => row.id));
     for (const [id, item] of items) {
-      if (!ids.has(id)) { item.article.remove(); items.delete(id); }
+      if (!ids.has(id)) {
+        item.article.remove();
+        items.delete(id);
+      }
     }
     const states = [...new Set(models.map((row) => row.stateLabel))];
-    setText(summary, unavailable ? 'Feeds · Status unavailable'
-      : states.length ? `Feeds · ${states.join(' / ')}` : 'Feeds · No active layers');
+    setText(
+      summary,
+      unavailable
+        ? 'Feeds · Status unavailable'
+        : states.length
+          ? `Feeds · ${states.join(' / ')}`
+          : 'Feeds · No active layers',
+    );
     summary.title = summary.textContent;
     empty.hidden = models.length > 0;
-    setText(empty, unavailable ? 'Layer status is unavailable. The original globe controls remain available.'
-      : 'No active layers. Use the existing layer controls to choose a feed.');
+    setText(
+      empty,
+      unavailable
+        ? 'Layer status is unavailable. The original globe controls remain available.'
+        : 'No active layers. Use the existing layer controls to choose a feed.',
+    );
     models.forEach((model, index) => {
       let item = items.get(model.id);
-      if (!item) { item = createItem(); items.set(model.id, item); }
+      if (!item) {
+        item = createItem();
+        items.set(model.id, item);
+      }
       item.article.dataset.layerId = model.id;
       item.health.dataset.health = model.health;
       setText(item.name, model.name);
@@ -141,32 +206,46 @@ export function mountFeedStrip({ documentRef, dataManager, container, signal }) 
       const signature = JSON.stringify(model.kinds);
       if (item.kindSignature !== signature) {
         item.kindSignature = signature;
-        item.kinds.replaceChildren(...model.kinds.map((value) => {
-          const chip = documentRef.createElement('span');
-          chip.className = 'gih-kind';
-          chip.dataset.kind = value.kind.toLowerCase();
-          chip.textContent = `${value.label}: ${value.kind}`;
-          return chip;
-        }));
-        if (!model.kinds.length) setText(item.kinds, 'Value kind not classified');
+        item.kinds.replaceChildren(
+          ...model.kinds.map((value) => {
+            const chip = documentRef.createElement('span');
+            chip.className = 'gih-kind';
+            chip.dataset.kind = value.kind.toLowerCase();
+            chip.textContent = `${value.label}: ${value.kind}`;
+            return chip;
+          }),
+        );
+        if (!model.kinds.length)
+          setText(item.kinds, 'Value kind not classified');
       }
       setText(item.source, `Source: ${model.source}`);
-      setText(item.coverage, model.coverage === 'Coverage not reported here'
-        ? model.coverage : `Coverage: ${model.coverage}`);
+      setText(
+        item.coverage,
+        model.coverage === 'Coverage not reported here'
+          ? model.coverage
+          : `Coverage: ${model.coverage}`,
+      );
       setText(item.updated, model.updateLabel);
-      if (model.lastUpdate !== null) item.updated.dateTime = new Date(model.lastUpdate).toISOString();
+      if (model.lastUpdate !== null)
+        item.updated.dateTime = new Date(model.lastUpdate).toISOString();
       else item.updated.removeAttribute('datetime');
       setText(item.observed, model.observationLabel || '');
       item.observed.hidden = model.observationLabel === null;
       setText(item.detail, model.detail);
       item.detail.hidden = !model.detail;
-      if (list.children[index] !== item.article) list.insertBefore(item.article, list.children[index] || null);
+      if (list.children[index] !== item.article)
+        list.insertBefore(item.article, list.children[index] || null);
     });
   };
   const read = () => {
     if (disposed) return;
-    try { rows = dataManager.getAll(); unavailable = !Array.isArray(rows); }
-    catch { rows = []; unavailable = true; }
+    try {
+      rows = dataManager.getAll();
+      unavailable = !Array.isArray(rows);
+    } catch {
+      rows = [];
+      unavailable = true;
+    }
     if (unavailable) rows = [];
     paint();
   };
@@ -188,6 +267,9 @@ export function mountFeedStrip({ documentRef, dataManager, container, signal }) 
   // This clock only ages the already-read rows. It never refreshes any source.
   clock = windowRef.setInterval(paint, 10_000);
   if (signal?.aborted) destroy();
-  else { signal?.addEventListener('abort', destroy, { once: true }); read(); }
+  else {
+    signal?.addEventListener('abort', destroy, { once: true });
+    read();
+  }
   return destroy;
 }
