@@ -1,6 +1,6 @@
 # Frozen upstream-sync rehearsal report
 
-October 20, 2026. **Rehearsal reruns passed: `qa:hub` 9/9; synthetic `test:track --offline-imagery` 109 passed / 0 failed / 0 skipped. Approved integration is installed in shipping at new pin `064d51f7be2675f1c69e16068e9c49d1a60144d1`. Shipping non-browser gates pass and localhost:4173 is running; user/browser/manual verification remains pending.** All earlier failed runs are retained. Phase 2a implementation has not started.
+October 20, 2026. **Rehearsal results remain hub 9/9 and synthetic tracking 109/0/0. Adopted shipping pin `064d51f7` has all non-browser gates passing; shipping hub 9/9 is matched to its receipt and the user reports all Street Level manual checks passed. Shipping tracking is incomplete after 88 passing assertions and a fatal navigation/context error; a rerun is required.** Root 4173 is in temporary HMR-off verification mode. Keep rehearsal 4174/logs; no Phase 2a implementation has started.
 
 ## Inputs, result, and isolation
 
@@ -192,3 +192,44 @@ For the Street Level manual smoke:
 4. At a narrow phone-like window width, verify reachable controls/credits and no horizontal page overflow. Do not configure a new key for these checks.
 
 The existing rehearsal PID 55130 on `[::1]:4174` remains running until shipping user checks resolve. Then stop only its verified listener, keep all rehearsal logs/worktree, and produce the post-pin Phase 2a reverification and measured Ajv (a)/(b) comparison before milestone 1. No Phase 2a implementation, Ajv design selection, or Phase 2b work is included in this checkpoint.
+
+## Shipping user results and bounded tracking rerun
+
+The supplied output is retained unchanged at `/Users/getumwanna/Documents/GEV/.gev-logs/shipping-integration-2026-10-20/user-shipping-checks-2026-10-20.txt`; SHA-256 `a6581dc58e57aa1c6703de622c0502600ec66972a9d3b954b1a2d7f92cebc090`.
+
+- **Hub: passed 9/9**, matched to `.gev-logs/qa-custom-hub-2026-10-20T19-28-09-202Z.json`, timestamp `2026-10-20T19:28:09.203Z`, origin `http://localhost:4173`. All nine assertions and overall `passed` are true. Readiness HTTP 200, four resource-failure counters zero, pageErrorCount 0; acquisition blocked 8/setupReads 2. These are bounded UI checks, not live-source coverage.
+- **Street Level: user-reported all manual smoke checks passed**, supplied in the subsequent direct reply. No independent agent browser observation is claimed.
+- **Tracking: incomplete.** 88 individual PASS assertions, zero assertion FAIL/SKIP lines, 18 bundled tile images served, then `Execution context was destroyed, most likely because of a navigation` at `scripts/track-regression.mjs:3231:26`, starting the unseeded ground-floor corridor evaluation. The normal final `RESULT:` summary is absent. Do not report this shipping run as109/0/0 or as a completed pass; earlier rehearsal 109/0/0 remains separate evidence.
+
+The harness's `evalPage` uses raw `page.evaluate`; its last intended navigation is much earlier at line774. Preserved `server-before-tracking-rerun.log` contains 14 source page-reload messages, including three at 15:33:10 for `src/custom/globe/feedStrip.js`, `src/data/dataCredits.js`, and `src/ui/panelChrome.js`. Those files still match HEAD and retain 15:18:24 mtimes; their metadata-change timestamps correspond to the reloads. An unexpected Vite reload is the leading explanation for the destroyed context. The external cause of the metadata events is not established; no tracking assertion or application-data regression is established by the fatal error either.
+
+The only operational repair is a **temporary root development server with HMR disabled**, using the installed Vite API. Vite's installed implementation suppresses source HMR handling and outbound reload/update payloads with `server.hmr:false`. No upstream/custom source, dependency, harness assertion, security gate, or provider policy was changed for this rerun; no new plugin was added. The source watcher itself remains configured normally. No production-preview substitution was used, because the harness uses development module seams. The separate optimized-radio warning in the original server log is associated with the earlier percent-encoded diagnostic URL; the unchanged actual optimized URL was verified200 and is not evidence for the navigation failure.
+
+The operational launch uses the existing root configuration from the shipping directory (the live launch also asserts resolved root/cache/host/port and both policy switches):
+
+```sh
+cd /Users/getumwanna/Documents/GEV
+source /Users/getumwanna/.nvm/nvm.sh
+nvm use 24.22.0
+HOST=localhost PORT=4173 node --input-type=module <<'NODE'
+import { createServer } from 'vite';
+const server = await createServer({
+  server: { host: 'localhost', port:4173, strictPort:true, hmr:false },
+});
+await server.listen();
+server.printUrls();
+NODE
+```
+
+The server is already running: shipping PID 65423 on `[::1]:4173`; startup acknowledges HK/Taiwan OFF and reviewed contracts verified. After restart, 74 HTTP-only document/module/optimizer checks return 200 and finalized metadata stays unchanged; evidence is `http-assets-no-hmr.json`, with startup log `server-no-hmr.log`. This does not establish a rendered or completed tracking pass. No redundant source test/build rerun was performed for the operational launch/documentation-only checkpoint.
+
+The user reruns **only tracking**, from the shipping checkout:
+
+```sh
+cd /Users/getumwanna/Documents/GEV
+source /Users/getumwanna/.nvm/nvm.sh
+nvm use 24.22.0
+npm run test:track -- --url http://localhost:4173 --offline-imagery
+```
+
+No repeat of already-passing hub/manual checks is required for this unchanged-source HMR-off rerun. Do not edit runtime/configuration files during the run. Keep rehearsal PID 55130 on 4174 and every prior failure/pass log until the tracking result completes. After verified shipping integration, stop only the verified 4174 listener, preserve logs, and prepare the Phase 2a reverification/Ajv (a)/(b) review before milestone 1. Return to the standard approved dev launch when active implementation resumes; HMR-off is an operational verification mode, not a checked-in product change.

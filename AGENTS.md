@@ -65,3 +65,8 @@ All four Phase 1 milestones and final checks are recorded in `docs/custom/PHASE-
 ## Shipping integration checkpoint
 
 Approved fast-forward installed code `fd136b60ce9421bd8636692232766a5f7d2226e3` in shipping with upstream pin `064d51f7be2675f1c69e16068e9c49d1a60144d1`. Shipping non-browser gates pass (8,176 unit/allocation passes, zero failures, one platform skip; policy, doctor, typecheck, boundaries, formatting, both builds). Root shipping runs at localhost:4173 with persistent HK/Taiwan-off policy and dedicated optimizer cache. User-run hub/tracking/Street Level checks are pending. Keep rehearsal 4174 and all logs until those resolve; then stop only its verified listener and perform the Phase 2a post-pin/Ajv review before milestone 1. No extra implementation approval is implied.
+
+
+## Pending shipping tracking rerun
+
+Shipping hub QA 9/9 matches its latest receipt; the user explicitly reports all Street Level manual checks passed. Tracking is incomplete after 88 passes and a destroyed execution context; do not mark it passed. Root 4173 temporarily runs through Vite `createServer` with `server.hmr:false` to suppress observed dev reloads, preserving all policy/security/provider settings and harness assertions. No source repair was made. Keep 4174/logs until a complete user-run tracking summary is received; only then stop its verified listener and produce the Phase 2a post-pin/Ajv review before milestone 1. Normal HMR should resume with active implementation, not during this bounded verification run. Phase 2b stays deferred.
