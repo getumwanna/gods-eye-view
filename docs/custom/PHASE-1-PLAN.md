@@ -1,6 +1,6 @@
 # Phase 1 file-level plan — foundation
 
-Prepared October 19, 2026, America/New_York. **Planning only. Not authorization to implement, install dependencies, or retrieve component code.**
+Prepared October 19; reviewed October 20, 2026, America/New_York. **User approved Phase 1 implementation conditionally. Hold before milestone 1 until B's license/dependencies and the missing baseline are resolved. Phase 2 is not approved.** See [the component gate review](PHASE-1-COMPONENT-REVIEW.md).
 
 Baseline: upstream `de2138e84c1778fd98a48b7c9fd0b9788c318946`, documentation checkpoint `b5c24009fdb6feb7f82937e0b38710481c75eaa9`, local branch `hub/phase-0-audit`. Current upstream Vite lock is `6.4.3`; no runtime or dependency files were changed to prepare this plan.
 
@@ -18,9 +18,9 @@ The user reviewed and approved the Phase 0 audit and made these decisions:
 | Hosting | Unselected until Phase 4; keep localhost-only |
 | Use and terms | Local personal use only. Verify terms before new sources, recording, or hosting; verify selected component/dependency licenses before adoption |
 
-The user will run `npm run test:track` and manual layer/FPS checks and paste results into `STATUS.md`, using `nvm use 24.22.0` or another supported runtime first. Those results are pending. The message's bracketed `[Or: FPS baseline waived.]` is not recorded as a waiver. This plan does not perform browser tests or replace missing evidence with estimates.
+The latest approval claims baseline results in STATUS using bracketed alternatives, but STATUS contained no new results. The user then confirmed **“I don't have it.”** Tracking/manual layer/FPS results remain unavailable; the bracketed alternative is not recorded as an explicit waiver. Use `nvm use 24.22.0` or another supported runtime when those checks are actually performed. This review does not perform browser tests or replace missing evidence with estimates.
 
-Before implementation: receive the user's visual shell selection and explicit Phase 1 implementation approval, and review the pending baseline results or an explicit waiver. **Choosing a visual option alone does not start implementation.**
+The user selected **B**, conditional on license/dependency review, and explicitly approved Phase 1 under the six-file allowlist below. If B's license is unclear/restrictive or dependencies are heavy, report A's details and stop rather than proceed with either component automatically. That stop condition is active: both available public component records lack an explicit license grant. Review actual baseline results or an explicit waiver before implementation.
 
 ## 2. Phase 1 outcome and boundaries
 
@@ -95,7 +95,7 @@ This is the concrete new-file budget. The selected 21st.dev shell will be adapte
 
 Existing project-owned documentation to update during implementation: `AGENTS.md`, `CUSTOMIZATION.md`, `STATUS.md`, and this plan's implementation/validation references. The Phase 0 audit remains a historical snapshot; decisions and new results belong in current status.
 
-No listed product/config/test file is created by this planning turn. This turn creates only this plan and updates the three project-owned records above. Preview screenshots stay in ignored QA evidence.
+No listed product/config/test file has been created. The original planning checkpoint created this plan and updated three project-owned records. The October 20 review adds `docs/custom/PHASE-1-COMPONENT-REVIEW.md`, records conditional approval and the token correction, and keeps implementation on hold. Preview screenshots stay in ignored QA evidence.
 
 ## 5. Implementation design to approve
 
@@ -117,12 +117,12 @@ Proposed editable defaults: name **Geospatial Intelligence Hub**, short name **G
 | Value kind | Proposed dark text | Proposed light text | Required companion |
 | --- | --- | --- | --- |
 | Live | `#22C55E` | `#15803D` | Visible “Live” text |
-| Refreshed | `#38BDF8` | `#0369A1` | Visible “Refreshed” text |
+| Refreshed | `#2DD4BF` | `#0F766E` | Visible “Refreshed” text |
 | Simulated | `#F59E0B` | `#92400E` | Visible “Simulated” text |
 | Estimated | `#A78BFA` | `#6D28D9` | Visible “Estimated” text |
 | Static | `#94A3B8` | `#475569` | Visible “Static” text |
 
-These are proposed tokens, not a claimed contrast/accessibility pass. Check actual backgrounds, focus, typography and text contrast during implementation. Separate health words (e.g. STALE or UNAVAILABLE) remain visible even when the observation kind is Live. No UI glow/gradient/scan-line effects are added outside the globe's existing sensor styles.
+Refreshed is now distinct teal in both themes, while accent remains `#38BDF8`, as requested. Light surfaces for the calculation are `#F8FAFC` (page) / `#FFFFFF` (panel). The sRGB contrast calculations for Refreshed are 10.32:1 / 9.49:1 on dark page/panel and 5.23:1 / 5.47:1 on light page/panel, all above the 4.5:1 normal-text threshold. See the review for the method. These calculations do not claim a full rendered accessibility pass; check actual backgrounds, focus, typography and states during implementation. The unchanged accent is only 2.14:1 on white, so do not use it as small light-theme text; use a readable text/outline role while retaining the accent as fill/decoration. Dark `#0F172A` text on that accent is 8.33:1. Separate health words remain visible. No new UI glow/gradient/scan-line effects are added outside existing sensor styles.
 
 Apply branding after standalone locale/translation initialization but **before** `application.start()`. Upstream scene startup initializes logo gaze (`src/app/scene.js:36`), whose asynchronous loader replaces marked logo contents (`src/logoGaze.js:61,112-146`). For the custom logo, update both title/loading wrappers and remove their gaze marker before that loader starts. Preserve the upstream gaze behavior when the default upstream logo is intentionally retained. Do not edit templates to solve this race.
 
@@ -146,11 +146,11 @@ Use the existing `src/view/index.js` portable helpers for newly authored basic v
 
 Phase 1 offers a plain “Open globe” action and a validated existing-share-link handoff. Source-guide links may generate a basic supported layer view. The back-to-hub control uses a fixed same-origin destination. Do not add named saved-view storage or promise instantaneous capture of private share-manager state; those are separate Phase 3 concerns. Do not include keys in links, accept arbitrary external navigation, or call private codec methods.
 
-## 6. Visual 21st.dev shortlist — choose one shell
+## 6. Visual 21st.dev shortlist — B selected conditionally
 
 All three canonical catalog previews were viewed in the browser. The screenshots show **third-party catalog demo content**, including sample business figures, names and account controls; none is live GEV data or an implemented hub. Adoption removes those values/content. All options will use the same shared tokens and four project navigation items.
 
-**Recommended: B**, for its neutral panels, restrained hierarchy and dark/light direction. Your selection remains open; no shell is adopted by this plan.
+**Selected: B**, subject to license and dependency review. No shell is adopted. The review could not establish an explicit license grant for B, and the requested A fallback also lacks one in available evidence. Report details in [the component review](PHASE-1-COMPONENT-REVIEW.md); do not proceed automatically.
 
 | Option | Canonical preview | Visual direction observed | Adaptation boundary |
 | --- | --- | --- | --- |
@@ -170,7 +170,7 @@ All three canonical catalog previews were viewed in the browser. The screenshots
 
 ![Option C: public catalog visual preview, sample content only](/Users/getumwanna/Documents/GEV/qa-artifacts/phase-1-shortlist/C-shadcnstore-layout.png)
 
-These captures are ignored local QA evidence, not redistributed application assets. A fresh clone can use the canonical preview links; screenshots themselves are not committed. Licenses have **not yet been verified for adoption**. Visual selection is conditional on license/dependency review; do not assume a component inherits GEV's MIT license.
+These captures are ignored local QA evidence, not redistributed application assets. A fresh clone can use the canonical preview links; screenshots themselves are not committed. B and A remain **uncleared for adoption** because no explicit component license grant was found. This is missing evidence, not a conclusion that either has a restrictive license. Do not infer GEV's MIT license applies.
 
 Retrieval boundary: no Copy/CLI/Remix/install action, registry API, API key or quota-consuming component tool was used. A public catalog response and automatically exposed page panels included embedded source; that incidental source was not used or copied into component files. No selected component implementation exists. After visual selection and explicit implementation approval, verify the selected license/dependencies, retrieve only that selected component through the authorized mechanism, and record provenance before integration. Do not fetch all three candidates.
 
@@ -178,7 +178,7 @@ The request's command-menu candidates are deferred to the Phase 3 global-palette
 
 ## 7. Small implementation milestones after approval
 
-1. **Build and tokens:** review/lock only needed dependencies; add sibling entry and shared tokens; preserve root/panel builds and security headers. Review the exact six upstream diffs before moving on.
+1. **Build and tokens:** after the active license/baseline gates clear, review/lock only needed dependencies; add sibling entry and shared tokens; preserve root/panel builds and security headers. **Show the user the six upstream path diffs after this milestone**, then continue in order. Do not add a new approval pause unless the allowed scope must change.
 2. **Selected shell:** retrieve only the approved, licensed shell; add four working navigation entries, theme toggle and honest empty states; complete `design/COMPONENTS.md`.
 3. **Globe hooks:** early brand/theme binding, fixed back link, passive feed strip and safe key-presence guidance; no provider polling/caches/source changes.
 4. **Handoff and evidence:** full v2 preservation, user/browser verification, production and panel builds, current status/setup/ledger. Commit the working phase and stop for acceptance.

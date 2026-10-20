@@ -1,6 +1,6 @@
 # Geospatial Intelligence Hub status
 
-Updated October 19, 2026, America/New_York. **Phase 0 audit reviewed and approved by the user. Phase 1 plan only is authorized; implementation has not started.**
+Updated October 20, 2026, America/New_York. **Phase 1 implementation is conditionally approved, but held before milestone 1: B's license is unclear and baseline results are unavailable. Phase 2 is not approved.**
 
 ## Completed and verified
 
@@ -15,8 +15,10 @@ Updated October 19, 2026, America/New_York. **Phase 0 audit reviewed and approve
 - User confirmed that the globe renders at `http://localhost:4173/`. This is user-verified visual evidence, not an automated screenshot or per-layer feed test.
 - Delivered the [Phase 0 gap analysis](docs/custom/PHASE-0-AUDIT.md), source/key/coverage inventory, conflicts, and proposed phase sequencing.
 - User approved the audit and explicitly resolved the seven design/scope questions below. Approval is not a new test result or an implementation authorization.
-- Prepared the [Phase 1 file-level plan and visual shortlist](docs/custom/PHASE-1-PLAN.md); it awaits visual selection and implementation approval.
-- No upstream files or provider configuration changed. Five documentation files now comprise the project planning records; raw logs and shortlist screenshots remain ignored locally.
+- User selected B (Arun Dass), conditional on its license/dependencies; directed a report on A if B is unclear/restrictive/heavy; approved Phase 1 with the exact six-file upstream allowlist, four ordered milestones, upstream diff checkpoint after milestone 1, and final acceptance stop.
+- Completed the [component review and token contrast calculations](docs/custom/PHASE-1-COMPONENT-REVIEW.md). B has no explicit component grant in available public evidence; A is also license-unclear. Neither was adopted.
+- Corrected the planned Refreshed tokens to teal `#2DD4BF` dark / `#0F766E` light; kept accent `#38BDF8`. Calculated text contrast is 9.49–10.32:1 on proposed dark surfaces and 5.23–5.47:1 on proposed light surfaces. This is a specification calculation, not a rendered UI test.
+- No upstream files, dependencies, provider configuration, or product assets changed. Six documentation files now comprise project records; raw logs and preview captures remain ignored locally.
 
 ## Phase 0 acceptance
 
@@ -30,10 +32,11 @@ Updated October 19, 2026, America/New_York. **Phase 0 audit reviewed and approve
 
 ## Verification still open
 
-1. **Tracking/browser checks — user-owned, pending:** the user will run `npm run test:track` and paste results here. The earlier automatic localhost denial remains recorded; no workaround or new automated result is claimed.
-2. **Individual layer check — user-owned, pending:** the user will check layers manually and paste outcomes here. Source availability is not proof of current loading. Preserve provider/coverage failures and do not replace unknowns with zeros.
-3. **FPS baseline — user-owned, pending:** the user will record the manual FPS check. The message also included a bracketed alternative, `[Or: FPS baseline waived.]`; this record does not interpret that template wording as an explicit waiver. No baseline has been measured by the agent. Upstream's historical performance page is not this machine's result.
-4. **Phase 1 authorization:** pick a visual shell and approve the file-level implementation plan separately. Plan preparation does not authorize installation, component retrieval, or code changes.
+1. **Tracking/browser checks — unavailable:** STATUS contained no new baseline results; when asked, the user answered “I don't have it.” `npm run test:track` remains unverified. The earlier automatic localhost denial remains recorded; no workaround or new browser result is claimed.
+2. **Individual layer check — unavailable:** no per-layer outcomes were supplied. Source availability is not proof of current loading. Preserve unknown/failure states rather than zeros.
+3. **FPS baseline — unavailable, not waived:** the implementation-approval message still included bracketed alternatives rather than a clear waiver, and the user has no results. No explicit waiver or new measurement is recorded.
+4. **Component license gate — held:** B's public license/source fields are empty; no explicit grant was located. A's fallback details were reviewed and are also license-unclear. Both declare only `lucide-react` beyond the planned React/Tailwind foundation; dependency weight alone does not resolve the missing permission.
+5. **Milestones:** milestone 1 has not started; therefore there are no upstream implementation diffs to show. Preserve conditional approval, resolve the active gates, then work milestones 1–4 in order and stop for Phase 1 acceptance.
 
 ## User decisions accepted with the Phase 0 audit
 
@@ -49,7 +52,7 @@ Updated October 19, 2026, America/New_York. **Phase 0 audit reviewed and approve
 
 ## Future work (not implemented)
 
-- **Phase 1:** proposed six-file upstream allowlist and visual shortlist are in the plan; sibling hub entry/navigation; branding/shared tokens; full-share handoff/back link; passive feed strip/key guidance. No component files or registry/install retrievals exist. Public catalog pages automatically exposed embedded source, which was not adopted.
+- **Phase 1:** approved six-file scope in the plan; B selected conditionally, currently stopped by missing license evidence and baseline. Sibling hub, shared tokens, handoff and feed/key presentation are unimplemented. No component was adopted, installed, or retrieved through a quota-based 21st action.
 - **Phase 2:** canonical `content/sources.json`; searchable Knowledge Center/Data Sources/Case Studies; shared-cache dashboard with region filters, source/freshness/coverage, and honest unavailable states. Add upcoming-launch query; current upstream query is past-only.
 - **Phase 3:** home region; named saved views/presets/entity links; self-contained workspace import/export including scenes/custom datasets and excluding secrets; persistence around the existing GeoJSON/KML/KMZ/GPX importer; global palette; AI setup content. Recorder/history and Ask Library are optional, separately reviewed work.
 - **Phase 4:** desktop/mobile testing; measured performance comparison; complete dependency/data/media/security audit; choose hosting topology and document deployment. Desktop packaging remains optional.

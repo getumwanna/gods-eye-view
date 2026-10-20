@@ -3,7 +3,7 @@
 ## Provenance
 
 - Request: Geospatial Intelligence Hub, v2, October 19, 2026.
-- Authorized scope: Phase 0 installation/baseline/audit completed and audit approved; Phase 1 planning and visual shortlist only. Implementation is not authorized yet.
+- Authorized scope: Phase 0 audit approved; Phase 1 implementation approved on October 20, 2026, subject to selected B's license/dependency review, baseline resolution, the exact six-file upstream allowlist, milestone order/diff checkpoint, and final acceptance. Phase 2 is not approved. Implementation is currently held because license evidence and baseline results are missing.
 - Upstream: https://github.com/bilawalsidhu/gods-eye-view
 - User-owned fork: https://github.com/getumwanna/gods-eye-view
 - Verified upstream pin: `de2138e84c1778fd98a48b7c9fd0b9788c318946`.
@@ -18,7 +18,7 @@
 
 ## Upstream files touched
 
-**None.** Work through the Phase 1 planning checkpoint is documentation only. Application code, lockfile, dependencies declared in the manifest, templates, assets, provider configuration, and existing security controls have not been customized. Expected future upstream edits are a proposal in the Phase 1 plan, not edits already made.
+**None.** Work through the Phase 1 component-review checkpoint is documentation only. Application code, lockfile, declared dependencies, templates, assets, provider configuration, and security controls have not been customized. The six approved upstream paths have no implementation diff yet; milestone 1 has not started.
 
 ## Added files
 
@@ -29,6 +29,7 @@
 | `STATUS.md` | Verified state, outstanding verification, dependencies, and phase gates |
 | `AGENTS.md` | Architecture, commands, evidence rules, and authorization boundaries |
 | `docs/custom/PHASE-1-PLAN.md` | Exact proposed upstream/new-file scope, visual component shortlist, implementation and verification gates |
+| `docs/custom/PHASE-1-COMPONENT-REVIEW.md` | B license/dependency gate, A fallback details, and independently computed Refreshed contrast evidence |
 
 ## Local installation artifacts
 
@@ -40,7 +41,7 @@ Visual catalog captures for the Phase 1 shortlist are local review evidence in i
 
 ## Future customization rules
 
-1. Phase 0 gap analysis is approved. Obtain approval of the Phase 1 file-level plan, the visual shell selection, and the remaining baseline results or explicit waiver before changing application code or retrieving component code.
+1. Phase 0 audit and conditional Phase 1 plan approval are recorded. Resolve selected component permission/dependencies and the missing baseline before implementation. Do not treat B's selection as permission to adopt unlicensed source or automatically switch to A.
 2. Prefer new hub/custom modules over upstream edits. Record each eventual upstream edit here with its purpose and owning phase.
 3. Preserve the standalone vanilla/Cesium globe. Add a separate React hub entry on the same local server; retain share links as the handoff contract.
 4. Preserve upstream Host/origin checks, localhost binding, attribution, responsible-use restrictions, and provider request budgets.

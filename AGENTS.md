@@ -2,11 +2,11 @@
 
 ## Scope and authorization
 
-The user requested a local hub that wraps and extends God's Eye View. The user has reviewed and approved the Phase 0 audit. The currently authorized next work is **the Phase 1 file-level plan and visual 21st.dev shortlist only**. Phase 1 implementation, dependency installation, and component-code retrieval remain unapproved.
+The user requested a local hub that wraps and extends God's Eye View. The Phase 0 audit and Phase 1 implementation plan are approved. Phase 1 is **conditional on component license/dependency review and baseline resolution**, using the exact six-file upstream allowlist in `docs/custom/PHASE-1-PLAN.md`. Shell B (Arun Dass) is selected conditionally. If its license is unclear/restrictive or dependencies are heavy, report A's details and stop rather than implement a fallback. The current review found no explicit component license grant for B or A, so implementation/dependency installation remain on hold. See `docs/custom/PHASE-1-COMPONENT-REVIEW.md`.
 
 At session start read `CUSTOMIZATION.md`, `STATUS.md`, and `docs/custom/PHASE-0-AUDIT.md`; inspect HEAD, branch, status, and diff. Read the current upstream `docs/CURRENT-STATE.md`, `DATA_SOURCES.md`, `SECURITY.md`, `CONTRIBUTING.md`, and `TESTING.md` for the feature being considered.
 
-Before each new phase, present a short plan listing files to create/change and wait for explicit approval. The Phase 0 gap analysis is approved; the user owns the remaining tracking, manual layer, and FPS checks and will paste results into STATUS.md. No FPS waiver has been recorded from the bracketed alternative in the approval message. Address those results or an explicit waiver before implementation. Stop at every phase gate. A documentation checkpoint or visual component choice is not implementation approval.
+Before each new phase, present a short file-level plan and wait for explicit approval. Phase 1 approval is now recorded; Phase 2 is not approved. The user said they do not have the outstanding tracking/manual layer/FPS results. No explicit baseline waiver has been recorded from the bracketed alternatives. Address those results or an explicit waiver before implementation. After milestone 1 show the six upstream path diffs, then continue milestones in order; stop for acceptance at the end of Phase 1. Do not add another milestone-1 approval gate unless the authorized scope must change.
 
 ## Architecture
 
@@ -53,4 +53,4 @@ Do not use `scripts/dev-fresh.sh` for a deliberately keyless check: the macOS la
 
 During Phase 0, automatic browser approval rejected access to `http://localhost:4173/`. Do not work around that denial through another browser, raw CDP, a browser-driving shell script, or indirect page execution. The user separately confirmed that the globe renders. Automated browser gates, individual layer load checks, and GPU/FPS measurements remain unverified. Reassess permitted tooling with the user before attempting those checks in a later session.
 
-Phase 0 audit approval is recorded; outstanding verification is not a passing result or a waiver. `STATUS.md` is the authoritative local work list. See `docs/custom/PHASE-1-PLAN.md` for the proposed six-file upstream edit allowlist and selection/implementation gates.
+Phase 0 audit and conditional Phase 1 implementation approval are recorded; missing verification is not a passing result or a waiver. `STATUS.md` is the authoritative local work list. Preserve accent `#38BDF8`; Refreshed is planned as distinct teal `#2DD4BF` (dark) / `#0F766E` (light), with actual rendered contrast still to be checked after implementation. The license-review stop condition is active; no product changes have started.
