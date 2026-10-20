@@ -25,6 +25,23 @@ test('hub wrapper adds isolated HTML input while preserving standalone security 
   assert.deepEqual(hub.define, direct.define);
 });
 
+test('hub dev cache is separate from test servers and keeps generated JSX runtimes ready', () => {
+  const direct = standaloneConfig({ command: 'serve', mode: 'test' });
+  const hub = hubConfig({ command: 'serve', mode: 'test' });
+  const build = hubConfig({ command: 'build', mode: 'test' });
+  assert.ok(hub.cacheDir?.endsWith('.vite-custom-hub'));
+  assert.notEqual(hub.cacheDir, direct.cacheDir);
+  assert.equal(build.cacheDir, 'node_modules/.vite-build');
+  const includes = hub.optimizeDeps.include;
+  for (const dependency of [
+    ...direct.optimizeDeps.include,
+    'react/jsx-runtime',
+    'react/jsx-dev-runtime',
+  ]) {
+    assert.ok(includes.includes(dependency), `pre-bundle ${dependency}`);
+  }
+});
+
 test('explicit build inputs preserve browser-only defines, plugin order and loopback protections', () => {
   const plugin = { name: 'fixture-provider' };
   const config = createBrowserViteConfig({

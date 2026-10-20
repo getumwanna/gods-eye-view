@@ -295,8 +295,8 @@ export function mountKeyBadges({
         );
       }
       item.button.disabled = powerState !== 'ready';
-      // i18n-ignore: Phase 1 custom provider-settings tooltip text is intentionally English.
       item.button.title =
+        // i18n-ignore: Phase 1 custom provider-settings tooltip text is intentionally English.
         powerState === 'ready'
           ? 'Open existing GEV provider settings'
           : powerState === 'initializing'

@@ -122,8 +122,8 @@ export function mountFeedStrip({
   const list = documentRef.createElement('div');
   const empty = documentRef.createElement('p');
   empty.className = 'gih-status-note';
-  // i18n-ignore: Phase 1 custom status guidance is intentionally English; core globe localization is preserved.
   empty.textContent =
+    // i18n-ignore: Phase 1 custom status guidance is intentionally English; core globe localization is preserved.
     'No active layers. Use the existing layer controls to choose a feed.';
   panel.append(panelHeading, list, empty);
   root.append(summary, panel);

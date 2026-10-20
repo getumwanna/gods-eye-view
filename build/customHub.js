@@ -8,6 +8,20 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 export function withHubConfig(standalone) {
   return {
     ...standalone,
+    // Integration-test servers use Vite's default cache in this same checkout.
+    cacheDir:
+      standalone.cacheDir ?? path.join(root, 'node_modules/.vite-custom-hub'),
+    optimizeDeps: {
+      ...standalone.optimizeDeps,
+      include: [
+        ...new Set([
+          ...(standalone.optimizeDeps?.include || []),
+          // esbuild injects these imports after dependency scanning.
+          'react/jsx-runtime',
+          'react/jsx-dev-runtime',
+        ]),
+      ],
+    },
     plugins: [...standalone.plugins, ...tailwindcss()],
     resolve: {
       ...standalone.resolve,
