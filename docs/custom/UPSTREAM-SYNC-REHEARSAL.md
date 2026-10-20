@@ -1,6 +1,6 @@
 # Frozen upstream-sync rehearsal report
 
-October 20, 2026. **Non-browser checks complete; user-run `qa:hub` and `test:track` results pending. Adoption is not approved.** The user approved the isolated rehearsal, frozen incoming upstream files, and six-file manual repair allowlist. No Phase 2a implementation was performed.
+October 20, 2026. **Initial user-run QA failed at startup; the bounded recovery passes non-browser validation and HTTP asset checks. Fresh user browser/tracking results are pending. Adoption is not approved.** The user approved this isolated rehearsal and its bounded repairs. Phase 1 shipping acceptance remains historical; no Phase 2a implementation was performed.
 
 ## Inputs, result, and isolation
 
@@ -10,9 +10,11 @@ October 20, 2026. **Non-browser checks complete; user-run `qa:hub` and `test:tra
 | Authoritative shipping upstream pin | `de2138e84c1778fd98a48b7c9fd0b9788c318946` — unchanged |
 | Approved/fetched upstream target | `064d51f7be2675f1c69e16068e9c49d1a60144d1` |
 | Isolated branch / worktree | `codex/upstream-sync-rehearsal` / `/Users/getumwanna/.codex/worktrees/upstream-sync-rehearsal/GEV` |
-| Tested code / merge checkpoint | `4477dd2154b216a2daf73cc696febb48b0e2f313` |
+| Initial tested code / merge checkpoint | `4477dd2154b216a2daf73cc696febb48b0e2f313` |
 | Incoming diff, pin to target | 151 files; 7,379 insertions, 16,802 deletions |
 | Conflicts | None; all six Phase 1 integrations survived the merge |
+| Startup cache recovery checkpoint | `f5bda47c749267f2698856f0605a0550eaf165c0` |
+| QA diagnostics follow-up checkpoint | `a697eeaac39c8eb8d18c9583e08e8f48ad32579c` |
 | Runtime | Node `24.22.0`, npm `11.19.1` |
 | Local evidence directory | `.gev-logs/upstream-sync-064d51f7.qhpQdW/` (ignored; no credentials recorded) |
 
@@ -22,24 +24,27 @@ The shipping checkout remains clean at its starting HEAD; its existing `[::1]:41
 
 ## Every manual repair and documentation update
 
-Incoming upstream files are imported changes, not manual repairs. Among the six Phase 1 upstream customization paths, upstream changed only `package.json`, removing the obsolete `qa:panel-resize` command; it remains removed. Dependencies, lockfile, root wrapper, bootstrap integration, stylesheet ordering, and standalone/panel separation were preserved. No functional compatibility repair was needed.
+Incoming upstream files are imported changes, not manual repairs. Among the six Phase 1 upstream customization paths, upstream changed only `package.json`, removing the obsolete `qa:panel-resize` command; it remains removed. Dependencies, lockfile, root wrapper, bootstrap integration, stylesheet ordering, and standalone/panel separation were preserved. No functional compatibility repair was needed at the initial merge. The subsequent startup repair below changes only the project-owned hub build wrapper and related regression/annotation coverage.
 
-The mandatory formatting check initially failed on ten existing customization files. Each repair was independently verified as exactly the installed Prettier output using the repository's resolved configuration. The complete repair list is:
+The mandatory formatting check initially failed on ten existing customization files. Each repair was independently verified as exactly the installed Prettier output using the repository's resolved configuration. The complete repair list, including startup follow-up, is:
 
 | Path | Relation to six-file manual allowlist | Repair |
 | --- | --- | --- |
-| `src/tooling/viteBuild.test.mjs` | Inside allowlist | Formatting only |
+| `src/tooling/viteBuild.test.mjs` | Inside allowlist | Formatting plus regression for dev-cache separation, build-cache preservation, and generated JSX runtime pre-bundling |
 | `src/custom/globe/bootstrap.js` | Outside; existing project-owned file | Formatting only |
 | `src/custom/globe/branding.js` | Outside; existing project-owned file | Formatting only |
-| `src/custom/globe/feedStrip.js` | Outside; existing project-owned file | Formatting only |
-| `src/custom/globe/keyBadges.js` | Outside; existing project-owned file | Formatting only |
+| `src/custom/globe/feedStrip.js` | Outside; existing project-owned file | Formatting; relocate existing English-text opt-out annotation to the formatted assignment RHS, preserving its scope |
+| `src/custom/globe/keyBadges.js` | Outside; existing project-owned file | Formatting; relocate existing English-text opt-out annotation to the formatted assignment RHS, preserving its scope |
 | `src/custom/shared/branding.js` | Outside; existing project-owned file | Formatting only |
 | `src/custom/shared/keyAccess.js` | Outside; existing project-owned file | Formatting only |
 | `src/custom/shared/layerMetadata.js` | Outside; existing project-owned file | Formatting only; no source facts changed |
 | `src/custom/shared/shareHandoff.js` | Outside; existing project-owned file | Formatting only |
 | `src/custom/shared/theme.js` | Outside; existing project-owned file | Formatting only |
+| `build/customHub.js` | Outside; existing project-owned file | Isolate the root dev optimizer cache from Vite test servers; preserve explicit build cache and existing optimizer settings; pre-bundle both generated JSX runtimes |
+| `scripts/qa-custom-hub-diagnostics.mjs` | Outside; existing project-owned file | Recognize both the default and dedicated optimizer cache paths; preserve redacted failure categories |
+| `src/custom/hub/qaHarness.test.mjs` | Outside; existing project-owned file | Regression for dedicated-cache outdated-dependency classification and URL redaction |
 
-`format-repairs.json` records before/after hashes. No other original-upstream manual file was edited. Separate project-owned documentation updates outside the six-file list are **this new report**, `AGENTS.md`, `CUSTOMIZATION.md`, `STATUS.md`, and `docs/custom/PHASE-2A-PLAN.md`: execution/result status, repair provenance, adoption gates, and the requested future Ajv comparison. These are documentation updates, not application repairs. No other project-owned file was manually changed.
+`format-repairs.json` records before/after hashes for the initial ten formatting-only edits. The two annotation relocations and wrapper repair are subsequent follow-up, not part of that initial formatter-equivalence claim. No other original-upstream manual file was edited. Separate project-owned documentation updates outside the six-file list are **this new report**, `AGENTS.md`, `CUSTOMIZATION.md`, `STATUS.md`, and `docs/custom/PHASE-2A-PLAN.md`: execution/result status, repair provenance, adoption gates, and the requested future Ajv comparison. These are documentation updates, not application repairs. No other project-owned file was manually changed.
 
 ## Layer, source, provider-terms, and setup changes
 
@@ -60,7 +65,7 @@ No layer registration or layer key-ID registry changes were found. Ontario's new
 
 **Adoption must preserve `CCTV_HK_ENABLED=0 CCTV_TAIWAN_ENABLED=0` until current primary terms and configuration are reviewed and activation is separately authorized.** Approving a code pin does not itself configure Ontario credentials or approve the two new sources. The stricter rehearsal flags below also disable acquisition from existing live camera packs; that restriction is a test configuration, not a proposed permanent loss of existing CCTV functionality.
 
-## Validation and running server
+## Initial validation and server checkpoint
 
 The worktree has no Vite dotenv files or inherited configured provider credentials in the inspected set, including Ontario/TfL/Gemini/legacy OpenSky extras. `inspectSetup({includeKeychain:false, authoritativeEnvironment:true})` reports no configured credentials. Ordinary doctor passed; its metadata-only Keychain availability checks are not proof that a running server has keys. Direct Vite launch does not load Keychain values.
 
@@ -78,8 +83,8 @@ Server launch: `HOST=localhost PORT=4174 CCTV_HK_ENABLED=0 CCTV_TAIWAN_ENABLED=0
 | `npm run build` | Pass after repairs; 2,898 modules, 3.87 s reported. Existing large-chunk warning remains. `build.log` |
 | `npm run build:panel` | Pass after repairs; 871 modules, 3.49 s reported. `panel.log` |
 | `git diff --check` | Pass |
-| User-run `qa:hub` at 4174 | **Pending**; no result or waiver claimed |
-| User-run `test:track` at 4174 | **Pending**; synthetic fixtures, no result or waiver claimed |
+| Initial user-run `qa:hub` at 4174 | **Failed: 0/9**, all blocked by hub startup / outdated optimized dependencies. Receipt `qa-custom-hub-2026-10-20T18-28-37-124Z.json`; fresh rerun pending |
+| Initial user-run `test:track` at 4174 | **Failed at startup**: 60-second wait for app globals at `scripts/track-regression.mjs:482`; no tracking assertions ran. User-pasted output; fresh rerun pending |
 | Changed Street Level browser fixture gate | Not run: strict fixture gate requires a dummy Mapillary token in the bundle; the rehearsal stays keyless. Unit fixtures passed. Removed `qa:panel-resize` is not a gate to restore or run. |
 | Live provider outcomes / GPU-FPS / manual changed-panel views | Not observed. Historical Phase 0 waiver is not a new pass or rehearsal waiver. |
 
@@ -93,11 +98,42 @@ QA_BASE_URL=http://localhost:4174 npm run qa:hub
 npm run test:track -- --url http://localhost:4174 --offline-imagery
 ```
 
-Record both outputs and receipt origins here when supplied. `--offline-imagery` replaces known Esri/OSM tile images only; other metadata/terrain resources may still use the network. No agent-driven browser harness or indirect browser execution was used.
+The initial supplied outputs are recorded above and in the startup section below; record fresh rerun outputs and receipt origins when supplied. `--offline-imagery` replaces known Esri/OSM tile images only; other metadata/terrain resources may still use the network. No agent-driven browser harness or indirect browser execution was used.
+
+## Startup failure, diagnosis, and bounded recovery
+
+The user supplied both failures from localhost:4174. The hub assertion-only receipt is timestamped `2026-10-20T18:28:37.125Z`, origin `http://localhost:4174`: document HTTP 200, three failed optimized-dependency requests, all three classified `504 Outdated Optimize Dep`, no other failed local document/module category, and zero page errors/setup reads/blocked acquisitions. All nine product checks were blocked; zero page errors is not successful startup. The receipt intentionally does not retain module URLs/hashes, so it does not identify the three exact dependencies.
+
+Tracking timed out waiting for `window.__godsEyeView.viewer` and `.dataManager` before synthetic assertions. Zero served fixture tiles does not establish an imagery defect. A common module-startup cause is plausible, but the tracking output alone does not prove the same cause.
+
+The live server's default `.vite` cache had only `deps_temp_052887cf` and no finalized `deps/_metadata.json`. The server log also records late discovery of `react/jsx-dev-runtime`. Root had started the server before running the full unit suite. Several suite fixtures create Vite servers rooted at this checkout with `configFile:false` and no separate cache: `src/tooling/allowedHosts.test.mjs:109`, `src/tools/localRoute.test.mjs:243`, and `src/data/trafficTiming.test.mjs:160`. Installed Vite removes a cached dependency directory when its config hash changes (`loadCachedDepOptimizationMetadata`, installed Vite chunk `dep-Dm0c1Wj2.js:14790–14840`). Test fixtures and the running server therefore shared a destructive cache boundary. The recorded timing supports this as the high-confidence trigger, not a browser-observed causal trace. Production builds already had their own `.vite-build` cache.
+
+Stopped only the verified rehearsal Vite PID `57723`; shipping PID `6863` / port 4173 remained running. Preserved the incomplete generated cache in `.gev-logs/upstream-sync-startup-recovery/vite-cache-before`. The existing project-owned wrapper now defaults to `node_modules/.vite-custom-hub` while honoring an explicit upstream `cacheDir`, including production `.vite-build`. Existing optimizer options/includes are preserved, with generated `react/jsx-runtime` and `react/jsx-dev-runtime` added up front. No provider/security/plugin-order change, package/lock change, QA-assertion relaxation, automatic browser retry, or original-upstream tracking-script edit was made.
+
+The focused config regression failed before the repair and passed after it. A full rerun then found an existing localization opt-out problem introduced by the initial formatting: the scanner associates an assignment with its first RHS line, so comments before wrapped assignments no longer covered four English strings. Moved the existing annotations in `feedStrip.js` and `keyBadges.js` next to those RHS expressions. UI text and its intentionally English policy are unchanged; the scanner and translation catalogs were not altered. The intermediate failed suite log is retained, not replaced by the later result.
+
+Recovery evidence is under `.gev-logs/upstream-sync-startup-recovery/`. Finish the full suite and builds before pre-bundling and restarting the rehearsal; user browser reruns remain required. Recovery results follow; HTTP checks do not establish rendered application readiness.
+
+| Recovery check | Result / evidence in recovery log directory |
+| --- | --- |
+| Cache/JSX regression | Fails before repair; passes after. Existing config/globe group: 21/21 passed. `regression-before.log`, `regression-after.log` |
+| Localization annotation check | Passed after annotation relocation. Intermediate full-suite failure remains in `unit.log`; focused result in `i18n.log` |
+| Full allocation-gated suite | **8,169 passed, one native Windows DACL skip, zero failures**, before the diagnostic-only follow-up. `unit-final.log` |
+| Typecheck / package and import boundaries | Passed. `typecheck.log`, `boundaries.log` |
+| Formatting / doctor | Passed; 1,449 source files checked. `format-final.log`, `doctor.log` |
+| Root / panel production builds | Passed; 4.08 s / 3.58 s reported. Existing chunk-size warnings remain. `build.log`, `panel.log` |
+| Explicit pre-bundle | Passed with installed Vite optimizer after all tests/builds completed; finalized metadata has 23 optimized entries including both JSX runtimes. `prebundle.log`, dedicated cache `_metadata.json` |
+| Fresh server context | No configured inherited provider variables, dotenv files, or setup credentials. `server-context.json` |
+| Rehearsal restart | PID `55130`, `[::1]:4174`, same keyless/provider-disable launch flags; shipping PID `6863` / `[::1]:4173` unchanged. `server.log` |
+| HTTP asset verification | **54/54 HTTP 200**: root/hub documents, both source entry modules, and all 23 optimized entry URLs, each checked twice. Finalized cache metadata unchanged across both passes. No app JavaScript or browser execution. `http-assets.json` |
+| QA diagnostic-only follow-up | New cache path was initially classified as a generic module failure. Extended only the explicit optimizer-path classification; new regression fails before and all six focused offline checks pass afterward. No browser or Vite fixture server launched. `diagnostics-before.log`, `diagnostics-after.log`; final formatting also passes (`format-diagnostics.log`) |
+| Fresh user `qa:hub` / `test:track` | **Pending**. The initial failed outcomes above remain failed; no pass or waiver inferred. |
+
+The diagnostic follow-up affects only the user-run QA harness, not the served application or its optimizer configuration. It does not relax a pass condition or add retries. The rehearsal server remains running for the user's exact commands above. No test fixture server or production build was run after the restart. Dedicated cache separation also prevents the inspected default-cache fixtures from deleting this server's optimized assets. If the worktree is later archived, preserve ignored receipts/logs separately before removal.
 
 ## Adoption decision and next review
 
-Non-browser gates pass and no functional compatibility repair was required. The adoption decision remains pending user QA and report review. Material tradeoffs are Ontario's keyless coverage loss, new default-on camera sources that must remain disabled pending review, narrower Street Level overview coverage and removed panel modes, and improved satellite stale provenance. The panel/Street Level redesign still has visual/interaction risk beyond what source inspection proves. This report is not acceptance or a shipping merge instruction.
+Initial non-browser results and subsequent startup repairs are recorded above. The adoption decision remains pending fresh user QA and report review. Material tradeoffs are Ontario's keyless coverage loss, new default-on camera sources that must remain disabled pending review, narrower Street Level overview coverage and removed panel modes, and improved satellite stale provenance. The panel/Street Level redesign still has visual/interaction risk beyond what source inspection proves. This report is not acceptance or a shipping merge instruction.
 
 After the user decides whether to adopt or retain the old pin, reverify Phase 2a against that exact decision: layer IDs, key IDs and product-specific credentials, source/coverage claims, admitted doc files/sections and hashes, original article/case facts, dependencies, and exact file paths. Present changes before milestone 1; obtain required amendment approvals. The two-file Phase 2a upstream allowlist and the milestone 2/3 pre-commit editorial stops remain in force. Phase 2b planning stays deferred until 2a ships and is accepted.
 

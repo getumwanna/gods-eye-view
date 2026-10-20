@@ -1,6 +1,6 @@
 # Geospatial Intelligence Hub status
 
-Updated October 20, 2026, America/New_York. **Rehearsal worktree status:** approved frozen upstream `064d51f7` merged on `codex/upstream-sync-rehearsal`; non-browser gates pass; user `qa:hub`/`test:track` results at localhost:4174 are pending. Shipping HEAD `7595ca34` and authoritative pin `de2138e8` are unchanged. See `docs/custom/UPSTREAM-SYNC-REHEARSAL.md`. Adoption is not approved. Phase 1 remains accepted; historical Phase 0 baselines remain waived, not passed. Phase 2a implementation and Phase 2b planning remain gated.
+Updated October 20, 2026, America/New_York. **Rehearsal startup recovery:** initial user `qa:hub` failed 0/9 on outdated optimized dependencies; tracking timed out before assertions. Cache-isolation repair `f5bda47c` passes 8,169 tests (one Windows skip), both builds, typecheck/boundaries/formatting/doctor and 54 HTTP asset checks. Port 4174 restarted with finalized dedicated cache; fresh user results pending. Shipping HEAD/pin and port 4173 are unchanged. Adoption and Phase 2a implementation remain gated; Phase 2b planning deferred.
 
 ## Completed and verified
 
@@ -36,7 +36,7 @@ Updated October 20, 2026, America/New_York. **Rehearsal worktree status:** appro
 2. **Component choice — resolved:** official MIT shadcn/ui Radix sidebar approved; B/A public-license findings remain historical. No 21st component was adopted.
 3. **Milestone 1 — implemented and checked:** six upstream path diffs shown to the user in `docs/custom/PHASE-1-M1-UPSTREAM.patch`. Config tests: 8 passed; foundation tests: 3 passed; contrast calculation test: 1 passed; typecheck, package/import boundaries, doctor, root build, and panel build passed. See the validation record for exact receipts and limits.
 4. **Phase 1 acceptance — accepted:** the user reports **9/9 `qa:hub` checks passed** and explicitly approved acceptance. Matching receipt: `.gev-logs/qa-custom-hub-2026-10-20T16-48-33-898Z.json`, timestamp `2026-10-20T16:48:33.899Z`, overall `passed: true`. Dependency review and browser acceptance conditions are resolved. All five earlier failures and corrections remain in `docs/custom/PHASE-1-VALIDATION.md`; the agent did not execute the CLI browser harness.
-5. **Phase gates:** The user approved the isolated rehearsal execution and incoming frozen upstream diff with the six-file manual repair allowlist. Non-browser checks pass; user browser/tracking outcomes and report/adoption review are pending. Rehearsal server is on localhost:4174; preserve shipping port 4173. Only after the adoption decision, reverify the approved Phase 2a plan against the decided pin and present any file/dependency-role changes before milestone 1. Milestones 2 and 3 still stop for user editorial review before committing. Phase 2b planning stays deferred until 2a ships and is accepted.
+5. **Phase gates:** Isolated rehearsal execution/repairs are approved. Initial user browser/tracking results failed at startup and are preserved in the report. Recovery non-browser checks pass; await fresh user runs at localhost:4174, report review, and a separate adoption decision. Only afterward reverify the Phase 2a plan against the decided pin and present any file/dependency-role changes before milestone 1. Milestones 2/3 still stop for user editorial review before committing. Phase 2b planning waits until 2a ships and is accepted.
 
 ## User decisions accepted with the Phase 0 audit
 
@@ -67,3 +67,9 @@ See the audit for provider-specific caveats, including noncommercial Nepal/cable
 ## Isolated upstream-sync rehearsal checkpoint
 
 Rehearsal code checkpoint: `4477dd2154b216a2daf73cc696febb48b0e2f313`. Server working directory: `/Users/getumwanna/.codex/worktrees/upstream-sync-rehearsal/GEV`. User commands are in the report. `npm ci`, doctor, typecheck, package/import boundaries, full allocation-gated suite (8,168 passed, one Windows skip), final formatting (1,449 files), post-format config/globe checks (20 passed), and both builds pass. Nine project-owned formatting repairs and the allowlisted config-test formatting repair are individually listed in the report, alongside all planning-document updates. New Hong Kong/Taiwan camera packs and all live CCTV pack acquisition are disabled on this bounded rehearsal server. No new credentials/provider activation or Phase 2a content/dependencies.
+
+### Rehearsal user failure and startup recovery
+
+See `docs/custom/UPSTREAM-SYNC-REHEARSAL.md` for the failed assertion-only receipt (`2026-10-20T18:28:37.125Z`, origin 4174), tracking startup timeout, cache-collision evidence, every follow-up repair, and retained intermediate localization-check failure. Recovery changes the existing custom wrapper plus the allowlisted config test, and relocates existing opt-out comments in two existing custom files. All checks completed before pre-bundling/restarting port 4174; user browser reruns are still required. No harness assertions were weakened, no new source/key enabled, and no Phase 2a dependency or feature introduced.
+
+QA diagnostic follow-up `a697eeaa` recognizes the dedicated cache path and passes six focused offline regression checks. This harness-only change follows the full suite/build results; it starts no browser or Vite fixture server. Both custom paths are listed in the rehearsal report. Fresh user runs remain pending.
