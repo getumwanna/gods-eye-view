@@ -1,13 +1,13 @@
 # Frozen upstream-sync rehearsal report
 
-October 20, 2026. **User rehearsal reruns passed: `qa:hub` 9/9; synthetic `test:track --offline-imagery` 109 passed / 0 failed / 0 skipped. Adoption is approved with conditions; shipping integration awaits approval of `UPSTREAM-INTEGRATION-PLAN.md`.** All earlier failed runs remain recorded. No shipping merge or Phase 2a implementation has occurred.
+October 20, 2026. **User rehearsal reruns passed: `qa:hub` 9/9; synthetic `test:track --offline-imagery` 109 passed / 0 failed / 0 skipped. Adoption and the integration execution plan are approved. The isolated integration candidate implements the camera policy; shipping fast-forward and shipping/browser verification remain pending.** All earlier failed runs remain recorded. Phase 2a implementation has not started.
 
 ## Inputs, result, and isolation
 
 | Item | Recorded value |
 | --- | --- |
 | Shipping branch / clean starting HEAD | `codex/phase-1-foundation` / `7595ca34884e4f6a8159077b3d44a84e38ce0950` |
-| Authoritative shipping upstream pin | `de2138e84c1778fd98a48b7c9fd0b9788c318946` — unchanged |
+| Initial shipping upstream pin | `de2138e84c1778fd98a48b7c9fd0b9788c318946`; approved integration candidate pin is `064d51f7be2675f1c69e16068e9c49d1a60144d1`, pending shipping fast-forward and verification |
 | Approved/fetched upstream target | `064d51f7be2675f1c69e16068e9c49d1a60144d1` |
 | Isolated branch / worktree | `codex/upstream-sync-rehearsal` / `/Users/getumwanna/.codex/worktrees/upstream-sync-rehearsal/GEV` |
 | Initial tested code / merge checkpoint | `4477dd2154b216a2daf73cc696febb48b0e2f313` |
@@ -40,11 +40,11 @@ The mandatory formatting check initially failed on ten existing customization fi
 | `src/custom/shared/layerMetadata.js` | Outside; existing project-owned file | Formatting only; no source facts changed |
 | `src/custom/shared/shareHandoff.js` | Outside; existing project-owned file | Formatting only |
 | `src/custom/shared/theme.js` | Outside; existing project-owned file | Formatting only |
-| `build/customHub.js` | Outside; existing project-owned file | Isolate the root dev optimizer cache from Vite test servers; preserve explicit build cache and existing optimizer settings; pre-bundle both generated JSX runtimes |
+| `build/customHub.js` | Outside; existing project-owned file | Carry forward isolated root dev optimizer cache, explicit build cache and both JSX-runtime pre-bundles; integration additionally applies the reviewed Hong Kong/Taiwan-off policy before the standalone factory and reasserts it in the hub wrapper |
 | `scripts/qa-custom-hub-diagnostics.mjs` | Outside; existing project-owned file | Recognize both the default and dedicated optimizer cache paths; preserve redacted failure categories |
 | `src/custom/hub/qaHarness.test.mjs` | Outside; existing project-owned file | Regression for dedicated-cache outdated-dependency classification and URL redaction |
 
-`format-repairs.json` records before/after hashes for the initial ten formatting-only edits. The two annotation relocations and wrapper repair are subsequent follow-up, not part of that initial formatter-equivalence claim. No other original-upstream manual file was edited. Separate project-owned documentation updates outside the six-file list are **this new report**, `AGENTS.md`, `CUSTOMIZATION.md`, `STATUS.md`, and `docs/custom/PHASE-2A-PLAN.md`: execution/result status, repair provenance, adoption gates, and the requested future Ajv comparison. These are documentation updates, not application repairs. No other project-owned file was manually changed.
+`format-repairs.json` records before/after hashes for the initial ten formatting-only edits. The two annotation relocations and wrapper repair are subsequent follow-up, not part of that initial formatter-equivalence claim. No other original-upstream manual file was edited. The rehearsal also updated this report, `AGENTS.md`, `CUSTOMIZATION.md`, `STATUS.md`, and `docs/custom/PHASE-2A-PLAN.md` for execution/result status, repair provenance, and adoption gates. Later integration edits are listed separately below; documentation changes are not application repairs.
 
 ## Layer, source, provider-terms, and setup changes
 
@@ -132,15 +132,32 @@ Recovery evidence is under `.gev-logs/upstream-sync-startup-recovery/`. Finish t
 
 The diagnostic follow-up affects only the user-run QA harness, not the served application or its optimizer configuration. It does not relax a pass condition or add retries. The rehearsal server remains running until approved shipping integration is verified. No test fixture server or production build was run after the restart. Dedicated cache separation also prevents the inspected default-cache fixtures from deleting this server's optimized assets. If the worktree is later archived, preserve ignored receipts/logs separately before removal.
 
+## Approved integration candidate — shipping verification pending
+
+The integration execution plan is approved. The separate integration worktree carries the rehearsal repairs and adds exactly these project-owned policy repairs outside the six-file original-upstream manual allowlist:
+
+| Path | Integration repair |
+| --- | --- |
+| `build/customProviderPolicy.js` | New tracked policy forces both camera-pack switches to `0`, acknowledges that state without secrets, and checks the reviewed catalog/dotenv-loading contracts before startup |
+| `scripts/check-custom-provider-policy.mjs` | New offline actual-catalog proof with clean child environments, hostile inherited/dotenv enabling flags, independent restarts, mocked HTTP, and an Austin fixture positive control |
+| `src/custom/server/providerPolicy.test.mjs` | New focused regressions cover forced flags, unrelated-configuration preservation, contract drift/missing-file failure, wrapper ordering, and the six offline process scenarios |
+| `build/customHub.js` | Existing project-owned wrapper applies policy during module evaluation before the upstream standalone factory, then reasserts it; retains the accepted dev-cache isolation repair |
+
+The offline policy command passed **6/6 process scenarios**. Focused policy unit tests passed **6/6**, with zero failures. These are mocked/catalog-policy results, not live camera observations or shipping/browser verification. No additional original-upstream manual repair, dependency, credential, or provider activation was introduced.
+
+Integration also updates the approved project-owned documentation: `SETUP.md`, `AGENTS.md`, `CUSTOMIZATION.md`, `STATUS.md`, this report, and `docs/custom/PHASE-2A-PLAN.md`. They record the implemented policy, Ontario's accepted key-required coverage loss with no key configured, the provider-guide notes, repair provenance, and remaining gates. Earlier rehearsal receipts and failure history remain intact.
+
+User shipping checks on localhost:4173 are still pending: `qa:hub`, synthetic `test:track --offline-imagery`, and the Street Level manual smoke check. Street Level fixture QA remains unrun under the no-new-key posture; real imagery-dependent steps must be recorded as blocked if no eligible imagery is available. The historical Phase 0 waiver does not pass these checks.
+
 ## Adoption decision and next review
 
 The user approved adoption with these conditions:
 
-1. Hong Kong and Taiwan camera packs remain disabled in shipping until separate terms review and explicit activation approval. A tracked, project-owned startup policy and offline actual-catalog proof are proposed in `UPSTREAM-INTEGRATION-PLAN.md` and documented as **not yet implemented** in `SETUP.md`. No original-upstream policy edit is proposed.
+1. Hong Kong and Taiwan camera packs remain disabled in shipping until separate terms review and explicit activation approval. The approved integration candidate implements the tracked project-owned startup policy and offline actual-catalog proof described in `UPSTREAM-INTEGRATION-PLAN.md` and `SETUP.md`. It forcibly overrides inherited or dotenv enabling flags; future changes to the reviewed upstream contracts fail closed pending review. No original-upstream policy edit was made.
 2. Ontario 511's keyless coverage loss is accepted. Setup guidance now marks Ontario key-required; the key remains unconfigured. This pin has no Ontario POWER UP field, which is disclosed rather than directing a key into another provider's field.
 3. Carry the dev-cache isolation, diagnostic follow-up, formatting, and annotation repairs into shipping.
 
-**Integration execution still requires approval of the short integration plan.** Shipping remains clean at `7595ca34` and authoritative pin `de2138e8`; neither server was stopped or restarted for this documentation checkpoint. The plan proposes a separate integration worktree, then a shipping fast-forward, gates and user browser checks on 4173. Only after verification should the 4174 listener stop; preserve the rehearsal worktree and ignored logs/receipts.
+**Integration execution is approved and the isolated candidate is ready.** Candidate worktree: `/Users/getumwanna/.codex/worktrees/upstream-integration/GEV`, branch `codex/upstream-integration`, new pin `064d51f7be2675f1c69e16068e9c49d1a60144d1`. Shipping fast-forward and its 4173 verification are pending at this candidate checkpoint; no shipping/browser pass is claimed. After the clean-state/ancestry gate, use the approved fast-forward method, rerun the integration plan's shipping gates, and obtain the user-run browser checks. Stop only the verified 4174 listener after shipping verification completes; preserve the rehearsal worktree and ignored logs/receipts.
 
 The passing reruns establish the bounded hub and synthetic tracking results above. They do not establish live provider coverage, dataset rights, or GPU/FPS performance. The source/terms implications and verification gaps earlier in this report remain visible; the adoption decision accepts the stated Ontario loss and keeps the two new sources disabled.
 

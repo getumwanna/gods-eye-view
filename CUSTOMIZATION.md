@@ -3,7 +3,7 @@
 ## Provenance
 
 - Request: Geospatial Intelligence Hub, v2, October 19, 2026.
-- Authorized scope: Phase 1 accepted; Phase 2a conditionally approved. Rehearsal user reruns pass and adoption is approved with persistent HK/Taiwan-off, accepted Ontario keyless loss, and carry-forward repair conditions. Current work is the integration execution plan plus documentation-only provider-key guidance and evidence records. Shipping integration/policy implementation/server changes await plan approval; Phase 2a reverification/Ajv comparison follows verified integration before milestone 1. No keys are requested, configured, or handled; Phase 2b stays deferred.
+- Authorized scope: Phase 1 accepted; Phase 2a conditionally approved. Shipping integration execution is approved under `docs/custom/UPSTREAM-INTEGRATION-PLAN.md`: separate integration worktree, tracked camera policy, fast-forward to reviewed target, and shipping gates. Keep 4174 until user shipping checks resolve, then retain logs and produce the Phase 2a post-pin/Ajv review before milestone 1. No key configuration or Phase 2b work is authorized.
 - Upstream: https://github.com/bilawalsidhu/gods-eye-view
 - User-owned fork: https://github.com/getumwanna/gods-eye-view
 - Verified upstream pin: `de2138e84c1778fd98a48b7c9fd0b9788c318946`.
@@ -161,3 +161,12 @@ The user reports `qa:hub` 9/9 and synthetic `test:track --offline-imagery` 109 p
 This documentation checkpoint adds `docs/custom/UPSTREAM-INTEGRATION-PLAN.md` and updates `SETUP.md`, the rehearsal report, Phase 2a plan, `AGENTS.md`, `STATUS.md`, and this ledger. It proposes a separate integration worktree and shipping fast-forward to the frozen upstream target with custom policy/repairs; execution still awaits approval. The proposed persistent policy/check uses only project-owned files and the actual catalog with mocked acquisition, including startup/restart and hostile-switch cases; no policy code has been created. `SETUP.md` adds ten ordered provider-key entries, with current official terms/cost/restriction references, public-token/server-secret distinctions, Ontario/hidden-Google POWER UP limitations, and budget-alert versus hard-limit distinctions. No account/key was created, requested, configured, read, or handled.
 
 Shipping remains at `7595ca34884e4f6a8159077b3d44a84e38ce0950`, pin `de2138e84c1778fd98a48b7c9fd0b9788c318946`; servers and logs remain intact. After approved integration is verified, stop the rehearsal listener and retain ignored evidence, then produce Phase 2a reverification including both Ajv options with measured bundle cost. No Phase 2a implementation or dependency/file-role amendment is introduced here.
+
+
+### Approved shipping integration candidate — verification pending
+
+The integration worktree `/Users/getumwanna/.codex/worktrees/upstream-integration/GEV` (`codex/upstream-integration`) starts at reviewed rehearsal checkpoint `1a4261a2dc42698bbfa6be3dba63d853185e30b2`, preserving the frozen upstream target `064d51f7be2675f1c69e16068e9c49d1a60144d1` and all accepted rehearsal repairs. Shipping fast-forward is pending at this candidate checkpoint.
+
+Exact new files: `build/customProviderPolicy.js`, `scripts/check-custom-provider-policy.mjs`, `src/custom/server/providerPolicy.test.mjs`. Existing project-owned edit: `build/customHub.js`, plus `SETUP.md`, `AGENTS.md`, this ledger, `STATUS.md`, `docs/custom/UPSTREAM-SYNC-REHEARSAL.md`, and `docs/custom/PHASE-2A-PLAN.md`. No additional original-upstream path, dependency, or top-level Vite plugin changed. Both reviewed upstream contract files are hashed, not edited. Policy forces only HK/Taiwan off, including hostile shell/dotenv values across root launches; future contract drift blocks startup for review.
+
+Candidate evidence: `npm ci` passed; provider CLI six scenarios passed; six policy unit tests passed; combined configuration/QA-harness/policy group 21 passed, zero failed/skipped. Logs: `.gev-logs/shipping-integration.ZEjuM7/`. All acquisition in these checks was mocked, with zero HK/Taiwan requests/rows and one Austin control row per scenario. Full checks in the actual shipping checkout and user browser/manual checks remain pending. The two requested key-guide notes are included; no key was requested or configured.

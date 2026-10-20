@@ -1,11 +1,17 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import tailwindcss from '@tailwindcss/vite';
+import { applyCustomProviderPolicy } from './customProviderPolicy.js';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 
+// Root config calls the upstream standalone factory after module evaluation.
+// Set both gates first so its dotenv loader cannot enable either camera pack.
+applyCustomProviderPolicy();
+
 /** Extend the root website build; direct standalone/MCP builds stay single-entry. */
 export function withHubConfig(standalone) {
+  applyCustomProviderPolicy();
   return {
     ...standalone,
     // Integration-test servers use Vite's default cache in this same checkout.

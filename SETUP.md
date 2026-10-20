@@ -63,29 +63,31 @@ Keep the server bound to localhost. A reachable server can broker configured key
 
 Use the app for learning and exploration, never navigation, emergency response or other safety-critical decisions. Coverage is incomplete and observations may be delayed or wrong. Model events, assets, infrastructure and systems; do not add named-person search, face recognition or tracking of individuals. Mapped ALPR camera locations contain location/tags, not plate recognition or plate histories.
 
-## Camera-pack adoption policy (proposed integration)
+## Camera-pack adoption policy
 
-The user approved upstream `064d51f7` with **Hong Kong and Taiwan camera packs kept disabled** until separate terms review and explicit activation approval. Shipping integration still awaits approval of `docs/custom/UPSTREAM-INTEGRATION-PLAN.md`; the persistent policy/check described here is not implemented yet. The rehearsal currently disables these packs through launch flags.
+The user approved upstream `064d51f7` with **Hong Kong and Taiwan camera packs kept disabled** until separate terms review and explicit activation approval. The approved integration implements the persistent policy below in the separate integration worktree; shipping installation and user checks are tracked in `STATUS.md`. The rehearsal retains its launch flags until shipping verification is complete.
 
-The proposed tracked `build/customProviderPolicy.js`, loaded by the project-owned root wrapper before provider setup, forces `CCTV_HK_ENABLED=0` and `CCTV_TAIWAN_ENABLED=0` on every root dev/secure/preview start, overriding shell/dotenv attempts to enable them. Other packs keep their existing settings. A reviewed source-contract guard stops startup if upstream changes invalidate the disable mechanism. Preserve this hook/check in future upstream updates. Direct launches using the upstream standalone config bypass the hook and are unsupported for shipping; MCP stdio uses the already-running protected server.
+The tracked `build/customProviderPolicy.js`, loaded by the project-owned root wrapper before provider setup, forces `CCTV_HK_ENABLED=0` and `CCTV_TAIWAN_ENABLED=0` on every root dev/secure/preview start, overriding shell/dotenv attempts to enable them. Other packs keep their existing settings. A reviewed source-contract guard stops startup if upstream changes invalidate the disable mechanism. Preserve this hook/check in future upstream updates. Direct launches using the upstream standalone config bypass the hook and are unsupported for shipping; MCP stdio uses the already-running protected server.
 
-Proposed verification command, available only after implementation approval:
+Offline verification command:
 
 ```sh
 node scripts/check-custom-provider-policy.mjs
 ```
 
-The check will exercise the actual catalog loader with mocked fetches, an existing-pack positive control, hostile enabled flags, temporary dotenv fixtures, and fresh-process restarts. It must prove zero Hong Kong/Taiwan catalog requests and rows, without live camera requests or inspecting real credential files. Later activation requires approval after terms review and a reviewed policy change, rather than an environment toggle.
+The check exercises the actual catalog loader with mocked fetches, an existing-pack positive control, hostile enabled flags, temporary dotenv fixtures, and fresh-process restarts. It proves zero Hong Kong/Taiwan catalog requests and rows, without live camera requests or inspecting real credential files. Later activation requires approval after terms review and a reviewed policy change, rather than an environment toggle.
 
 **Ontario 511 is key-required at the new pin.** Without `ONTARIO_511_API_KEY`, its highway camera pack is skipped; this accepted coverage loss does not lock all CCTV. POWER UP has no Ontario field at this pin. Leave it unconfigured; do not paste it into another provider's field. Adding POWER UP support needs separate scope approval.
 
 ## Getting provider keys
 
-Reviewed October 20, 2026 against accepted target `064d51f7` and the official references below; shipping integration is still pending. Confirm current plans/quotas before enabling a provider. Create and restrict credentials yourself, then use **POWER UP** for supported fields. No key was requested, configured, read, or handled for this documentation task. Keep persistent secrets server-side and out of chat, URLs, Git, and exports. Provider-designated public client tokens and short-lived AI session credentials retain the browser exceptions already approved.
+Reviewed October 20, 2026 against accepted target `064d51f7` and the official references below; shipping verification is tracked in `STATUS.md`. Confirm current plans/quotas before enabling a provider. Create and restrict credentials yourself, then use **POWER UP** for supported fields. No key was requested, configured, read, or handled for this documentation task. Keep persistent secrets server-side and out of chat, URLs, Git, and exports. Provider-designated public client tokens and short-lived AI session credentials retain the browser exceptions already approved.
 
 POWER UP does **not** expose Ontario 511 or the optional Google server key at this pin; leave them unconfigured under the POWER UP-only workflow. A key is not blanket permission for recording, redistribution, operational use, or hosting. GEV budgets are separate from provider billing controls. Where no provider-side referrer lock or budget alert was verified, the entries say so rather than promise one.
 
 ### 1. Cesium ion
+
+For aircraft or vessel tracking, select **Google 3D or the default Esri imagery**, subject to their terms; use these instead of ion-hosted Bing imagery.
 
 - **Unlocks / cost / signup:** `CESIUM_ION_TOKEN` enables ion-hosted Google Photorealistic 3D Tiles, terrain and supported imagery, subject to asset availability. Community is free for individual personal/noncommercial use and evaluation, with monthly quotas; commercial plans are paid. [Signup](https://ion.cesium.com/signup), [plans and quotas](https://cesium.com/platform/cesium-ion/pricing/).
 - **Terms:** Preserve Cesium and dataset credits. Each asset has separate terms: **ion-delivered Bing imagery prohibits asset tracking, fleet management and routing**, and mixing with non-Bing imagery. Google assets have separate high-risk-use and combination restrictions. A token does not authorize every GEV use. [Content requirements](https://cesium.com/learn/ion/content-usage-and-attribution-guide/).
@@ -116,6 +118,8 @@ POWER UP does **not** expose Ontario 511 or the optional Google server key at th
 - **Restrictions / budgets:** Keep GEV's key server-side, restrict assigned products and monitor analytics. Domain whitelists use CORS and therefore do not secure server-to-server requests. Free/prepaid exhaustion returns 429; adjustable QPS is enterprise-only. GEV's separate default 120-tile/day budget is local protection, not TomTom's quota; no configurable budget alert was verified. [Key controls](https://docs.tomtom.com/platform/documentation/my-tomtom/api-key-management), [CORS limitation](https://docs.tomtom.com/platform/documentation/api-best-practices/api-key-management-best-practices), [quota behavior](https://docs.tomtom.com/platform/documentation/status-and-support/faqs).
 
 ### 6. OpenSky
+
+OpenSky terms also apply to the **anonymous default**, not only authenticated requests. Any future recorder or automated archiving of OpenSky data needs a terms check **before it is proposed**.
 
 - **Unlocks / cost / signup:** Higher flight-polling allowance; anonymous access already works. Create an account and OAuth client through [OpenSky](https://opensky-network.org/), then enter the client ID and secret in POWER UP. Basic password authentication is obsolete. [Official OAuth and quota documentation](https://openskynetwork.github.io/opensky-api/rest.html) describes limited free access; licensed access is separately agreed.
 - **Terms:** Standard access is for nonprofit research/education. [OpenSky's terms](https://opensky-network.org/about/terms-of-use) require prior written agreement for operational use of its REST API, including an internal live automated system, regardless of nonprofit status. Local personal use is not an automatic exemption.
