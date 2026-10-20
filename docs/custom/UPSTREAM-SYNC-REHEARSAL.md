@@ -1,6 +1,6 @@
 # Frozen upstream-sync rehearsal report
 
-October 20, 2026. **Initial user-run QA failed at startup; the bounded recovery passes non-browser validation and HTTP asset checks. Fresh user browser/tracking results are pending. Adoption is not approved.** The user approved this isolated rehearsal and its bounded repairs. Phase 1 shipping acceptance remains historical; no Phase 2a implementation was performed.
+October 20, 2026. **User rehearsal reruns passed: `qa:hub` 9/9; synthetic `test:track --offline-imagery` 109 passed / 0 failed / 0 skipped. Adoption is approved with conditions; shipping integration awaits approval of `UPSTREAM-INTEGRATION-PLAN.md`.** All earlier failed runs remain recorded. No shipping merge or Phase 2a implementation has occurred.
 
 ## Inputs, result, and isolation
 
@@ -83,8 +83,8 @@ Server launch: `HOST=localhost PORT=4174 CCTV_HK_ENABLED=0 CCTV_TAIWAN_ENABLED=0
 | `npm run build` | Pass after repairs; 2,898 modules, 3.87 s reported. Existing large-chunk warning remains. `build.log` |
 | `npm run build:panel` | Pass after repairs; 871 modules, 3.49 s reported. `panel.log` |
 | `git diff --check` | Pass |
-| Initial user-run `qa:hub` at 4174 | **Failed: 0/9**, all blocked by hub startup / outdated optimized dependencies. Receipt `qa-custom-hub-2026-10-20T18-28-37-124Z.json`; fresh rerun pending |
-| Initial user-run `test:track` at 4174 | **Failed at startup**: 60-second wait for app globals at `scripts/track-regression.mjs:482`; no tracking assertions ran. User-pasted output; fresh rerun pending |
+| Initial user-run `qa:hub` at 4174 | **Failed: 0/9**, all blocked by hub startup / outdated optimized dependencies. Receipt `qa-custom-hub-2026-10-20T18-28-37-124Z.json`; rerun passed below |
+| Initial user-run `test:track` at 4174 | **Failed at startup**: 60-second wait for app globals at `scripts/track-regression.mjs:482`; no tracking assertions ran. User-pasted output; rerun passed below |
 | Changed Street Level browser fixture gate | Not run: strict fixture gate requires a dummy Mapillary token in the bundle; the rehearsal stays keyless. Unit fixtures passed. Removed `qa:panel-resize` is not a gate to restore or run. |
 | Live provider outcomes / GPU-FPS / manual changed-panel views | Not observed. Historical Phase 0 waiver is not a new pass or rehearsal waiver. |
 
@@ -98,7 +98,7 @@ QA_BASE_URL=http://localhost:4174 npm run qa:hub
 npm run test:track -- --url http://localhost:4174 --offline-imagery
 ```
 
-The initial supplied outputs are recorded above and in the startup section below; record fresh rerun outputs and receipt origins when supplied. `--offline-imagery` replaces known Esri/OSM tile images only; other metadata/terrain resources may still use the network. No agent-driven browser harness or indirect browser execution was used.
+The initial failures and subsequent passing user reruns are both recorded in this report. No agent-driven browser rerun was performed. `--offline-imagery` replaces known Esri/OSM tile images only; other metadata/terrain resources may still use the network. No agent-driven browser harness or indirect browser execution was used.
 
 ## Startup failure, diagnosis, and bounded recovery
 
@@ -112,7 +112,7 @@ Stopped only the verified rehearsal Vite PID `57723`; shipping PID `6863` / port
 
 The focused config regression failed before the repair and passed after it. A full rerun then found an existing localization opt-out problem introduced by the initial formatting: the scanner associates an assignment with its first RHS line, so comments before wrapped assignments no longer covered four English strings. Moved the existing annotations in `feedStrip.js` and `keyBadges.js` next to those RHS expressions. UI text and its intentionally English policy are unchanged; the scanner and translation catalogs were not altered. The intermediate failed suite log is retained, not replaced by the later result.
 
-Recovery evidence is under `.gev-logs/upstream-sync-startup-recovery/`. Finish the full suite and builds before pre-bundling and restarting the rehearsal; user browser reruns remain required. Recovery results follow; HTTP checks do not establish rendered application readiness.
+Recovery evidence is under `.gev-logs/upstream-sync-startup-recovery/`. Finish the full suite and builds before pre-bundling and restarting the rehearsal; user browser reruns were still required at that checkpoint and have since passed as recorded below. Recovery results follow; HTTP checks do not establish rendered application readiness.
 
 | Recovery check | Result / evidence in recovery log directory |
 | --- | --- |
@@ -127,14 +127,23 @@ Recovery evidence is under `.gev-logs/upstream-sync-startup-recovery/`. Finish t
 | Rehearsal restart | PID `55130`, `[::1]:4174`, same keyless/provider-disable launch flags; shipping PID `6863` / `[::1]:4173` unchanged. `server.log` |
 | HTTP asset verification | **54/54 HTTP 200**: root/hub documents, both source entry modules, and all 23 optimized entry URLs, each checked twice. Finalized cache metadata unchanged across both passes. No app JavaScript or browser execution. `http-assets.json` |
 | QA diagnostic-only follow-up | New cache path was initially classified as a generic module failure. Extended only the explicit optimizer-path classification; new regression fails before and all six focused offline checks pass afterward. No browser or Vite fixture server launched. `diagnostics-before.log`, `diagnostics-after.log`; final formatting also passes (`format-diagnostics.log`) |
-| Fresh user `qa:hub` / `test:track` | **Pending**. The initial failed outcomes above remain failed; no pass or waiver inferred. |
+| Fresh user `qa:hub` at 4174 | **Passed 9/9**, user-reported and matched to receipt `.gev-logs/qa-custom-hub-2026-10-20T18-43-33-487Z.json`, timestamp `2026-10-20T18:43:33.488Z`, origin `http://localhost:4174`. Overall pass, hub ready/HTTP 200, zero local/module/optimizer failures and page errors; eight blocked acquisitions, two setup reads. |
+| Fresh user `test:track --offline-imagery` at 4174 | **Passed: 109 / failed: 0 / skipped: 0**, explicitly reported by the user. No independent tracking receipt was found under `.gev-logs`; this is user-supplied evidence, not an agent rerun. Synthetic fixtures; offline imagery replaces known tile images only, not every network resource. |
 
-The diagnostic follow-up affects only the user-run QA harness, not the served application or its optimizer configuration. It does not relax a pass condition or add retries. The rehearsal server remains running for the user's exact commands above. No test fixture server or production build was run after the restart. Dedicated cache separation also prevents the inspected default-cache fixtures from deleting this server's optimized assets. If the worktree is later archived, preserve ignored receipts/logs separately before removal.
+The diagnostic follow-up affects only the user-run QA harness, not the served application or its optimizer configuration. It does not relax a pass condition or add retries. The rehearsal server remains running until approved shipping integration is verified. No test fixture server or production build was run after the restart. Dedicated cache separation also prevents the inspected default-cache fixtures from deleting this server's optimized assets. If the worktree is later archived, preserve ignored receipts/logs separately before removal.
 
 ## Adoption decision and next review
 
-Initial non-browser results and subsequent startup repairs are recorded above. The adoption decision remains pending fresh user QA and report review. Material tradeoffs are Ontario's keyless coverage loss, new default-on camera sources that must remain disabled pending review, narrower Street Level overview coverage and removed panel modes, and improved satellite stale provenance. The panel/Street Level redesign still has visual/interaction risk beyond what source inspection proves. This report is not acceptance or a shipping merge instruction.
+The user approved adoption with these conditions:
 
-After the user decides whether to adopt or retain the old pin, reverify Phase 2a against that exact decision: layer IDs, key IDs and product-specific credentials, source/coverage claims, admitted doc files/sections and hashes, original article/case facts, dependencies, and exact file paths. Present changes before milestone 1; obtain required amendment approvals. The two-file Phase 2a upstream allowlist and the milestone 2/3 pre-commit editorial stops remain in force. Phase 2b planning stays deferred until 2a ships and is accepted.
+1. Hong Kong and Taiwan camera packs remain disabled in shipping until separate terms review and explicit activation approval. A tracked, project-owned startup policy and offline actual-catalog proof are proposed in `UPSTREAM-INTEGRATION-PLAN.md` and documented as **not yet implemented** in `SETUP.md`. No original-upstream policy edit is proposed.
+2. Ontario 511's keyless coverage loss is accepted. Setup guidance now marks Ontario key-required; the key remains unconfigured. This pin has no Ontario POWER UP field, which is disclosed rather than directing a key into another provider's field.
+3. Carry the dev-cache isolation, diagnostic follow-up, formatting, and annotation repairs into shipping.
 
-The pending Ajv review must compare **(a)** server-side dev validation sending only normalized errors to the Library, with no raw content/keys or config-load failures, against **(b)** lazy Ajv plus schemas in the hub. After exact-version review, measure raw/gzip/Brotli Library chunk costs and initial hub/globe graph impact; compare HMR/recovery, missing/stale inputs, offline behavior, dependency category, endpoint/server lifecycle maintenance, and compatibility with existing Vite plugin-prefix invariants and the allowlist. No invented bundle estimates, server validator, browser Ajv runtime, generated projection, or new Phase 2a dependency has been introduced here.
+**Integration execution still requires approval of the short integration plan.** Shipping remains clean at `7595ca34` and authoritative pin `de2138e8`; neither server was stopped or restarted for this documentation checkpoint. The plan proposes a separate integration worktree, then a shipping fast-forward, gates and user browser checks on 4173. Only after verification should the 4174 listener stop; preserve the rehearsal worktree and ignored logs/receipts.
+
+The passing reruns establish the bounded hub and synthetic tracking results above. They do not establish live provider coverage, dataset rights, or GPU/FPS performance. The source/terms implications and verification gaps earlier in this report remain visible; the adoption decision accepts the stated Ontario loss and keeps the two new sources disabled.
+
+After approved integration is verified, produce `docs/custom/PHASE-2A-REVERIFICATION.md` against shipping's new pin `064d51f7be2675f1c69e16068e9c49d1a60144d1`: exact layer IDs, key IDs and product-specific credentials, source/coverage claims, admitted doc files/sections and hashes, article/case facts, dependencies, and exact file paths. Present changes before milestone 1 and obtain amendment approvals. The two-file Phase 2a upstream allowlist and milestone 2/3 pre-commit editorial stops remain in force; Phase 2b planning stays deferred until 2a ships and is accepted.
+
+The pending Ajv review compares **(a)** server-side dev validation returning only normalized Library errors against **(b)** lazy hub Ajv and schemas. After candidate-version/license review, measure raw/gzip/Brotli Library chunk costs and initial hub/globe graph impact; compare HMR/recovery, missing/stale inputs, offline behavior, dependency category, server lifecycle, and plugin/allowlist constraints. Isolated measurement fixtures must not become production Library implementation or silently alter dependencies/file approvals. Neither approach is selected yet.

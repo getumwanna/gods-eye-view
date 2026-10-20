@@ -63,6 +63,88 @@ Keep the server bound to localhost. A reachable server can broker configured key
 
 Use the app for learning and exploration, never navigation, emergency response or other safety-critical decisions. Coverage is incomplete and observations may be delayed or wrong. Model events, assets, infrastructure and systems; do not add named-person search, face recognition or tracking of individuals. Mapped ALPR camera locations contain location/tags, not plate recognition or plate histories.
 
+## Camera-pack adoption policy (proposed integration)
+
+The user approved upstream `064d51f7` with **Hong Kong and Taiwan camera packs kept disabled** until separate terms review and explicit activation approval. Shipping integration still awaits approval of `docs/custom/UPSTREAM-INTEGRATION-PLAN.md`; the persistent policy/check described here is not implemented yet. The rehearsal currently disables these packs through launch flags.
+
+The proposed tracked `build/customProviderPolicy.js`, loaded by the project-owned root wrapper before provider setup, forces `CCTV_HK_ENABLED=0` and `CCTV_TAIWAN_ENABLED=0` on every root dev/secure/preview start, overriding shell/dotenv attempts to enable them. Other packs keep their existing settings. A reviewed source-contract guard stops startup if upstream changes invalidate the disable mechanism. Preserve this hook/check in future upstream updates. Direct launches using the upstream standalone config bypass the hook and are unsupported for shipping; MCP stdio uses the already-running protected server.
+
+Proposed verification command, available only after implementation approval:
+
+```sh
+node scripts/check-custom-provider-policy.mjs
+```
+
+The check will exercise the actual catalog loader with mocked fetches, an existing-pack positive control, hostile enabled flags, temporary dotenv fixtures, and fresh-process restarts. It must prove zero Hong Kong/Taiwan catalog requests and rows, without live camera requests or inspecting real credential files. Later activation requires approval after terms review and a reviewed policy change, rather than an environment toggle.
+
+**Ontario 511 is key-required at the new pin.** Without `ONTARIO_511_API_KEY`, its highway camera pack is skipped; this accepted coverage loss does not lock all CCTV. POWER UP has no Ontario field at this pin. Leave it unconfigured; do not paste it into another provider's field. Adding POWER UP support needs separate scope approval.
+
+## Getting provider keys
+
+Reviewed October 20, 2026 against accepted target `064d51f7` and the official references below; shipping integration is still pending. Confirm current plans/quotas before enabling a provider. Create and restrict credentials yourself, then use **POWER UP** for supported fields. No key was requested, configured, read, or handled for this documentation task. Keep persistent secrets server-side and out of chat, URLs, Git, and exports. Provider-designated public client tokens and short-lived AI session credentials retain the browser exceptions already approved.
+
+POWER UP does **not** expose Ontario 511 or the optional Google server key at this pin; leave them unconfigured under the POWER UP-only workflow. A key is not blanket permission for recording, redistribution, operational use, or hosting. GEV budgets are separate from provider billing controls. Where no provider-side referrer lock or budget alert was verified, the entries say so rather than promise one.
+
+### 1. Cesium ion
+
+- **Unlocks / cost / signup:** `CESIUM_ION_TOKEN` enables ion-hosted Google Photorealistic 3D Tiles, terrain and supported imagery, subject to asset availability. Community is free for individual personal/noncommercial use and evaluation, with monthly quotas; commercial plans are paid. [Signup](https://ion.cesium.com/signup), [plans and quotas](https://cesium.com/platform/cesium-ion/pricing/).
+- **Terms:** Preserve Cesium and dataset credits. Each asset has separate terms: **ion-delivered Bing imagery prohibits asset tracking, fleet management and routing**, and mixing with non-Bing imagery. Google assets have separate high-risk-use and combination restrictions. A token does not authorize every GEV use. [Content requirements](https://cesium.com/learn/ion/content-usage-and-attribution-guide/).
+- **Restrictions / budgets:** Create a dedicated public `assets:read` token restricted to needed assets and actual localhost Allowed URLs. URL restrictions require a Referer header. Monitor account/per-token usage and rotate/revoke tokens; no configurable budget-alert or hard-spending-cap feature was verified. [Token controls](https://cesium.com/learn/ion/cesium-ion-access-tokens/).
+
+### 2. NASA FIRMS
+
+- **Unlocks / cost / signup:** `FIRMS_MAP_KEY` enables near-real-time VIIRS active-fire/thermal-anomaly detections. The email-issued key is free; the current limit is 5,000 transactions per ten minutes, with larger queries sometimes counting as multiple transactions. [Request a key and inspect quota](https://firms.modaps.eosdis.nasa.gov/api/map_key/).
+- **Terms:** Preserve FIRMS acknowledgment, citation and LANCE disclaimer guidance. Thermal anomalies are not confirmed incident reports; NASA does not recommend these detections for tactical-level reliance. [NASA usage guidance](https://forum.earthdata.nasa.gov/viewtopic.php?t=5184), [NASA limitations](https://appliedsciences.nasa.gov/sites/default/files/2025-05/Part%203%20FIRMS%202025%20Q%26A%20Session.docx.pdf).
+- **Restrictions / budgets:** Keep the key server-side. Use the provider's transaction-status check and bounded polling; domain/referrer restrictions, custom spending caps and budget alerts were not verified. This is a free, quota-limited service.
+
+### 3. AISStream
+
+- **Unlocks / cost / signup:** `AISSTREAM_API_KEY` enables live vessel AIS through GEV's server connection and same-origin cache. The service is advertised as free; sign in with GitHub and create a key in [Account](https://www.aisstream.io/account).
+- **Terms:** Direct browser connections are expressly prohibited; use the backend and relay only needed information. No SLA or durable replay is promised. Public AIS broadcasts do not establish unrestricted recording or redistribution rights. [Official guidance](https://www.aisstream.io/documentation/).
+- **Restrictions / budgets:** Keep the key server-side; rotate, disable or delete it in Account. Limits include three connections per account/IP and one subscription update/second/connection. Focus geographic/message filters. Provider domain locks, custom caps and budget alerts were not verified. [Limits](https://www.aisstream.io/documentation/).
+
+### 4. Mapillary
+
+- **Unlocks / cost / signup:** `MAPILLARY_CLIENT_TOKEN` enables Street Level coverage, image cones, sequences and the imagery viewer. The platform is free, including commercial use. [Developer dashboard](https://www.mapillary.com/dashboard/developers), [pricing FAQ](https://help.mapillary.com/hc/en-us/articles/8348198426396-Mapillary-FAQ).
+- **Terms:** API/developer terms apply separately from imagery's CC BY-SA attribution obligations. [Terms](https://www.mapillary.com/terms), [imagery licensing](https://help.mapillary.com/hc/en-us/articles/115001770409-CC-BY-SA-license-for-open-data).
+- **Restrictions / budgets:** Use only the designated client token, never a user token/client secret. Provider staff identifies a 50,000 coverage-tile/day/app quota, with possible earlier IP throttling. Domain/referrer locks and custom budget alerts were not verified. [Rate-limit clarification](https://forum.mapillary.com/t/50-000-requests-day-rate-limit-scope/10644).
+
+### 5. TomTom
+
+- **Unlocks / cost / signup:** `TOMTOM_API_KEY` enables live traffic-flow vector tiles. Current pricing includes 200,000 Traffic vector-tile requests/month, with paid usage by plan; no initial card is required. [Signup](https://docs.tomtom.com/platform/documentation/my-tomtom/how-to-get-a-tomtom-api-key), [pricing](https://docs.tomtom.com/pricing).
+- **Terms:** Proprietary API/content terms apply; preserve traffic attribution and review storage/reuse permissions. [Terms](https://docs.tomtom.com/legal/terms-and-conditions).
+- **Restrictions / budgets:** Keep GEV's key server-side, restrict assigned products and monitor analytics. Domain whitelists use CORS and therefore do not secure server-to-server requests. Free/prepaid exhaustion returns 429; adjustable QPS is enterprise-only. GEV's separate default 120-tile/day budget is local protection, not TomTom's quota; no configurable budget alert was verified. [Key controls](https://docs.tomtom.com/platform/documentation/my-tomtom/api-key-management), [CORS limitation](https://docs.tomtom.com/platform/documentation/api-best-practices/api-key-management-best-practices), [quota behavior](https://docs.tomtom.com/platform/documentation/status-and-support/faqs).
+
+### 6. OpenSky
+
+- **Unlocks / cost / signup:** Higher flight-polling allowance; anonymous access already works. Create an account and OAuth client through [OpenSky](https://opensky-network.org/), then enter the client ID and secret in POWER UP. Basic password authentication is obsolete. [Official OAuth and quota documentation](https://openskynetwork.github.io/opensky-api/rest.html) describes limited free access; licensed access is separately agreed.
+- **Terms:** Standard access is for nonprofit research/education. [OpenSky's terms](https://opensky-network.org/about/terms-of-use) require prior written agreement for operational use of its REST API, including an internal live automated system, regardless of nonprofit status. Local personal use is not an automatic exemption.
+- **Restrictions:** Keep the secret server-side, rotate exposed credentials, respect credit limits and `429` backoff. The public documentation does not specify domain/referrer restrictions or configurable budget alerts. Provider credit quotas are request limits, not financial budgets.
+
+### 7. Launch Library 2
+
+- **Unlocks / cost / signup:** Existing recent Space Missions launch/payload/stage/recovery context works anonymously; an optional POWER UP token raises request limits. It does not add the deferred upcoming-launch query or live ascent telemetry. Anonymous access is free at 15 calls/hour/IP; [paid higher-rate access](https://thespacedevs.com/supportus) uses a Patreon tier and generated token. [Token instructions](https://github.com/TheSpaceDevs/Tutorials/blob/main/faqs/faq_LL2.md#how-do-i-get-an-api-key).
+- **Terms:** [The Space Devs' terms](https://github.com/TheSpaceDevs/Tutorials/blob/main/faqs/faq_TSD.md#terms-of-use) allow creating and sharing uses, discourage forwarding without added value, disclaim complete accuracy, and encourage attribution.
+- **Restrictions:** Keep the token server-side and retain the shared cache. Respect the chosen tier's quota; official instructions describe quota inspection and token rotation, not domain/referrer restrictions or usage-based budget alerts.
+
+### 8. Ontario 511
+
+- **Unlocks / cost / signup:** Ontario highway CCTV catalog/stills require a free reviewed developer key. [Register](https://511on.ca/my511/register), then use the [developer key request page](https://511on.ca/developers/doc). Without a key, this camera pack is skipped; the accepted keyless coverage loss remains.
+- **Terms:** The [Developer's Access Agreement](https://511on.ca/developers/resources) asks for intended use and third parties receiving/displaying data; approval is case by case. Open Government Licence–Ontario generally applies. Preserve attribution/disclaimers and avoid implying endorsement.
+- **Restrictions / UI:** Official throttling is 10 calls/60 seconds; no domain/referrer controls or budget alerts are documented. This pin supports `ONTARIO_511_API_KEY` only through server environment configuration, **not POWER UP**. Leave it unconfigured under the current POWER UP-only workflow; never paste it into another provider's field.
+
+### 9. Google Maps
+
+- **Unlocks / cost / signup:** Photorealistic 3D tiles and Street View; optional server services provide Places/Geocoding/fallback imagery. [Create a billing-enabled project/key](https://developers.google.com/maps/documentation/tile/get-api-key). Usage is metered with product-specific free allowances.
+- **Terms:** Follow [Maps terms](https://cloud.google.com/maps-platform/terms) and [Map Tiles policies](https://developers.google.com/maps/documentation/tile/policies): retain attribution and respect storage, visualization, and recording restrictions. Local use does not remove these obligations.
+- **Restrictions / UI:** Separate browser/server keys and allow only required APIs. [Security guidance](https://developers.google.com/maps/api-security-best-practices) supports website restrictions for Maps JavaScript and IP restrictions for server services. Google's [credential matrix](https://developers.google.com/maps/faq#keysystem) lists Map Tiles with IP restrictions, differing from upstream's browser-referrer guidance: verify tile compatibility rather than assuming it. POWER UP exposes the browser key; the optional server key is hidden, so leave it unconfigured. Set [per-API quotas and budget alerts](https://developers.google.com/maps/billing-and-pricing/manage-costs); alerts alone do not cap spending.
+
+### 10. OpenAI
+
+- **Unlocks / cost / signup:** Optional Realtime voice/control and HUD summaries use a [metered API account/key](https://platform.openai.com/api-keys). Review [pricing](https://developers.openai.com/api/docs/pricing) before adding it through POWER UP; AI remains optional.
+- **Terms:** Follow applicable API terms/usage policies and review [data handling](https://developers.openai.com/api/docs/guides/your-data) before transmitting context.
+- **Restrictions:** Keep the persistent key server-side. Use a dedicated project, least privilege, model/rate limits, expiry/rotation and, with stable public egress, [IP allowlisting](https://developers.openai.com/api/docs/guides/ip-allowlist). [Spend alerts](https://developers.openai.com/api/docs/guides/spend-limits) only notify; explicitly enabling **Enforce a hard limit** stops affected requests with `429`, although enforcement lag can permit slight overshoot. Browser Realtime credentials remain ephemeral.
+
 ## Validation and evidence
 
 Run these checks with Node 24.22.0 after an approved change:
