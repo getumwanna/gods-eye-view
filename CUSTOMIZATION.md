@@ -69,3 +69,7 @@ See [the Phase 0 audit](docs/custom/PHASE-0-AUDIT.md) and [current status](STATU
 ### Phase 1 milestone 2
 
 Implemented only new hub components/pages/router, official shadcn companions and MIT notice, the component provenance ledger, shared layer/source-guide metadata, and four router/render tests. Existing upstream paths remain the same six. Dashboard and Library explain Phase 2 availability; there are no fabricated feed metrics.
+
+### Phase 1 milestone 3
+
+New custom globe modules bind branding/theme before gaze initialization, install a back link and owned passive disclosures at application ready, read existing DataManager activity, and project one abortable same-origin setup-status read into presence/unknown only. No provider polling, cache owner, source implementation or credential form changed. Lifecycle tests cover destroy/failed/embedded cleanup. Scoped CSS positions desktop disclosures away from native rails and bounds narrow overlays; explicit dismissal preserves keyboard access.
