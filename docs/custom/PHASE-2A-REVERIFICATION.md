@@ -1,6 +1,6 @@
 # Phase 2a reverification and Ajv decision review
 
-October 20, 2026 · America/New_York. **Review complete; no implementation started or newly authorized.** The approved shipping integration is verified. The proposed metadata projection and Ajv execution-role amendments below still require review before milestone 1; Phase 2b remains deferred until 2a ships and is accepted.
+October 20, 2026 · America/New_York. **The user approved the generated projection, Ajv option(b) and all frozen-pin facts/admissions/content constraints.** Implementation milestone 1 onward is now conditionally approved after a complete normal-HMR `test:track` pass on 4173. Restore normal HMR and diagnose any failure before implementation. The accepted inventory is 63 paths and the original-upstream allowlist remains exactly two files. Preserve milestone 2/3 editorial stops; stop/report if HMR containment acceptance fails. Phase 2b remains deferred.
 
 ## Shipping closeout and evidence
 
@@ -109,7 +109,7 @@ API contracts from src/custom/shared/layerMetadata.js:4,62-102,287-295:
 - sourceGuideHref(id): known ID -> '/hub/#/library/sources/'+encodeURIComponent(id); unknown -> null; never caller-supplied URL.
 - getLayerMetadata(id): known string -> frozen {id,valueKinds,sources,requiredKeyId}; unknown/non-string -> null. Nested valueKinds and sources arrays frozen; each value is frozen {id,label,kind}.
 - getLayerKindValues(row): accepts string or object with id, returns matching frozen valueKinds; unknown returns shared frozen empty array. Preserve referential/API behavior instead of exposing registry internal shapes.
-- Existing public docsHref points at unpinned main/DATA_SOURCES.md. Phase2a should use pin-specific document evidence/routes; never silently treat moving-main text as admitted content at this pin.
+- Existing public docsHref points at unpinned main/DATA_SOURCES.md. Phase 2a should use pin-specific document evidence/routes; never silently treat moving-main text as admitted content at this pin.
 
 ## Exact setup identifiers vs conditional credentials
 
@@ -178,7 +178,7 @@ Umbrella groups transit, gbfs, cctv must keep their identities while individual 
 
 These are repository/source facts; implementation presence is not a live feed check. References and prior-vs-target comparison corroborate docs/custom/UPSTREAM-SYNC-REHEARSAL.md:49-67.
 
-| Scope | Confirmed old→new change and Phase2a consequence | Current source references |
+| Scope | Confirmed old→new change and Phase 2a consequence | Current source references |
 | --- | --- | --- |
 | CCTV / Ontario511 | Keyless catalog -> server ONTARIO_511_API_KEY required; missing key skips this pack. Geographic extent/frame host unchanged. Accept coverage loss, list product key-required, configure no key. Free developer registration+approval, 10 calls/min, intended-use/third-party disclosure and distributor as-is notice are repository-documented; terms approval is not implied. | server/providers/cctv/sources.js:544-584; .env.example:210; DATA_SOURCES.md:159; SETUP.md provider guide |
 | CCTV / Hong Kong | New upstream default-on keyless Transport Department XML catalog/snapshot host, Hong Kong Island/Kowloon/New Territories. Default cap1100, configurable8–1200; documented approx1013 not an observed loaded count. New DATA.GOV.HK/Transport Department credit terms. Shipping custom policy forces OFF until separate review/activation. | server/providers/cctv/catalog.js:111-115; server/providers/cctv/constants.js:314-344; server/providers/cctv/sources.js:2013-2230; DATA_SOURCES.md:66,173; build/customProviderPolicy.js:7-12 |
@@ -194,7 +194,7 @@ Custom shipping policy is separate from upstream behavior: build/customProviderP
 ## Existing source-owner boundaries to preserve
 
 - Catalog/control assembly: src/app/{catalog,constructCatalog}.js. Layer state serialization: src/data/layerState.js. Family-specific source contracts: src/app/sourceComposition.js. Focused app bindings: src/app/layers/*.js.
-- Data Sources Library must not call these acquisition APIs. Current contracts include getSnapshot (aircraft/vessels/weather/etc), CCTV getCatalog/getHealth/getFrameUrl/getMediaUrl, satellites readGroup, launches getLaunches/getActiveTle, recent-imagery searchHls/getThumbnail/getTileTemplate; Phase2a remains static descriptive metadata, source ownership/passive summaries deferred2b.
+- Data Sources Library must not call these acquisition APIs. Current contracts include getSnapshot (aircraft/vessels/weather/etc), CCTV getCatalog/getHealth/getFrameUrl/getMediaUrl, satellites readGroup, launches getLaunches/getActiveTle, recent-imagery searchHls/getThumbnail/getTileTemplate; Phase 2a remains static descriptive metadata, source ownership/passive summaries deferred2b.
 - Mixed/direct owners: recentImagery model/catalog/source and GIBS/CMR browser-direct; StreetLevel provider-local adapters; server/provider modules for CCTV and Mapillary; registry entries must not invent replacement acquisitions.
 - Terms guide notes already user-approved: Cesium tracking uses Google3D/defaultEsri instead of ion-hostedBing, subject to those terms; OpenSky anonymous access falls under its terms and any future recorder/archiving requires a terms check before proposal. No hosting/source/retention activation in2a.
 
@@ -208,7 +208,7 @@ Custom shipping policy is separate from upstream behavior: build/customProviderP
 6. Satellite imagery change: distinguish existing bounded A/B raster comparison from estimated satellite orbit propagation and bundled licensed Nepal assets. Each product/date/coverage documented separately; CTA proves only accepted restored URL scope.
 7. WorldFX/Astra: external proprietary demonstrations described as such; no claim local code reconstructs arbitrary video, no external article body/media replication. Two Spatial Intelligence articles need original summaries+links and user editorial check in milestone2.
 8. Source-kind vocabulary: registry value kind must use exactly Live/Refreshed/Simulated/Estimated/Static and remain independent of health. Runtime sourceKind is NOT equivalent: CCTV catalog sourceKind identifies adapter/source pack; frame sourceKind upstream-image/hls-pull denotes current-frame transport, streetview is fallback and synthetic is unavailable, see src/tools/queries/media.js:143-181. Never infer Live from arbitrary sourceKind or a catalog being healthy. Static directory records describe products; dynamic observation timestamp/health/count/key presence absent.
-9. hub/src/pages/SourceGuide.tsx:13 currently promises current health in Phase2 directory; new Library copy must explicitly say Not checked in Library because passive summaries deferred2b. Existing Phase1 MAIN document links are moving refs, so canonical evidence must be frozen pin plus selected section/hash.
+9. hub/src/pages/SourceGuide.tsx:13 currently promises current health in Phase2 directory; new Library copy must explicitly say Not checked in Library because passive summaries deferred2b. Existing Phase 1 MAIN document links are moving refs, so canonical evidence must be frozen pin plus selected section/hash.
 
 
 ## Six case-page reverification
@@ -540,3 +540,13 @@ Option (b)'s lazy catalog must be a real HMR boundary, use inert allowlisted raw
 - Ajv metadata, isolated package lock, scripts, schemas, chunks, optimizer output and JSON results: `.gev-logs/post-pin-review/ajv-measurement/`, with `ajv-comparison.md` and `ajv-comparison.json` beside it. These schemas are synthetic measurement fixtures, not proposed production content.
 
 **Stop: review only.** No `content/` tree, generated metadata projection, Library feature, production dependency change or milestone 1 commit was created. The two pending amendments are the proposed generated projection and the development-only browser execution role for Ajv. Phase 2b remains deferred.
+
+## Approval update: normal-HMR tracking before milestone 1
+
+The user reviewed and approved the generated projection (63 paths), Ajv option(b) as a devDependency with DEV-only lazy Library validation and authoritative Node check/build validation, and this report's pin facts/doc admissions with hashes/case/article requirements. Earlier pending-amendment wording is the historical review proposal, now accepted. No new application file has been created yet.
+
+The user requires a normal-HMR shipping tracking pass before implementation. Root 4173 is being restored through the standard CLI without an HMR override. The temporary HMR-off mode had suppressed Vite reload delivery so the earlier reported 109/0/0 could complete; it did not fix a demonstrated product/harness defect or establish normal-HMR reliability.
+
+The interrupted 88-pass run ended in context destruction at `scripts/track-regression.mjs:3231` during `page.evaluate`, with no planned navigation there. Preserved normal-mode logs show 15 source reload messages, including three at 15:33:10 corresponding to metadata-change timestamps despite unchanged mtimes/content. This makes a dev-server reload interruption the leading explanation. The external metadata writer and exact browser navigation were not recorded, so a conclusive causal claim would exceed the evidence. Normal-mode rerun logs will be retained in `.gev-logs/normal-hmr-2026-10-20.3KpYkt/` and correlated if it fails.
+
+Once normal tracking passes, milestone 1 onward is authorized under the accepted inventory and gates. If it fails, diagnose first. If Library HMR containment later fails its acceptance tests, stop and report; do not weaken it, turn off HMR, disable global overlays or move validation into dev startup to obtain a pass. All other scope/rights/security/editorial boundaries remain.
