@@ -79,3 +79,9 @@ New custom globe modules bind branding/theme before gaze initialization, install
 Added the user-run `scripts/qa-custom-hub.mjs` and `qa:hub` command, five full-state handoff regressions, and `SETUP.md`. The custom CSS imports precede the final Cyber stylesheet to retain upstream cascade policy. English-only custom chrome labels use the upstream explicit i18n opt-out convention; state strings are computed separately from DOM text assignment so the Material Symbols scanner does not mistake them for glyphs. Light globe title/dock text has readable backing/colors; the narrow title backing fits its logo and the left panel stack starts below the owned control row.
 
 Only the six approved existing-upstream paths changed. Existing locked package versions remain unchanged. Phase 1 is ready for acceptance; no Phase 2 service, source manifest, acquisition/cache redesign, recorder, hosting or deployment was started.
+
+### Phase 1 acceptance review — class helper correction
+
+The user requested review/removal of `cn@0.5.0`. Its inclusion followed the pinned official shadcn helper, but no package-specific API is needed. `package.json` and `package-lock.json` now remove `cn`, promote the existing `clsx@2.1.1` to an exact direct dependency, and add exact `tailwind-merge@3.7.0`. Both are MIT. No unrelated locked package version changed or disappeared.
+
+Custom edits: local helper in `hub/src/lib/utils.ts`, one meaningful regression in `src/custom/hub/router.test.mjs`, component provenance/review, this ledger, `STATUS.md`, and `PHASE-1-VALIDATION.md`. `npm ci`, hub typecheck, allocation-gated tests (8,261 passes, one platform skip), both builds, boundaries, and doctor passed. The existing six-file upstream intersection is unchanged. The user's `qa:hub` output is still required for Phase 1 acceptance.

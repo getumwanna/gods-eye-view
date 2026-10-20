@@ -80,3 +80,26 @@ Local ignored screenshots: `qa-artifacts/phase-1/hub-dark-desktop.png`, `mobile-
 Limitations: the CLI browser harness itself remains unexecuted; custom chrome is English-only; no exhaustive live-layer/provider check, tracking baseline, GPU/FPS measurement or full device matrix is claimed. Missing Phase 0 checks remain waived historical gaps. Phase 4 performance/provider/device work remains separate. Hosting is unselected.
 
 **Stop for Phase 1 acceptance. Phase 2 is not authorized.**
+
+## Phase 1 review correction — dependency and clean-install receipt
+
+October 20, 2026; Node **24.22.0**, npm **11.19.1**. The pinned official shadcn helper reexported `cn`, explaining its original inclusion. The sidebar does not need that package specifically. `cn@0.5.0` has been removed, and `hub/src/lib/utils.ts` now uses the local `twMerge(clsx(inputs))` helper with direct exact dependencies `clsx@2.1.1` and `tailwind-merge@3.7.0` (MIT). See the component review for pinned provenance.
+
+| Requested check | Result | Local ignored evidence |
+| --- | --- | --- |
+| `npm ci` after package/lock correction | Pass; 0 vulnerabilities | `cn-review/npm-ci.log` |
+| `npm run typecheck:hub` | Pass | `cn-review/typecheck.log` |
+| `GEV_REQUIRE_ALLOCATION_GATE=1 npm test` | **8,261 passed, 1 platform skip, 0 failures** (8,262 total) | `cn-review/tests.log` |
+| `npm run build` (globe + hub) | Pass, 5.29 s | `cn-review/build.log` |
+| `npm run build:panel` | Pass, 4.79 s | `cn-review/panel.log` |
+| `npm run check:boundaries` | Pass | `cn-review/boundaries.log` |
+| `npm run doctor` | Pass; optional credentials absent | `cn-review/doctor.log` |
+| Lockfile comparison against pre-review HEAD | `cn` absent; only new package is `tailwind-merge`; no unrelated locked version changed or disappeared | `cn-review/receipt.json` |
+
+Evidence directory: `.gev-logs/phase1-2026-10-20/`. The added regression checks conditional class inputs, conflicting Tailwind utilities, and the sidebar's data-attribute variant overrides. Existing large-chunk build warnings remain. npm retained its existing unapproved-install-script warnings; no additional script approval was granted. These checks make no new live-feed, browser, or FPS claim.
+
+### User-run QA receipt — pending
+
+The user will run `npm run qa:hub` and paste the output. No output has been received for this review, and the harness has not been executed by the agent. Record the actual result, timestamp/environment, and any failure resolution here when it arrives.
+
+**Dependency correction resolved. Phase 1 acceptance remains pending the user-run QA receipt and its outcome. No acceptance is inferred from the earlier browser evidence.**

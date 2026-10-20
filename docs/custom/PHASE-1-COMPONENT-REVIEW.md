@@ -77,3 +77,11 @@ This is a token-pair calculation, **not** a rendered accessibility pass. Actual 
 The earlier approval message contained bracketed baseline alternatives; when asked for missing results, the user answered “I don't have it.” The subsequent user message explicitly waived **all missing Phase 0 baseline checks**, including browser/tracking checks, individual layer outcomes, and GPU/FPS measurements. These checks remain unperformed/unverified and must never be recorded as passing. Historical unit/build/doctor results remain unchanged.
 
 The user also explicitly chose official MIT shadcn/ui, resolving the component-selection hold. Phase 1 implementation is approved under its exact six-file upstream allowlist. Milestone 1 is complete, its six-file patch was shown to the user, and its checks are in `PHASE-1-VALIDATION.md`. Continue milestones 2–4 in order and stop at Phase 1 acceptance. Phase 2 is not authorized.
+
+## Phase 1 acceptance review — local class helper
+
+The selected official shadcn revision's [utils.ts](https://github.com/shadcn-ui/ui/blob/ba1503c64472b82256d9de95e2e62c5901a38e8b/apps/v4/registry/new-york-v4/lib/utils.ts) reexports `cn` from the MIT-licensed `shadcn-ui/cn` package. That explains the original `cn@0.5.0` runtime dependency; it was not a requirement of the sidebar contract. Only a class-name composition function is used.
+
+At the user's request, remove that dependency and use the familiar local helper `twMerge(clsx(inputs))`. Direct versions are pinned to `clsx@2.1.1` and `tailwind-merge@3.7.0`, both MIT; neither declares runtime dependencies. `clsx@2.1.1` was already locked transitively. Tailwind Merge 3 supports the installed Tailwind 4 family. No vendored component needs to change. Sources: [clsx](https://github.com/lukeed/clsx), [tailwind-merge](https://github.com/dcastil/tailwind-merge).
+
+Clean installation and all requested verification passed; the exact receipt is in `PHASE-1-VALIDATION.md`. This resolves the dependency review item, not the separate user-run `qa:hub` acceptance item.

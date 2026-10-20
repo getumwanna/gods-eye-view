@@ -7,6 +7,13 @@ import { build } from 'esbuild';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { parseHubRoute, routeTitle } from '../../../hub/src/router.js';
+import { cn } from '../../../hub/src/lib/utils.ts';
+
+test('local class helper composes conditional inputs and lets later utilities override conflicts', () => {
+  assert.equal(cn('p-2', ['px-4', false], { hidden: false, 'font-semibold': true }, null, undefined, 'px-6'), 'p-2 font-semibold px-6');
+  assert.equal(cn('hover:bg-red-500', 'hover:bg-blue-500', 'bg-red-500', 'dark:bg-black'), 'hover:bg-blue-500 bg-red-500 dark:bg-black');
+  assert.equal(cn('group-data-[collapsible=icon]:w-8', 'group-data-[collapsible=icon]:w-10'), 'group-data-[collapsible=icon]:w-10');
+});
 
 test('hub routes accept only fixed pages and bounded source identifiers', () => {
   assert.deepEqual(parseHubRoute(''), { page: 'dashboard', sourceId: null });
