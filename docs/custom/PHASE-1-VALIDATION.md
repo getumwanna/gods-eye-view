@@ -1,6 +1,6 @@
 # Phase 1 validation record
 
-Updated October 20, 2026, America/New_York. Phase 1 implementation is approved. All four milestones are implemented and checked; user acceptance remains pending the user-run QA receipt. Phase 2a planning is authorized separately; no Phase 2 implementation is authorized.
+Updated October 20, 2026, America/New_York. Phase 1 implementation is approved. All four milestones are implemented and checked; user acceptance remains pending a passing user-run QA rerun after the harness correction. Phase 2a planning is authorized separately; no Phase 2 implementation is authorized.
 
 ## Authorization and historical baseline boundary
 
@@ -98,8 +98,22 @@ October 20, 2026; Node **24.22.0**, npm **11.19.1**. The pinned official shadcn 
 
 Evidence directory: `.gev-logs/phase1-2026-10-20/`. The added regression checks conditional class inputs, conflicting Tailwind utilities, and the sidebar's data-attribute variant overrides. Existing large-chunk build warnings remain. npm retained its existing unapproved-install-script warnings; no additional script approval was granted. These checks make no new live-feed, browser, or FPS claim.
 
-### User-run QA receipt — pending
+### User-run QA receipt — received; rerun required
 
-The user will run `npm run qa:hub` and paste the output. No output has been received for this review, and the harness has not been executed by the agent. Record the actual result, timestamp/environment, and any failure resolution here when it arrives.
+The user supplied `npm run qa:hub` output: **7/9 passed**, with the full-v2 handoff and dependent globe branding/status/setup/credits checks failing. The matching local receipt is `.gev-logs/qa-custom-hub-2026-10-20T15-57-41-177Z.json` (timestamp `2026-10-20T15:57:41.178Z`). It records zero unhandled page errors, zero setup reads, and zero blocked acquisition requests. Node/browser versions were not included in that receipt. This is a failed QA result, not Phase 1 acceptance. The agent has not executed the browser harness.
 
-**Dependency correction resolved. Phase 1 acceptance remains pending the user-run QA receipt and its outcome. No acceptance is inferred from the earlier browser evidence.**
+**Dependency correction resolved. The initial user-run QA result is recorded as failed; Phase 1 acceptance requires a passing user-run rerun after the correction below. No acceptance is inferred from the earlier browser evidence.**
+
+## User QA failure review — harness state isolation
+
+The negative share-form check leaves a rejected credential-shaped test URL in the React-controlled input. The positive case then calls `page.goto()` with the same dashboard hash and uses `page.type()` without clearing that field. Same-document hash navigation can retain React state, so the valid fixture is appended to the rejected value. The form correctly rejects that combined value; navigation cannot complete. The following globe check then has no ready globe prerequisite. This is a concrete harness isolation defect and a plausible explanation for both reported failures, not proof that globe behavior passed.
+
+Correction is confined to custom QA code:
+
+- `scripts/qa-custom-hub-input.mjs` clears and replaces the controlled input, then checks the exact value before submission. Both negative and positive cases use it.
+- `scripts/qa-custom-hub.mjs` records only fixed checkpoint names on failure, removes its navigation listener on completion/failure, and identifies a downstream globe check as blocked by globe readiness when that prerequisite failed. A blocked check still fails the overall gate. No raw errors, page text, URLs, credentials, or provider payloads are added to receipts.
+- `src/custom/hub/qaHarness.test.mjs` reproduces a retained rejected field and append-only failure, then proves replacement produces a valid full-v2 handoff. Its page-evaluation callback is tested without caller closures, matching serialization behavior. This is an offline regression, not a browser pass.
+
+Verification on Node 24.22.0: both modified/new harness modules pass `node --check`; the QA-input, hub router/render, and full-state handoff regression group passes **11/11**, zero failures. Local evidence: `.gev-logs/phase1-2026-10-20/qa-review/focused.log`. Product code, dependencies, acquisition rules, and the six-file upstream intersection did not change. The prior clean-install/typecheck/full-suite/build receipts remain historical results for unchanged product code; they were not rerun or relabeled as browser verification.
+
+**Awaiting the user's fresh `npm run qa:hub` output. Neither failed browser check is marked passed. Phase 1 is not accepted; Phase 2a remains planning only.**

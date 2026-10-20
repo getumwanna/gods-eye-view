@@ -22,6 +22,7 @@ import { fileURLToPath } from 'node:url';
 import puppeteer from 'puppeteer';
 import { chromeExecutablePath } from './qa-chrome.mjs';
 import { branding } from '../src/custom/shared/branding.js';
+import { replaceQaInput } from './qa-custom-hub-input.mjs';
 
 const argument = process.argv.find(value => value.startsWith('--base-url='));
 const supplied = argument?.slice('--base-url='.length) || process.env.QA_BASE_URL || 'http://localhost:4173';
@@ -42,6 +43,8 @@ let context;
 let page;
 let failed = false;
 let pageErrors = 0;
+let checkpoint = null;
+let globeReady = false;
 const fixture = new URL('/', origin);
 fixture.hash = new URLSearchParams({
   v: '2', lat: '30.25', lon: '-97.75', alt: '800000', heading: '33', pitch: '-70', roll: '0',
@@ -50,15 +53,18 @@ fixture.hash = new URLSearchParams({
   hud: 'operator', hv: '1', dm: 'OFF', sc: '0', scf: '37', cr: '0',
 }).toString();
 
-function record(name, passed) {
-  assertions.push({ name, passed: Boolean(passed) });
-  console.log(`[${passed ? 'PASS' : 'FAIL'}] ${name}`);
+function record(name, passed, detail = {}) {
+  assertions.push({ name, passed: Boolean(passed), ...detail });
+  const suffix = detail.blockedBy ? ` (blocked by ${detail.blockedBy})`
+    : detail.checkpoint ? ` (checkpoint: ${detail.checkpoint})` : '';
+  console.log(`[${passed ? 'PASS' : 'FAIL'}] ${name}${suffix}`);
   if (!passed) failed = true;
 }
 
 async function check(name, operation) {
+  checkpoint = null;
   try { await operation(); record(name, true); }
-  catch { record(name, false); }
+  catch { record(name, false, checkpoint ? { checkpoint } : {}); }
 }
 
 async function route(hash, heading) {
@@ -160,9 +166,7 @@ try {
   await check('share form rejects external destinations and credential-shaped query fields', async () => {
     await route('#/dashboard', 'Dashboard');
     for (const rejected of ['https://example.invalid/#v=2&lat=0&lon=0&alt=100', `${origin}/?api_key=TEST_ONLY_NOT_A_KEY`]) {
-      await page.click('#globe-share-link', { clickCount: 3 });
-      await page.keyboard.press('Backspace');
-      await page.type('#globe-share-link', rejected);
+      assert.equal(await replaceQaInput(page, '#globe-share-link', rejected), true);
       await clickText('button', 'Open shared view');
       await page.waitForSelector('#share-error[role="alert"]');
       assert.equal(new URL(page.url()).pathname, '/hub/');
@@ -171,43 +175,64 @@ try {
 
   await check('complete synthetic v2 URL reaches the globe intact with every layer disabled', async () => {
     await route('#/dashboard', 'Dashboard');
-    await page.type('#globe-share-link', fixture.href);
+    checkpoint = 'replace-share-input';
+    assert.equal(await replaceQaInput(page, '#globe-share-link', fixture.href), true);
+    checkpoint = 'navigate-to-globe';
+    let navigationHandler;
     const navigated = new Promise(resolve => {
-      const handler = frame => { if (frame === page.mainFrame()) { page.off('framenavigated', handler); resolve(frame.url()); } };
-      page.on('framenavigated', handler);
+      navigationHandler = frame => { if (frame === page.mainFrame()) { page.off('framenavigated', navigationHandler); resolve(frame.url()); } };
+      page.on('framenavigated', navigationHandler);
     });
-    await Promise.all([page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout }), clickText('button', 'Open shared view')]);
-    const received = new URL(await navigated);
+    let received;
+    try {
+      await Promise.all([page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout }), clickText('button', 'Open shared view')]);
+      received = new URL(await navigated);
+    } finally {
+      page.off('framenavigated', navigationHandler);
+    }
+    checkpoint = 'preserve-full-v2-url';
     assert.equal(received.origin, origin);
     assert.equal(received.pathname, '/');
     assert.equal(received.hash, fixture.hash);
+    checkpoint = 'globe-ready';
     await page.waitForFunction(() => window.__godsEyeView?.dataManager && document.querySelector('.gih-globe-tools'), { timeout });
+    globeReady = true;
+    checkpoint = 'all-layers-disabled';
     assert.equal(await page.evaluate(() => window.__godsEyeView.dataManager.getAll().every(row => !row.enabled)), true);
   });
 
-  await check('globe branding, passive status disclosure, setup guidance and credits survive', async () => {
-    await page.waitForSelector('.gih-globe-tools');
-    assert.equal(await page.$eval('#title-bar h1', node => node.textContent.trim()), branding.name);
-    assert.equal(await page.$eval('#title-bar .brand-logo img', node => new URL(node.src).pathname), branding.logo);
-    assert.equal(await page.$('#title-bar [data-logo-gaze]'), null);
-    assert.ok(await page.$('a[aria-label="Back to Geospatial Intelligence Hub"]'));
-    if (!await page.$eval('.gih-feed-strip', node => node.open)) await page.click('.gih-feed-strip > summary');
-    await page.waitForSelector('.gih-feed-strip[open]');
-    assert.equal(await page.$eval('.gih-feed-strip', node => node.textContent.includes('No active layers')), true);
-    await page.click('button[aria-label="Close active layer status"]');
-    await page.click('.gih-key-badges > summary');
-    await page.waitForSelector('.gih-key-badges[open]');
-    assert.ok(await page.$('.gih-key-badges a[href="/hub/#/library"]'));
-    const credit = await page.$('#cesium-credits');
-    assert.ok(credit);
-    const box = await credit.boundingBox();
-    assert.ok(box && box.width > 0 && box.height > 0);
-    const styles = await page.$eval('#cesium-credits', element => ({ display: getComputedStyle(element).display, visibility: getComputedStyle(element).visibility }));
-    assert.notEqual(styles.display, 'none');
-    assert.notEqual(styles.visibility, 'hidden');
-    await page.click('a[aria-label="Back to Geospatial Intelligence Hub"]');
-    await page.waitForFunction(() => document.querySelector('h1')?.textContent === 'Dashboard');
-  });
+  if (!globeReady) {
+    record('globe branding, passive status disclosure, setup guidance and credits survive', false, { blockedBy: 'globe-readiness' });
+  } else {
+    await check('globe branding, passive status disclosure, setup guidance and credits survive', async () => {
+      checkpoint = 'globe-branding';
+      await page.waitForSelector('.gih-globe-tools');
+      assert.equal(await page.$eval('#title-bar h1', node => node.textContent.trim()), branding.name);
+      assert.equal(await page.$eval('#title-bar .brand-logo img', node => new URL(node.src).pathname), branding.logo);
+      assert.equal(await page.$('#title-bar [data-logo-gaze]'), null);
+      assert.ok(await page.$('a[aria-label="Back to Geospatial Intelligence Hub"]'));
+      checkpoint = 'passive-status-disclosure';
+      if (!await page.$eval('.gih-feed-strip', node => node.open)) await page.click('.gih-feed-strip > summary');
+      await page.waitForSelector('.gih-feed-strip[open]');
+      assert.equal(await page.$eval('.gih-feed-strip', node => node.textContent.includes('No active layers')), true);
+      await page.click('button[aria-label="Close active layer status"]');
+      checkpoint = 'setup-guidance';
+      await page.click('.gih-key-badges > summary');
+      await page.waitForSelector('.gih-key-badges[open]');
+      assert.ok(await page.$('.gih-key-badges a[href="/hub/#/library"]'));
+      checkpoint = 'visible-credits';
+      const credit = await page.$('#cesium-credits');
+      assert.ok(credit);
+      const box = await credit.boundingBox();
+      assert.ok(box && box.width > 0 && box.height > 0);
+      const styles = await page.$eval('#cesium-credits', element => ({ display: getComputedStyle(element).display, visibility: getComputedStyle(element).visibility }));
+      assert.notEqual(styles.display, 'none');
+      assert.notEqual(styles.visibility, 'hidden');
+      checkpoint = 'back-to-hub';
+      await page.click('a[aria-label="Back to Geospatial Intelligence Hub"]');
+      await page.waitForFunction(() => document.querySelector('h1')?.textContent === 'Dashboard');
+    });
+  }
 
   record('no unhandled browser JavaScript errors during bounded UI checks', pageErrors === 0);
 } catch {

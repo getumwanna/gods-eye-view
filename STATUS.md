@@ -1,6 +1,6 @@
 # Geospatial Intelligence Hub status
 
-Updated October 20, 2026, America/New_York. **Phase 1 dependency review resolved; acceptance awaits the user-run QA receipt. Missing Phase 0 baselines remain explicitly waived, not passed. Phase 2a plan prepared for review only; no Phase 2 implementation approved. Phase 2b planning is deferred until 2a ships.**
+Updated October 20, 2026, America/New_York. **Phase 1 dependency review resolved; user QA returned 7/9. A harness input-state defect is corrected and offline checks pass; acceptance awaits a passing user-run rerun. Missing Phase 0 baselines remain explicitly waived, not passed. Phase 2a is planning only; no Phase 2 implementation is approved. Phase 2b planning is deferred until 2a ships.**
 
 ## Completed and verified
 
@@ -35,8 +35,8 @@ Updated October 20, 2026, America/New_York. **Phase 1 dependency review resolved
 1. **Historical Phase 0 baselines — explicitly waived, not passed:** browser/tracking checks, individual live-layer outcomes, GPU/FPS measurements, and all other missing Phase 0 baseline checks remain unverified. The earlier user answer “I don't have it” was followed by an explicit waiver. Historical unit/build/doctor receipts remain unchanged.
 2. **Component choice — resolved:** official MIT shadcn/ui Radix sidebar approved; B/A public-license findings remain historical. No 21st component was adopted.
 3. **Milestone 1 — implemented and checked:** six upstream path diffs shown to the user in `docs/custom/PHASE-1-M1-UPSTREAM.patch`. Config tests: 8 passed; foundation tests: 3 passed; contrast calculation test: 1 passed; typecheck, package/import boundaries, doctor, root build, and panel build passed. See the validation record for exact receipts and limits.
-4. **Phase 1 acceptance — pending user QA:** the `cn` review is resolved: local `clsx` + `tailwind-merge` helper, clean `npm ci`, hub typecheck, allocation-gated suite (**8,261 passed, 1 platform skip, 0 failures**), both builds, boundaries, and doctor passed. The user will run `npm run qa:hub` and paste output for `PHASE-1-VALIDATION.md`; no result has been received. Earlier in-app browser checks remain historical evidence. Acceptance is not yet recorded.
-5. **Phase gates:** record the user-run `qa:hub` output and resolve its outcome before recording Phase 1 acceptance. [Phase 2a file-level plan](docs/custom/PHASE-2A-PLAN.md) is prepared only; its proposed upstream allowlist is `package.json` and `package-lock.json`. Implementation requires explicit approval after Phase 1 acceptance. Plan Phase 2b only after 2a ships; upstream-sync rehearsal is a proposal, not an executed update.
+4. **Phase 1 acceptance — pending QA rerun:** user output is recorded as **7/9 passed** (full-state handoff and downstream globe checks failed). Fixed a harness defect that could append the valid fixture to the prior rejected input; exact-value replacement and safe failure checkpoints are now in place. Syntax checks and 11 focused offline regressions pass. Browser outcomes remain unverified until the user reruns `npm run qa:hub`. The `cn` correction and its prior clean-install/typecheck/8,261-pass full-suite/build/doctor receipts remain resolved. See `docs/custom/PHASE-1-VALIDATION.md`.
+5. **Phase gates:** record a passing fresh user-run `qa:hub` result after the harness correction before recording Phase 1 acceptance. [Phase 2a file-level plan](docs/custom/PHASE-2A-PLAN.md) is prepared only; its proposed upstream allowlist is `package.json` and `package-lock.json`. Implementation requires explicit approval after Phase 1 acceptance. Plan Phase 2b only after 2a ships; upstream-sync rehearsal is a proposal, not an executed update.
 
 ## User decisions accepted with the Phase 0 audit
 

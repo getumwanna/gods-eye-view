@@ -91,3 +91,9 @@ Custom edits: local helper in `hub/src/lib/utils.ts`, one meaningful regression 
 At the user's request, `docs/custom/PHASE-2A-PLAN.md` separates the descriptive Library work from future 2b acquisition/dashboard work. It proposes exactly two original-upstream package-file edits for maintained Markdown/search/schema libraries, with all feature implementation in project-owned files. No Phase 2 dependency was installed and no content registry, article, case, source, endpoint, or dashboard implementation was created. `AGENTS.md` and `STATUS.md` now preserve the pending Phase 1 QA condition and the planning-only boundary.
 
 A short isolated upstream-sync rehearsal is proposed after 2a ships and before 2b planning. Read-only upstream research does not change the current pin. No rehearsal branch, merge/rebase, or update adoption was performed. Phase 2b receives no implementation plan at this checkpoint.
+
+### Phase 1 user QA receipt and bounded harness correction
+
+The user supplied a 7/9 `qa:hub` result. It is preserved as failed in `PHASE-1-VALIDATION.md`, with the matching local assertion-only receipt timestamp. The positive share test could append its fixture to the rejected input retained by same-document dashboard navigation; the following globe check then lacks its prerequisite. Only custom QA files change: `scripts/qa-custom-hub.mjs`, new `scripts/qa-custom-hub-input.mjs`, and new `src/custom/hub/qaHarness.test.mjs`. Clear/replace/exact-value checking fixes test isolation, static checkpoint labels improve diagnostics, and blocked downstream checks remain failures. Syntax checks and 11 focused offline regressions pass; no browser rerun or product pass is claimed.
+
+This checkpoint also updates `AGENTS.md`, `STATUS.md`, and the validation record. No original-upstream path, product behavior, dependency, provider, or Phase 2 plan/implementation changed. Acceptance awaits the user's fresh QA result.
