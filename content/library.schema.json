@@ -1,0 +1,446 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "upstreamRevision",
+    "reviewedDate",
+    "upstreamDocuments",
+    "items"
+  ],
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "upstreamRevision": {
+      "$ref": "#/definitions/revision"
+    },
+    "reviewedDate": {
+      "$ref": "#/definitions/date"
+    },
+    "upstreamDocuments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/upstreamDocument"
+      },
+      "minItems": 1,
+      "maxItems": 16,
+      "uniqueItems": true
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/item"
+      },
+      "minItems": 0,
+      "maxItems": 128,
+      "uniqueItems": true
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://gev.local/schemas/library-v1.json",
+  "title": "GEV Library publication manifest v1",
+  "description": "Only explicitly admitted local documents and original content. External article bodies and remote media are not admitted.",
+  "definitions": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "url": {
+      "type": "string",
+      "minLength": 9,
+      "maxLength": 2048,
+      "pattern": "^https://[^\\s]+$"
+    },
+    "date": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+      "minLength": 10,
+      "maxLength": 10
+    },
+    "revision": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{40}$",
+      "minLength": 40,
+      "maxLength": 40
+    },
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 240,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_./-]*$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "minLength": 64,
+      "maxLength": 64
+    },
+    "section": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "startHeading",
+        "startOccurrence",
+        "endHeading",
+        "endOccurrence",
+        "startLine",
+        "endLine",
+        "sha256"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/id"
+        },
+        "startHeading": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "startOccurrence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "endHeading": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 300
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "endOccurrence": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "startLine": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100000
+        },
+        "endLine": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100000
+        },
+        "sha256": {
+          "$ref": "#/definitions/sha256"
+        }
+      }
+    },
+    "upstreamDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "path",
+        "sourceUrl",
+        "upstreamRevision",
+        "sha256",
+        "sections",
+        "licenseNotice",
+        "published"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "path": {
+          "$ref": "#/definitions/path"
+        },
+        "sourceUrl": {
+          "$ref": "#/definitions/url"
+        },
+        "upstreamRevision": {
+          "$ref": "#/definitions/revision"
+        },
+        "sha256": {
+          "$ref": "#/definitions/sha256"
+        },
+        "sections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/section"
+          },
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true
+        },
+        "licenseNotice": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "published": {
+          "type": "boolean"
+        }
+      }
+    },
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "url", "reviewedDate"],
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "url": {
+          "$ref": "#/definitions/url"
+        },
+        "reviewedDate": {
+          "$ref": "#/definitions/date"
+        }
+      }
+    },
+    "caseDetails": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["interactivity", "limitations", "globeUrl", "restoredScope"],
+      "properties": {
+        "interactivity": {
+          "enum": ["interactive", "partial", "demonstration-only", "view-only"]
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "minItems": 1,
+          "maxItems": 16,
+          "uniqueItems": true
+        },
+        "globeUrl": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8000,
+              "pattern": "^/#v=2&"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "restoredScope": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "slug",
+        "kind",
+        "category",
+        "title",
+        "tags",
+        "description",
+        "author",
+        "publishedDate",
+        "reviewedDate",
+        "contentPath",
+        "upstreamDocumentId",
+        "sectionIds",
+        "upstreamRevision",
+        "inputSha256",
+        "references",
+        "sourceProductRefs",
+        "licenseNotice",
+        "adaptationNotice",
+        "status",
+        "caseDetails"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/id"
+        },
+        "slug": {
+          "$ref": "#/definitions/id"
+        },
+        "kind": {
+          "enum": [
+            "original-article",
+            "external-summary",
+            "case-study",
+            "upstream-documentation"
+          ]
+        },
+        "category": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "minItems": 1,
+          "maxItems": 24,
+          "uniqueItems": true
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "author": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "publishedDate": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reviewedDate": {
+          "$ref": "#/definitions/date"
+        },
+        "contentPath": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/path"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "upstreamDocumentId": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sectionIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/id"
+          },
+          "minItems": 0,
+          "maxItems": 32,
+          "uniqueItems": true
+        },
+        "upstreamRevision": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "inputSha256": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/reference"
+          },
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true
+        },
+        "sourceProductRefs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 161,
+            "pattern": "^[a-z0-9][a-z0-9-]*/[a-z0-9][a-z0-9-]*$"
+          },
+          "minItems": 0,
+          "maxItems": 128,
+          "uniqueItems": true
+        },
+        "licenseNotice": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "adaptationNotice": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "status": {
+          "enum": ["draft", "published"]
+        },
+        "caseDetails": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/caseDetails"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

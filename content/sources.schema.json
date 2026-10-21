@@ -1,0 +1,587 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "upstreamRevision",
+    "reviewedDate",
+    "capabilities",
+    "sources",
+    "bindings",
+    "guideGroups"
+  ],
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "upstreamRevision": {
+      "$ref": "#/definitions/revision"
+    },
+    "reviewedDate": {
+      "$ref": "#/definitions/date"
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/capability"
+      },
+      "minItems": 1,
+      "maxItems": 32,
+      "uniqueItems": true
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/source"
+      },
+      "minItems": 1,
+      "maxItems": 128,
+      "uniqueItems": true
+    },
+    "bindings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/binding"
+      },
+      "minItems": 1,
+      "maxItems": 128,
+      "uniqueItems": true
+    },
+    "guideGroups": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/guide"
+      },
+      "minItems": 1,
+      "maxItems": 64,
+      "uniqueItems": true
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://gev.local/schemas/sources-v1.json",
+  "title": "GEV descriptive source registry v1",
+  "description": "Static reference metadata only. This schema contains no credentials, presence flags, feed health, observation timestamps or provider responses.",
+  "definitions": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "url": {
+      "type": "string",
+      "minLength": 9,
+      "maxLength": 2048,
+      "pattern": "^https://[^\\s]+$"
+    },
+    "date": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+      "minLength": 10,
+      "maxLength": 10
+    },
+    "revision": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{40}$",
+      "minLength": 40,
+      "maxLength": 40
+    },
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 240,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_./-]*$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "minLength": 64,
+      "maxLength": 64
+    },
+    "fact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "unit", "notes"],
+      "properties": {
+        "value": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 315360000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "unit": {
+          "enum": [null, "seconds", "minutes", "hours", "days"]
+        },
+        "notes": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        }
+      }
+    },
+    "capability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "setupKeyId",
+        "environmentNames",
+        "visibility",
+        "notes"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/id"
+        },
+        "setupKeyId": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "environmentNames": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "pattern": "^[A-Z][A-Z0-9_]*$"
+          },
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true
+        },
+        "visibility": {
+          "enum": ["visible", "hidden", "environment-only"]
+        },
+        "notes": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "section",
+        "revision",
+        "reviewedDate",
+        "url",
+        "status"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/definitions/path"
+        },
+        "section": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "revision": {
+          "$ref": "#/definitions/revision"
+        },
+        "reviewedDate": {
+          "$ref": "#/definitions/date"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/url"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "enum": ["repo-documented", "officially-reviewed", "unknown"]
+        }
+      }
+    },
+    "product": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "description",
+        "access",
+        "coverage",
+        "publisherCadence",
+        "applicationRefresh",
+        "cacheTtl",
+        "cost",
+        "terms",
+        "attribution",
+        "shipping",
+        "evidence"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/id"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "access": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "tier",
+            "requiredCapabilityRefs",
+            "optionalCapabilityRefs",
+            "notes"
+          ],
+          "properties": {
+            "tier": {
+              "enum": [
+                "keyless",
+                "key-required",
+                "optional-key",
+                "local",
+                "bundled",
+                "mixed"
+              ]
+            },
+            "requiredCapabilityRefs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/id"
+              },
+              "minItems": 0,
+              "maxItems": 32,
+              "uniqueItems": true
+            },
+            "optionalCapabilityRefs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/id"
+              },
+              "minItems": 0,
+              "maxItems": 32,
+              "uniqueItems": true
+            },
+            "notes": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000
+            }
+          }
+        },
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["geography", "gaps"],
+          "properties": {
+            "geography": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000
+            },
+            "gaps": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000
+            }
+          }
+        },
+        "publisherCadence": {
+          "$ref": "#/definitions/fact"
+        },
+        "applicationRefresh": {
+          "$ref": "#/definitions/fact"
+        },
+        "cacheTtl": {
+          "$ref": "#/definitions/fact"
+        },
+        "cost": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["category", "notes", "reviewedDate"],
+          "properties": {
+            "category": {
+              "enum": ["free", "metered", "mixed", "unknown", "local"]
+            },
+            "notes": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000
+            },
+            "reviewedDate": {
+              "$ref": "#/definitions/date"
+            }
+          }
+        },
+        "terms": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "license", "urls", "restrictions"],
+          "properties": {
+            "status": {
+              "enum": ["repo-documented", "officially-reviewed", "unknown"]
+            },
+            "license": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 600
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "urls": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/url"
+              },
+              "minItems": 0,
+              "maxItems": 12,
+              "uniqueItems": true
+            },
+            "restrictions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "minItems": 1,
+              "maxItems": 12,
+              "uniqueItems": true
+            }
+          }
+        },
+        "attribution": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "minItems": 1,
+          "maxItems": 12,
+          "uniqueItems": true
+        },
+        "shipping": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "notes"],
+          "properties": {
+            "state": {
+              "enum": [
+                "available",
+                "disabled-by-policy",
+                "opt-in",
+                "conditional"
+              ]
+            },
+            "notes": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000
+            }
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/evidence"
+          },
+          "minItems": 1,
+          "maxItems": 12,
+          "uniqueItems": true
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "homepage", "docsUrl", "products"],
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/id"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "homepage": {
+          "$ref": "#/definitions/url"
+        },
+        "docsUrl": {
+          "$ref": "#/definitions/url"
+        },
+        "products": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/product"
+          },
+          "minItems": 1,
+          "maxItems": 128,
+          "uniqueItems": true
+        }
+      }
+    },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "layerId",
+        "valueId",
+        "label",
+        "kind",
+        "sourceProductRefs",
+        "requiredCapabilityRefs",
+        "optionalCapabilityRefs",
+        "guideRefs",
+        "requiredKeyId"
+      ],
+      "properties": {
+        "layerId": {
+          "$ref": "#/definitions/id"
+        },
+        "valueId": {
+          "$ref": "#/definitions/id"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "kind": {
+          "enum": ["Live", "Refreshed", "Simulated", "Estimated", "Static"]
+        },
+        "sourceProductRefs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 161,
+            "pattern": "^[a-z0-9][a-z0-9-]*/[a-z0-9][a-z0-9-]*$"
+          },
+          "minItems": 1,
+          "maxItems": 192,
+          "uniqueItems": true
+        },
+        "requiredCapabilityRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/id"
+          },
+          "minItems": 0,
+          "maxItems": 32,
+          "uniqueItems": true
+        },
+        "optionalCapabilityRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/id"
+          },
+          "minItems": 0,
+          "maxItems": 32,
+          "uniqueItems": true
+        },
+        "guideRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/id"
+          },
+          "minItems": 1,
+          "maxItems": 38,
+          "uniqueItems": true
+        },
+        "requiredKeyId": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "guide": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "setupKeyId",
+        "setupUrl",
+        "docsHref",
+        "explanation",
+        "sourceProductRefs"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/id"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "setupKeyId": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "setupUrl": {
+          "enum": [null, "/?setup=1"]
+        },
+        "docsHref": {
+          "$ref": "#/definitions/url"
+        },
+        "explanation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "sourceProductRefs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 161,
+            "pattern": "^[a-z0-9][a-z0-9-]*/[a-z0-9][a-z0-9-]*$"
+          },
+          "minItems": 1,
+          "maxItems": 192,
+          "uniqueItems": true
+        }
+      }
+    }
+  }
+}

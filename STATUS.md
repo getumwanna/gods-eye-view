@@ -1,6 +1,7 @@
 # Geospatial Intelligence Hub status
 
-Updated October 20, 2026, America/New_York. **Phase 2a amendments approved:** 63-path generated projection, Ajv DEV-only lazy Library validation (devDependency), Node-authoritative checks/both builds, frozen-pin facts/docs/case/article constraints; the two-file upstream allowlist is unchanged. **Implementation is conditional on a fresh normal-HMR `test:track` pass on 4173.** Prior 109/0/0 was user-reported in HMR-off mode and does not satisfy this new prerequisite. Normal HMR is restored (standard CLI, PID 78207); if the run fails, diagnose before milestone 1. Rehearsal 4174 stays stopped and logs are retained; Phase 2b remains deferred.
+Updated October 21, 2026, America/New_York. **All Phase 2a milestone 1 gates pass:** native checks, tracking 109/0/0, hub QA 10/10, full normal-HMR containment 21/21 and invalid-content startup 3/3. All user receipts match and all five fixture files independently restore exactly. Standard root server runs normal HMR at localhost:4173 (verified PID 41062); 4174 stays stopped with rehearsal artifacts retained. M1 validation is complete and its buildable milestone commit is authorized. Continue to M2 under existing approval, stopping for editorial review of all nine articles before committing. Phase 2a final acceptance remains pending; Phase 2b stays deferred. See `docs/custom/PHASE-2A-VALIDATION.md`.
+
 
 ## Completed and verified
 

@@ -1,5 +1,7 @@
 # Phase 2a reverification and Ajv decision review
 
+**Current checkpoint:** all M1 gates pass, including user tracking 109/0/0, hub QA 10/10, full normal-HMR containment 21/21 and invalid-content startup 3/3, with exact restoration and native/build/graph evidence recorded in `PHASE-2A-VALIDATION.md`. Commit the buildable M1 milestone and continue to M2 under the existing approval. Its nine original articles require editorial review before committing; M3 retains its case review and Phase 2a final acceptance remains pending. The 63-path inventory/two-file upstream allowlist are unchanged; Phase 2b stays deferred. Earlier conditional/pending passages are historical.
+
 October 20, 2026 · America/New_York. **The user approved the generated projection, Ajv option(b) and all frozen-pin facts/admissions/content constraints.** Implementation milestone 1 onward is now conditionally approved after a complete normal-HMR `test:track` pass on 4173. Restore normal HMR and diagnose any failure before implementation. The accepted inventory is 63 paths and the original-upstream allowlist remains exactly two files. Preserve milestone 2/3 editorial stops; stop/report if HMR containment acceptance fails. Phase 2b remains deferred.
 
 ## Shipping closeout and evidence

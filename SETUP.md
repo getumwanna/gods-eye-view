@@ -200,3 +200,12 @@ Before a future upstream update, start from a clean reviewed working tree, fetch
 ## Language boundary
 
 The new hub and custom globe chrome use intentional English labels in Phase 1. Existing globe language controls remain available for upstream UI. Custom localization requires a separately scoped catalog update; these English labels do not claim translated coverage.
+
+
+## Library content authoring and checks
+
+Phase 2a milestone 1 currently exposes Data Sources and the existing source-guide routes. Knowledge articles, cases and local search remain later milestones. Library reference records do not test keys or feeds; their review date is a documentation date.
+
+Use the supported Node version and run `npm run check:library` after editing `content/`. Invalid content fails that command and both production builds. It must leave the normal development server, globe, Dashboard and Settings usable, with an accessible error inside Library only. Keep normal HMR enabled; disabling HMR or the global error overlay cannot satisfy this requirement.
+
+`content/sources.json` is the authored source registry. The globe imports only `src/custom/shared/sourceRegistry.generated.js`, its last validated projection. After reviewing a valid metadata/schema/manifest change, explicitly run `node scripts/check-custom-library.mjs --write-projection`, inspect the generated diff, then run `npm run check:library`. Checks/builds never repair stale output automatically; invalid input must never replace the last valid projection. Use only the approved provider/reference set and reviewed upstream pin. New sources, recording and hosting still require their separate terms/scope review. This workflow does not configure any key; use the existing POWER UP controls yourself.

@@ -1,0 +1,446 @@
+import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
+import { test } from 'node:test';
+import {
+  copyFile,
+  mkdir,
+  mkdtemp,
+  readFile,
+  rm,
+  symlink,
+  writeFile,
+} from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import {
+  validateLibrary,
+  ADMITTED_DOCUMENTS,
+  isSafeLibraryUrl,
+} from '../../../build/libraryValidation.js';
+
+const root = fileURLToPath(new URL('../../../', import.meta.url));
+async function fixture(t) {
+  const temporary = await mkdtemp(
+    path.join(os.tmpdir(), 'gev-library-content-'),
+  );
+  t.after(() => rm(temporary, { recursive: true, force: true }));
+  const registry = JSON.parse(
+    await readFile(path.join(root, 'content/sources.json'), 'utf8'),
+  );
+  const manifest = JSON.parse(
+    await readFile(path.join(root, 'content/library.json'), 'utf8'),
+  );
+  const files = new Set([
+    'content/sources.json',
+    'content/sources.schema.json',
+    'content/library.json',
+    'content/library.schema.json',
+    ...ADMITTED_DOCUMENTS.map((doc) => doc.path),
+    ...registry.sources.flatMap((source) =>
+      source.products.flatMap((product) =>
+        product.evidence.map((evidence) => evidence.path),
+      ),
+    ),
+  ]);
+  for (const file of files) {
+    await mkdir(path.dirname(path.join(temporary, file)), { recursive: true });
+    await copyFile(path.join(root, file), path.join(temporary, file));
+  }
+  await mkdir(path.join(temporary, 'src/custom/shared'), { recursive: true });
+  return {
+    root: temporary,
+    registry,
+    manifest,
+    saveRegistry: () =>
+      writeFile(
+        path.join(temporary, 'content/sources.json'),
+        JSON.stringify(registry),
+      ),
+    saveManifest: () =>
+      writeFile(
+        path.join(temporary, 'content/library.json'),
+        JSON.stringify(manifest),
+      ),
+  };
+}
+function rejected(result, code) {
+  assert.equal(result.ok, false);
+  assert.ok(
+    result.errors.some((error) => error.code === code),
+    JSON.stringify(result.errors),
+  );
+  const serialized = JSON.stringify(result);
+  assert.equal(serialized.includes('TEST_SECRET_DO_NOT_ECHO'), false);
+  assert.equal(serialized.includes(os.tmpdir()), false);
+  assert.ok(result.errors.length <= 40);
+}
+
+test('malformed JSON, invalid definitions, absent inputs and size limits stay explicit and sanitized', async (t) => {
+  const cases = [
+    [
+      'malformed registry',
+      async (f) =>
+        writeFile(
+          path.join(f.root, 'content/sources.json'),
+          '{"TEST_SECRET_DO_NOT_ECHO":',
+        ),
+      'INVALID_JSON',
+    ],
+    [
+      'malformed schema',
+      async (f) =>
+        writeFile(
+          path.join(f.root, 'content/library.schema.json'),
+          'TEST_SECRET_DO_NOT_ECHO',
+        ),
+      'INVALID_JSON',
+    ],
+    [
+      'invalid schema definition',
+      async (f) =>
+        writeFile(
+          path.join(f.root, 'content/sources.schema.json'),
+          JSON.stringify({ type: 'TEST_SECRET_DO_NOT_ECHO' }),
+        ),
+      'INVALID_SCHEMA',
+    ],
+    [
+      'unknown schema keyword',
+      async (f) =>
+        writeFile(
+          path.join(f.root, 'content/sources.schema.json'),
+          JSON.stringify({ type: 'object', TEST_SECRET_DO_NOT_ECHO: true }),
+        ),
+      'INVALID_SCHEMA',
+    ],
+    [
+      'missing registry',
+      async (f) => rm(path.join(f.root, 'content/sources.json')),
+      'FILE_UNAVAILABLE',
+    ],
+    [
+      'missing schema',
+      async (f) => rm(path.join(f.root, 'content/library.schema.json')),
+      'FILE_UNAVAILABLE',
+    ],
+    [
+      'oversized input',
+      async (f) =>
+        writeFile(
+          path.join(f.root, 'content/library.json'),
+          ' '.repeat(2 * 1024 * 1024 + 1),
+        ),
+      'FILE_LIMIT',
+    ],
+  ];
+  for (const [name, mutate, code] of cases)
+    await t.test(name, async (child) => {
+      const f = await fixture(child);
+      await mutate(f);
+      rejected(
+        await validateLibrary({ root: f.root, checkProjection: false }),
+        code,
+      );
+    });
+});
+
+test('all seven document admissions and their exact heading bytes are mandatory', async (t) => {
+  const cases = [
+    [
+      'unreviewed document',
+      async (f) => {
+        f.manifest.upstreamDocuments[0].path = 'TEST_SECRET_DO_NOT_ECHO.md';
+        await f.saveManifest();
+      },
+      'ADMISSION_MISMATCH',
+    ],
+    [
+      'removed admission',
+      async (f) => {
+        f.manifest.upstreamDocuments.pop();
+        await f.saveManifest();
+      },
+      'ADMISSION_MISMATCH',
+    ],
+    [
+      'changed admitted hash',
+      async (f) => {
+        f.manifest.upstreamDocuments[0].sha256 = 'a'.repeat(64);
+        await f.saveManifest();
+      },
+      'ADMISSION_MISMATCH',
+    ],
+    [
+      'changed selected heading',
+      async (f) => {
+        f.manifest.upstreamDocuments[0].sections[0].startHeading =
+          '## TEST_SECRET_DO_NOT_ECHO';
+        await f.saveManifest();
+      },
+      'ADMISSION_MISMATCH',
+    ],
+    [
+      'removed selected section',
+      async (f) => {
+        f.manifest.upstreamDocuments[0].sections.pop();
+        await f.saveManifest();
+      },
+      'ADMISSION_MISMATCH',
+    ],
+    [
+      'missing local document',
+      async (f) => rm(path.join(f.root, 'README.md')),
+      'FILE_UNAVAILABLE',
+    ],
+    [
+      'changed local document',
+      async (f) =>
+        writeFile(
+          path.join(f.root, 'README.md'),
+          '## TEST_SECRET_DO_NOT_ECHO\n',
+        ),
+      'HASH_MISMATCH',
+    ],
+  ];
+  for (const [name, mutate, code] of cases)
+    await t.test(name, async (child) => {
+      const f = await fixture(child);
+      await mutate(f);
+      rejected(
+        await validateLibrary({ root: f.root, checkProjection: false }),
+        code,
+      );
+    });
+});
+
+test('local evidence rejects traversal, absolute paths and symbolic links including in-repository links', async (t) => {
+  const cases = [
+    [
+      'traversal',
+      async (f) => {
+        f.registry.sources[0].products[0].evidence[0].path =
+          '../TEST_SECRET_DO_NOT_ECHO';
+        await f.saveRegistry();
+      },
+      'SCHEMA_MISMATCH',
+    ],
+    [
+      'absolute path',
+      async (f) => {
+        f.registry.sources[0].products[0].evidence[0].path =
+          '/tmp/TEST_SECRET_DO_NOT_ECHO';
+        await f.saveRegistry();
+      },
+      'SCHEMA_MISMATCH',
+    ],
+    [
+      'encoded traversal',
+      async (f) => {
+        f.registry.sources[0].products[0].evidence[0].path =
+          'src/%2e%2e/TEST_SECRET_DO_NOT_ECHO';
+        await f.saveRegistry();
+      },
+      'SCHEMA_MISMATCH',
+    ],
+    [
+      'symlink document',
+      async (f) => {
+        const original = await readFile(path.join(f.root, 'README.md'));
+        await writeFile(path.join(f.root, 'README-copy.md'), original);
+        await rm(path.join(f.root, 'README.md'));
+        await symlink('README-copy.md', path.join(f.root, 'README.md'));
+      },
+      'SYMLINK_REJECTED',
+    ],
+    [
+      'symlink JSON directory',
+      async (f) => {
+        await mkdir(path.join(f.root, 'other-content'));
+        await copyFile(
+          path.join(f.root, 'content/sources.json'),
+          path.join(f.root, 'other-content/sources.json'),
+        );
+        await rm(path.join(f.root, 'content'), { recursive: true });
+        await symlink('other-content', path.join(f.root, 'content'));
+      },
+      'SYMLINK_REJECTED',
+    ],
+  ];
+  for (const [name, mutate, code] of cases)
+    await t.test(name, async (child) => {
+      const f = await fixture(child);
+      await mutate(f);
+      rejected(
+        await validateLibrary({ root: f.root, checkProjection: false }),
+        code,
+      );
+    });
+});
+
+test('failed edits never replace the last validated globe metadata; restoring input recovers', async (t) => {
+  const f = await fixture(t);
+  const first = await validateLibrary({ root: f.root, writeProjection: true });
+  assert.equal(first.ok, true, JSON.stringify(first.errors));
+  const generated = path.join(
+    f.root,
+    'src/custom/shared/sourceRegistry.generated.js',
+  );
+  const stable = await readFile(generated, 'utf8');
+  const inputPath = path.join(f.root, 'content/sources.json');
+  const original = await readFile(inputPath, 'utf8');
+  await writeFile(inputPath, '{"TEST_SECRET_DO_NOT_ECHO":');
+  rejected(
+    await validateLibrary({ root: f.root, writeProjection: true }),
+    'INVALID_JSON',
+  );
+  assert.equal(await readFile(generated, 'utf8'), stable);
+  await rm(inputPath);
+  rejected(
+    await validateLibrary({ root: f.root, writeProjection: true }),
+    'FILE_UNAVAILABLE',
+  );
+  assert.equal(await readFile(generated, 'utf8'), stable);
+  await writeFile(inputPath, original);
+  assert.equal((await validateLibrary({ root: f.root })).ok, true);
+});
+
+test('Library URL policy allows reviewed HTTPS/local guide links and rejects active or credential links', () => {
+  for (const url of [
+    'https://example.org/docs#coverage',
+    '/?setup=1',
+    '/hub/#/library/sources/cctv',
+  ])
+    assert.equal(isSafeLibraryUrl(url, { allowLocal: true }), true, url);
+  for (const url of [
+    'javascript:alert(1)',
+    'data:text/html,hello',
+    '//example.org/path',
+    'https://u:p@example.org/',
+    'https://example.org/?token=secret',
+    'https://example.org/?access_token=secret',
+    'https://example.org/?api_key=secret',
+    '/etc/passwd',
+    '/../secret',
+    'https://example.org/\nscript',
+  ])
+    assert.equal(isSafeLibraryUrl(url, { allowLocal: true }), false, url);
+});
+
+test('manifest items require existing original files, exact hashes and resolved source/doc references', async (t) => {
+  async function addOriginal(f) {
+    const text =
+      '# Test-only original fixture\n\nThis bounded fixture is never application content.\n';
+    const contentPath = 'content/knowledge/project-background.md';
+    await mkdir(path.join(f.root, 'content/knowledge'), { recursive: true });
+    await writeFile(path.join(f.root, contentPath), text);
+    const item = {
+      id: 'test-only-original',
+      slug: 'test-only-original',
+      kind: 'original-article',
+      category: 'Test fixture',
+      title: 'Test-only original',
+      tags: ['test-only'],
+      description: 'A test fixture, never displayed by the application.',
+      author: 'Test fixture',
+      publishedDate: '2026-10-20',
+      reviewedDate: '2026-10-20',
+      contentPath,
+      upstreamDocumentId: null,
+      sectionIds: [],
+      upstreamRevision: null,
+      inputSha256: createHash('sha256').update(text).digest('hex'),
+      references: [
+        {
+          title: 'Pinned local source',
+          url: f.manifest.upstreamDocuments[0].sourceUrl,
+          reviewedDate: '2026-10-20',
+        },
+      ],
+      sourceProductRefs: [
+        `${f.registry.sources[0].id}/${f.registry.sources[0].products[0].id}`,
+      ],
+      licenseNotice: 'Original test-fixture text.',
+      adaptationNotice: 'No external article body is copied.',
+      status: 'published',
+      caseDetails: null,
+    };
+    f.manifest.items.push(item);
+    await f.saveManifest();
+    return item;
+  }
+  await t.test(
+    'complete local item passes with zero acquisition',
+    async (child) => {
+      const f = await fixture(child);
+      await addOriginal(f);
+      const result = await validateLibrary({
+        root: f.root,
+        checkProjection: false,
+      });
+      assert.equal(result.ok, true, JSON.stringify(result.errors));
+      assert.equal(result.stats.items, 1);
+    },
+  );
+  const cases = [
+    [
+      'missing original file',
+      async (f, item) => rm(path.join(f.root, item.contentPath)),
+      'FILE_UNAVAILABLE',
+    ],
+    [
+      'changed original hash',
+      async (f, item) => {
+        item.inputSha256 = 'a'.repeat(64);
+      },
+      'CONTENT_MISMATCH',
+    ],
+    [
+      'unreviewed content path',
+      async (f, item) => {
+        item.contentPath = 'content/knowledge/unreviewed-file.md';
+      },
+      'UNSAFE_PATH',
+    ],
+    [
+      'dangling product',
+      async (f, item) => {
+        item.sourceProductRefs = ['unknown/product'];
+      },
+      'UNKNOWN_REFERENCE',
+    ],
+    [
+      'inconsistent original provenance',
+      async (f, item) => {
+        item.upstreamDocumentId = f.manifest.upstreamDocuments[0].id;
+      },
+      'CONTENT_MISMATCH',
+    ],
+    [
+      'unreviewed external summary source',
+      async (f, item) => {
+        item.kind = 'external-summary';
+      },
+      'CONTENT_MISMATCH',
+    ],
+    [
+      'unsafe citation',
+      async (f, item) => {
+        item.references[0].url =
+          'https://example.org/?secret=TEST_SECRET_DO_NOT_ECHO';
+      },
+      'UNSAFE_URL',
+    ],
+  ];
+  for (const [name, mutate, code] of cases)
+    await t.test(name, async (child) => {
+      const f = await fixture(child);
+      const item = await addOriginal(f);
+      await mutate(f, item);
+      await f.saveManifest();
+      rejected(
+        await validateLibrary({ root: f.root, checkProjection: false }),
+        code,
+      );
+    });
+});

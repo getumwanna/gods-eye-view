@@ -43,8 +43,8 @@
     "dev": "vite",
     "dev:secure": "./scripts/dev-secure.sh",
     "opensky:import": "./scripts/opensky-import-client.sh",
-    "build": "vite build",
-    "build:panel": "node scripts/build-panel.mjs",
+    "build": "node scripts/check-custom-library.mjs && vite build",
+    "build:panel": "node scripts/check-custom-library.mjs && node scripts/build-panel.mjs",
     "preview": "vite preview",
     "test": "node scripts/run-unit-tests.mjs",
     "test:track": "node scripts/track-regression.mjs",
@@ -55,7 +55,8 @@
     "qa:transit": "node scripts/qa-transit.mjs",
     "mcp": "node server/mcp/stdio.js",
     "typecheck:hub": "tsc -p hub/tsconfig.json",
-    "qa:hub": "node scripts/qa-custom-hub.mjs"
+    "qa:hub": "node scripts/qa-custom-hub.mjs",
+    "check:library": "node scripts/check-custom-library.mjs"
   },
   "dependencies": {
     "@jtarrio/signals": "^0.10.0",
@@ -74,16 +75,22 @@
     "lucide-react": "1.60.0",
     "mapillary-js": "^4.1.2",
     "mgrs": "^2.1.0",
+    "minisearch": "7.2.0",
     "pbf": "^5.1.2",
     "react": "19.3.1",
     "react-dom": "19.3.1",
+    "react-markdown": "10.1.0",
+    "remark-gfm": "4.0.1",
+    "remark-parse": "11.0.0",
     "satellite.js": "^6.0.2",
-    "tailwind-merge": "3.7.0"
+    "tailwind-merge": "3.7.0",
+    "unified": "11.0.5"
   },
   "devDependencies": {
     "@tailwindcss/vite": "4.3.3",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
+    "ajv": "8.20.0",
     "jsdom": "26.1.0",
     "prettier": "3.9.6",
     "puppeteer": "^25.10.0",

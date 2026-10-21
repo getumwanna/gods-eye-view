@@ -203,3 +203,73 @@ Only the verified temporary HMR-off shipping listener was stopped. Restart uses 
 
 
 Normal-mode restoration verified: standard root CLI PID 78207 on loopback 4173, resolved HMR true, provider policy unchanged, 76 HTTP-only 200 checks with stable metadata, 4174 closed. Evidence lives in `.gev-logs/normal-hmr-2026-10-20.3KpYkt/`. No source/harness/dependency/content change. The normal-mode user tracking prerequisite remains pending; documentation-only verification does not activate milestone 1.
+
+
+### Phase 2a milestone 1 — implementation, browser verification pending
+
+The user supplied the complete normal-HMR tracking transcript: 109 passed, zero failed/skipped, matching retained tee log and with no reload in the completed server run. This activated the already explicit M1-onward authorization. The 63-path inventory and exactly two original-upstream package files govern this work; no M2/M3 editorial approval is inferred.
+
+Original-upstream edits: `package.json` adds the six reviewed exact dependencies (Ajv dev-only), `check:library` and preflight validation for both builds; `package-lock.json` records that graph with all existing locked versions preserved. No other original-upstream file is modified. Exact separate patches are `.gev-logs/phase2a-m1/package.json.patch` and `package-lock.json.patch`. License/script/audit/bundle review is `docs/custom/PHASE-2A-DEPENDENCIES.md`, including the newly reported pre-existing Vite Windows/WSL editor advisories; no unrelated stack upgrade is performed.
+
+Project-owned changes implement strict Node schemas/references/hash/filesystem validation, canonical sources/products/value bindings, deterministic validated metadata projection and passive globe adapter, lazy Library directory and compatible 38 source guides. DEV-only lazy Ajv and raw imports use a self-accepting Library catalog; root build integration is a build-only Rollup hook plus the existing optimizer inclusion, with no additional top-level Vite plugin or upstream gate edit. The approved test adapter is pure, receiving Node filesystem helpers from exempt test callers. No editable content/compiler/hub dependency enters the globe graph. M1 has no articles/cases.
+
+Native gates pass: clean install, check, typecheck, 8,235 unit/allocation passes/zero failures/one platform skip, boundaries, doctor, formatting and both builds. Twenty-four invalid-input command checks fail before either builder. The first native attempt's adapter formatting failures were repaired; a separate upstream terrain test read a pre-existing runtime cache point, so its original cache was preserved, isolated during the successful rerun, then restored byte-for-byte. No upstream test or assertion was weakened. Exact receipts/logs are retained under `.gev-logs/phase2a-m1/`.
+
+The original in-app observation path now denied access under its URL protocol policy. No alternate browser/driver or CLI harness was used. M1 remains uncommitted pending actual user-run hub/HMR containment verification; the helper only performs reversible fixed file edits and records user observations, never drives a browser. A failed containment acceptance must stop/report. Standard localhost 4173 normal HMR is restored; 4174 stays stopped and all rehearsal logs remain. See `PHASE-2A-VALIDATION.md`.
+
+### User M1 verification — recorded containment failure stop
+
+The user's new hub QA passes 10/10 and matches the `2026-10-21T03:01:12.716Z` receipt, with no page/resource/optimizer errors. During read-only verification before the requested malformed-content startup restart, an earlier completed manual receipt was found with an explicit false assertion at `schema field violation: isolated error`. It had five earlier successful assertions and restored its originals. The latest retry has only initial readiness passed and is currently paused at malformed JSON; its unfinished overall false is not itself an assertion failure. Both results are recorded separately with hashes in `PHASE-2A-VALIDATION.md` and retained snapshots under `.gev-logs/phase2a-m1/user-verification-2026-10-21/`.
+
+The required stop/report rule was applied before restarting. Verified 4173 PID 57862 remains unchanged; the user was asked to Ctrl-C the helper to restore the active fixture and describe the earlier failed observation. The helper maps any non-PASS answer to false, so no product cause is inferred from the receipt alone. No product/harness/dependency repair, commit, acceptance weakening or browser retry occurred. Only current-state/evidence documentation changed; M1 remains uncommitted and M2 has not started. 4174 and rehearsal retention remain unchanged.
+
+
+### Manual helper restoration verified — October 21, 2026
+
+The user stopped the latest manual helper. Its finished receipt has one readiness PASS, zero false assertions, `restored:true`, and overall `passed:false` because the full sequence was interrupted. Independent SHA-256 checks confirm both manifests, both schemas and `SECURITY.md` match the saved originals exactly; the helper is no longer running. The finished receipt and five-file hash report are retained under `.gev-logs/phase2a-m1/user-verification-2026-10-21/`. This is not a second containment failure or a completed containment pass. The earlier explicit schema-field negative answer remains unexplained; the stop/report gate and uncommitted M1 remain. No listener restart, product repair, browser action, native test rerun or acceptance weakening occurred in this documentation checkpoint.
+
+
+### Manual-response classification corrected — October 21
+
+Read-only inspection confirms the helper saves true only for normalized PASS and maps every other resolved response to false, without retaining raw input. The older schema-field false therefore proves the acceptance step did not pass, but does not prove literal FAIL input or a product defect. Earlier assistant wording overstated that evidence. The user's full transcript describes only the later initial-PASS/Ctrl-C run. This documentation correction preserves both original receipts and the unresolved gate; no product/helper/criterion or server state changed. The parser classification/hash report is retained with the other M1 verification evidence.
+
+
+### User-authorized checkpoint repeat — October 21
+
+The user does not recall the older run and explicitly authorized repeating the schema-field checkpoint. Its original receipt remains unchanged; a separate annotation records the disposition as inconclusive, without claiming a product defect or pass. The restored files still match their backups and the Node content check passes. No historical clarification is still required.
+
+Only the ignored manual helper and project-owned status/evidence documentation change at this step. The helper gains an exact existing-case selector, strict re-prompting PASS/FAIL input, selected-scope/helper-hash evidence, explicit interrupted/failed outcomes and robust restoration. Its prior source/receipts are retained. Isolated fixture tests exercise helper control flow; the agent does not execute live mutations or browser checks. One-case 3/3 cannot complete the full containment/startup gate. Actual FAIL still restores/stops. No product repair, original-upstream change, server restart, commit or acceptance weakening occurs.
+
+
+The strict-input helper passes 8/8 isolated Node 24.22.0 control-flow checks: one/full selection, invalid-input re-prompting, explicit FAIL stop, SIGINT/SIGTERM/EOF restoration and unknown-selector rejection. Every fixture file restores exactly. Report: `.gev-logs/phase2a-m1/helper-tests/isolated-run-wqVqcy/results.json`; tested helper hash `4703a5f6fb303d6be477b5a2524e981be896a38c4fc65a4a78ee0173bff4d440`. These are helper tests only; the user-rendered schema-field repeat is pending.
+
+
+### Schema-field repeat passed — October 21
+
+The user returned a 3/3 PASS for the version 2 single-checkpoint helper: readiness, Library-only version=2 error isolation and automatic HMR recovery. It matches the `2026-10-21T14-40-39.581Z-6zbGnY` receipt (SHA-256 `b5c94d91599f6b469a34c0ed8cddb6bd0359798986599c34648f52adc259f383`). All five files independently match saved originals. Both older receipts are preserved; the earlier unknown answer stays inconclusive and needs no further historical reconstruction. This is a single-case result, not full containment/startup acceptance.
+
+Only status/evidence documentation and ignored snapshots are updated here. The agent did not execute a browser harness, change product/helper code, restart a listener or rerun unrelated native suites. M1 remains uncommitted pending the complete 21-observation HMR sequence and separate invalid-content startup check. Full helper instructions and hashes are in the validation record; M2 has not started and Phase 2b remains deferred.
+
+
+### Full HMR containment passed; final startup gate prepared — October 21
+
+User full-sequence result matches 21/21 explicit PASS assertions across all ten cases plus readiness; receipt `2026-10-21T15-17-16.201Z-2LWL9Y` SHA-256 `bb792c99a9d50f3bdb0e2367045625eb0f7d0e61e39909b84ac8a4d7a156492a`. All five current files independently match saved originals. The agent did not execute browser checks; snapshots/hashes are retained with M1 evidence. Older receipts and tested helper v2 stay unchanged.
+
+Only ignored helper coordination and project-owned documentation change here: helper v3 adds startup mode with deliberate malformed JSON, a per-run restart request and marker wait, then separate user fresh-start/restoration observations. The helper never controls browser or server. Agent restart is already authorized but must verify listener/checkout/heldfixture first; no restart or marker is issued in this preparation step. Completed no-reload HMR evidence is kept separate from the upcoming intentional startup. No product code, dependency, original-upstream file, provider/security setting, key or acceptance criterion changed. M1 remains uncommitted until the last startup gate passes; M2 has not started and Phase 2b stays deferred.
+
+
+The startup coordination helper passes 12/12 isolated Node control-flow tests with all fixture bytes restored; report `.gev-logs/phase2a-m1/helper-tests/isolated-run-pBTDLc/results.json`. Tested helper SHA-256: `6089668fe13895d3311a33f3c49788292a3dd1306871d2415f97f336d91627a4`. Tests use fake per-run markers and a stubbed validator, with no live content, browser, provider, port or server operations. User-rendered startup verification remains pending.
+
+
+### Invalid-content startup restart performed — October 21
+
+The user staged the dedicated startup run `2026-10-21T15-29-48.392Z-tjdb7l`. Agent and independent read-only checks verified its request, helper/checkouts, held single-byte malformed registry and sole loopback listener. Only PID 57862 was stopped; standard root CLI restarted as PID 41062 on `[::1]:4173`, Node 24.22.0, normal HMR and existing dedicated cache/security/provider policy. Both camera packs remain OFF. Projection/policy hashes are unchanged; five static native HTTP requests returned 200 while malformed content stayed held. These are native checks, not rendered passes.
+
+The first native config probe expected literal HMR true; the installed Vite default is undefined/enabled (`server.hmr !== false`). Correcting that verification assumption required no product/configuration repair or weakened HMR requirement. Native proofs/logs and the atomically written matching restart marker are retained in the run directory. The helper has accepted the marker and awaits user fresh-start and recovery observations. No agent browser, key handling, original-upstream edit, product change or commit occurred. M1 remains uncommitted until startup and exact restoration pass; M2 has not started and Phase 2b remains deferred.
+
+
+### M1 startup passed and validation complete — October 21
+
+The user-owned startup helper finished all three explicit PASS observations at `2026-10-21T15:35:51.173Z`; receipt SHA-256 `049170c48ee97ce3c6a0ea30034b5086aae29523c31e6f9d205b23025852a632`. Restart metadata matches native proofs; all five originals independently restore exactly, helper exited, and projection/policy hashes are unchanged. The restored corpus passes `check:library`. This completes the last M1 gate alongside full HMR 21/21, QA 10/10, tracking 109/0/0 and the recorded native/build/graph checks. No agent browser execution is claimed.
+
+M1 is ready for its authorized buildable milestone commit; original-upstream changes remain exactly package.json/package-lock.json, with all prior locked versions preserved. No further approval or repeated completed gate is needed before M2. Its nine articles require the user's editorial review before committing, with a separate M3 case review and final Phase 2a acceptance still pending. Server remains standard normal-HMR PID 41062 on localhost:4173; 4174 and all rehearsal retention stay unchanged.

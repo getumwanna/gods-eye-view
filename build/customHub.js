@@ -25,6 +25,9 @@ export function withHubConfig(standalone) {
           // esbuild injects these imports after dependency scanning.
           'react/jsx-runtime',
           'react/jsx-dev-runtime',
+          // DEV Library validation is lazy; prebundle before the server starts
+          // so its first visit cannot restart the globe's dependency graph.
+          'ajv',
         ]),
       ],
     },
@@ -38,6 +41,24 @@ export function withHubConfig(standalone) {
       ...standalone.build,
       rollupOptions: {
         ...standalone.build?.rollupOptions,
+        plugins: [
+          ...(standalone.build?.rollupOptions?.plugins || []),
+          {
+            name: 'custom-library-build-validation',
+            async buildStart() {
+              // This hook only runs during production builds. Never validate
+              // editable content at configuration time or dev-server startup.
+              const { validateLibrary } =
+                await import('./libraryValidation.js');
+              const result = await validateLibrary({ root });
+              if (!result.ok) {
+                this.error(
+                  'Library content is invalid. Run npm run check:library for normalized diagnostics.',
+                );
+              }
+            },
+          },
+        ],
         input: {
           globe: path.join(root, 'index.html'),
           hub: path.join(root, 'hub/index.html'),
