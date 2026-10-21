@@ -221,3 +221,62 @@ test('source routes and unknown routes render safe explicit empty states', async
   );
   assert.match(await render('#/bad-route'), /<h1>Page not found<\/h1>/);
 });
+
+test('knowledge and search routes bound query values and accept only their own explicit fields', () => {
+  assert.deepEqual(parseHubRoute('#/library/knowledge'), {
+    page: 'knowledge',
+    sourceId: null,
+  });
+  assert.deepEqual(
+    parseHubRoute(
+      '#/library/knowledge/project-background?section=section-purpose',
+    ),
+    {
+      page: 'knowledge-article',
+      sourceId: null,
+      slug: 'project-background',
+      section: 'section-purpose',
+    },
+  );
+  assert.deepEqual(parseHubRoute('#/library/search?q=weather+coverage'), {
+    page: 'library-search',
+    sourceId: null,
+    query: 'weather coverage',
+  });
+  assert.equal(
+    parseHubRoute(`#/library/search?q=${'a'.repeat(200)}`).query.length,
+    160,
+  );
+  for (const hash of [
+    '#/library/knowledge/../settings',
+    '#/library/knowledge/project-background?url=https://example.org',
+    '#/library/knowledge/project-background?section=javascript:alert(1)',
+    '#/library/knowledge/project-background?section=section-one&section=section-two',
+    '#/library/search?q=one&q=two',
+    '#/library/search?token=secret',
+    '#/library/search?q=%00bad',
+    '#/library/search?q=%E0%A4%A',
+    '#/settings?q=bad',
+  ])
+    assert.equal(parseHubRoute(hash).page, 'not-found', hash);
+});
+
+test('knowledge pages and local search stay under the existing four-item shell', async () => {
+  const knowledge = await render('#/library/knowledge');
+  assert.match(knowledge, /<h1>Knowledge Center<\/h1>/);
+  const knowledgeDom = new JSDOM(knowledge);
+  try {
+    assert.match(
+      knowledgeDom.window.document.body.textContent,
+      /16 published articles/,
+    );
+  } finally {
+    knowledgeDom.window.close();
+  }
+  assert.match(knowledge, /aria-label="Library navigation"/);
+  assert.match(knowledge, /aria-current="page"[^>]*>.*?Library/s);
+  const search = await render('#/library/search?q=coverage');
+  assert.match(search, /Library search/);
+  assert.doesNotMatch(search, /<iframe/);
+  assert.match(search, /Library search/);
+});

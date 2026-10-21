@@ -248,3 +248,9 @@ First restore the standard root dev server with normal HMR and rerun `test:track
 During Phase 2a, invalid content must remain Library-local under normal HMR, with no dev-server/globe interruption or global overlay. If containment acceptance fails, **stop and report rather than weakening the requirement**. Keep strict Node checks/both production builds, last-valid generated globe metadata, exactly two upstream files, milestone 2/3 pre-commit editorial reviews and final user acceptance. New normal-mode logs are under `.gev-logs/normal-hmr-2026-10-20.3KpYkt/`.
 
 Normal-mode readiness is now verified (standard CLI PID 78207, HMR true, loopback 4173, unchanged source/policy, stable HTTP assets). The normal-mode tracking result is still pending; see the reverification report for exact commands and retained logs.
+
+## Approved M2 containment amendment — October 21
+
+After the strict article HMR gate exposed server-issued document reloads, the user explicitly approved adding only `src/tooling/viteBuild.test.mjs` to the original-upstream allowlist. The exact implementation inventory is now **64 paths: 3 original-upstream + 15 existing project-owned + 46 new project-owned**. The only new path relative to the approved 63-path inventory is that test; no application path or dependency is added. Original-upstream paths are `package.json`, `package-lock.json`, and `src/tooling/viteBuild.test.mjs`. Earlier two-file/63-path sections are the historical plan.
+
+The already approved `build/customHub.js` hosts the precise serve-only Library HMR hook; the added upstream test path strictly admits its exact name/shape while preserving the original standalone prefix/security checks. All validation, no-global-reload/no-overlay/error-containment gates and editorial stops remain unchanged. The user's nine-article editorial approval stands. Hold M2 commit and M3 until repaired search QA and article HMR verification pass.

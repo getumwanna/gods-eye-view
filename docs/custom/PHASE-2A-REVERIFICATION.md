@@ -569,3 +569,9 @@ npm run test:track -- --url http://localhost:4173 --offline-imagery 2>&1 | tee "
 ```
 
 Await the full final tracking summary. If it fails, correlate this log and the normal server log before starting milestone 1. If it passes, the user's conditional implementation approval applies; all 63 paths/two-upstream-file limits, strict validation/HMR containment requirements and milestone 2/3 editorial stops remain.
+
+## Approved M2 containment amendment — October 21
+
+The user explicitly approved adding only `src/tooling/viteBuild.test.mjs` to the Phase 2a original-upstream allowlist (63→64 implementation paths). Earlier two-file/63-path wording is historical. The three permitted original-upstream files are now `package.json`, `package-lock.json`, and that test. No additional dependency, content admission, or application path is authorized by the amendment.
+
+Ajv option (b) remains selected: DEV-only lazy Library browser validation and authoritative Node check/build validation. A narrowly admitted serve-only HMR transport in existing project-owned `build/customHub.js` handles the exact 26 public inputs without parsing content, adding an endpoint, or suppressing reload delivery globally. The amended upstream test preserves the standalone plugin prefix and security checks and asserts the hook's exact name/shape. Strict HMR containment and article approval remain unchanged; M2 commit/M3 are held pending repaired verification.

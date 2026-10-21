@@ -103,7 +103,13 @@ function Navigation({ page }: { page: string }) {
                   asChild
                   isActive={
                     item.page === page ||
-                    (['source', 'data-sources'].includes(page) &&
+                    ([
+                      'source',
+                      'data-sources',
+                      'knowledge',
+                      'knowledge-article',
+                      'library-search',
+                    ].includes(page) &&
                       item.page === 'library')
                   }
                   tooltip={item.title}
@@ -113,7 +119,13 @@ function Navigation({ page }: { page: string }) {
                     href={item.href}
                     aria-current={
                       item.page === page ||
-                      (['source', 'data-sources'].includes(page) &&
+                      ([
+                        'source',
+                        'data-sources',
+                        'knowledge',
+                        'knowledge-article',
+                        'library-search',
+                      ].includes(page) &&
                         item.page === 'library')
                         ? 'page'
                         : undefined

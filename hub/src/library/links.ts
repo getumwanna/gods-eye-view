@@ -1,3 +1,5 @@
+import { boundedHubQuery } from '../router.js';
+
 const idPattern = /^[a-z0-9][a-z0-9-]{0,63}$/;
 const upstreamRevision = '064d51f7be2675f1c69e16068e9c49d1a60144d1';
 const upstreamRoot = `https://github.com/bilawalsidhu/gods-eye-view/blob/${upstreamRevision}/`;
@@ -63,6 +65,58 @@ export function safeLibraryHref(value: unknown): string | null {
     )
   )
     return value;
-  if (/^#[a-z0-9][a-z0-9-]{0,100}$/.test(value)) return value;
+  if (
+    /^#\/library\/knowledge\/[a-z0-9][a-z0-9-]{0,63}\?section=section-[a-z0-9][a-z0-9-]{0,119}$/.test(
+      value,
+    )
+  )
+    return value;
+  if (/^#[a-z0-9][a-z0-9-]{0,119}$/.test(value)) return value;
   return safeExternalUrl(value);
+}
+
+export function knowledgeHref(slug?: string, section?: string | null): string {
+  if (!slug || !isLibraryId(slug)) return '#/library/knowledge';
+  const base = `#/library/knowledge/${slug}`;
+  return section && /^section-[a-z0-9][a-z0-9-]{0,119}$/.test(section)
+    ? `${base}?section=${encodeURIComponent(section)}`
+    : base;
+}
+export function librarySearchHref(query = '') {
+  const bounded = boundedHubQuery(query);
+  return `#/library/search${bounded ? `?q=${encodeURIComponent(bounded)}` : ''}`;
+}
+
+/** Turn an upstream relative link into a bounded repository path, never a local file request. */
+export function resolveRepositoryReference(
+  href: string,
+  basePath: string,
+): { path: string; fragment: string | null } | null {
+  if (
+    !href ||
+    href.length > 2048 ||
+    /[\\\u0000-\u0020%?]/.test(href) ||
+    href.startsWith('/') ||
+    /^[a-z][a-z0-9+.-]*:/i.test(href)
+  )
+    return null;
+  const [relative, fragment, extra] = href.split('#');
+  if (extra !== undefined || !relative || !safeRepositoryPath(basePath))
+    return null;
+  const path = basePath.split('/').slice(0, -1);
+  for (const part of relative.split('/')) {
+    if (part === '.') continue;
+    if (part === '..') {
+      if (!path.length) return null;
+      path.pop();
+    } else if (!part) return null;
+    else path.push(part);
+  }
+  const resolved = path.join('/');
+  if (
+    !safeRepositoryPath(resolved) ||
+    (fragment !== undefined && !/^[a-zA-Z0-9_.-]{1,200}$/.test(fragment))
+  )
+    return null;
+  return { path: resolved, fragment: fragment || null };
 }

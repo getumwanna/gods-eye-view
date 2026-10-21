@@ -5,6 +5,7 @@ import {
   Database,
   FileText,
   KeyRound,
+  Search,
 } from 'lucide-react';
 import {
   getSourceGuides,
@@ -100,15 +101,19 @@ export function Library() {
               <section className="gih-card">
                 <div className="gih-section-label">
                   <BookOpen size={18} aria-hidden="true" />
-                  <span>UPCOMING LIBRARY MILESTONE</span>
+                  <span>REFERENCE ARTICLES</span>
                 </div>
                 <h2>Knowledge Center</h2>
                 <p>
-                  Selected upstream documentation and original guides are
-                  planned for the next content milestone. Reviewed admissions
-                  are recorded; articles have not been published.
+                  Read original guides and source-linked summaries alongside
+                  selected reviewed sections of upstream documentation.
+                  Provenance, review dates and limitations stay with each
+                  article.
                 </p>
-                <span className="gih-phase-badge">Not yet available</span>
+                <a href="#/library/knowledge" className="gih-directory-link">
+                  Open Knowledge Center{' '}
+                  <ArrowRight size={16} aria-hidden="true" />
+                </a>
               </section>
               <section className="gih-card">
                 <div className="gih-section-label">
@@ -124,6 +129,21 @@ export function Library() {
                 <span className="gih-phase-badge">Not yet available</span>
               </section>
             </div>
+            <section className="gih-card gih-source-section">
+              <div className="gih-section-label">
+                <Search size={18} aria-hidden="true" />
+                <span>LOCAL LIBRARY SEARCH</span>
+              </div>
+              <h2>Find a reference</h2>
+              <p>
+                Search the published local Library and source descriptions.
+                Queries stay in this workspace; no provider or external search
+                service is contacted.
+              </p>
+              <a href="#/library/search" className="gih-directory-link">
+                Search Library <ArrowRight size={16} aria-hidden="true" />
+              </a>
+            </section>
             <section
               className="gih-card gih-source-section"
               aria-labelledby="setup-guides-heading"

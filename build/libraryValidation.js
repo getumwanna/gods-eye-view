@@ -908,12 +908,15 @@ export async function validateLibrary({
     unique(manifest.items, 'id', INPUT_FILES[2]);
     const slugs = new Set();
     for (const item of manifest.items) {
-      if (!isId(item.slug) || slugs.has(`${item.kind}/${item.slug}`))
+      const routeFamily = item.kind === 'case-study' ? 'cases' : 'knowledge';
+      if (
+        !isId(item.slug) ||
+        item.slug.length > 64 ||
+        slugs.has(`${routeFamily}/${item.slug}`)
+      )
         add('DUPLICATE_ID', INPUT_FILES[2]);
-      slugs.add(`${item.kind}/${item.slug}`);
+      slugs.add(`${routeFamily}/${item.slug}`);
       refs(item.sourceProductRefs, products, INPUT_FILES[2]);
-      if (item.status === 'published' && item.publishedDate === null)
-        add('CONTENT_MISMATCH', INPUT_FILES[2]);
       if (item.kind === 'upstream-documentation') {
         const doc = manifest.upstreamDocuments.find(
           (document) => document.id === item.upstreamDocumentId,

@@ -201,7 +201,11 @@
     "reference": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["title", "url", "reviewedDate"],
+      "required": [
+        "title",
+        "url",
+        "reviewedDate"
+      ],
       "properties": {
         "title": {
           "type": "string",
@@ -219,10 +223,20 @@
     "caseDetails": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["interactivity", "limitations", "globeUrl", "restoredScope"],
+      "required": [
+        "interactivity",
+        "limitations",
+        "globeUrl",
+        "restoredScope"
+      ],
       "properties": {
         "interactivity": {
-          "enum": ["interactive", "partial", "demonstration-only", "view-only"]
+          "enum": [
+            "interactive",
+            "partial",
+            "demonstration-only",
+            "view-only"
+          ]
         },
         "limitations": {
           "type": "array",
@@ -293,7 +307,7 @@
           "$ref": "#/definitions/id"
         },
         "slug": {
-          "$ref": "#/definitions/id"
+          "$ref": "#/definitions/routeSlug"
         },
         "kind": {
           "enum": [
@@ -428,7 +442,10 @@
           "maxLength": 4000
         },
         "status": {
-          "enum": ["draft", "published"]
+          "enum": [
+            "draft",
+            "published"
+          ]
         },
         "caseDetails": {
           "anyOf": [
@@ -441,6 +458,12 @@
           ]
         }
       }
+    },
+    "routeSlug": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
     }
   }
 }

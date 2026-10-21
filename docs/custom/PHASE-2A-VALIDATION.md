@@ -1,6 +1,6 @@
 # Phase 2a validation
 
-Updated October 21, 2026. **Milestone 1 validation complete.** Native gates, tracking 109/0/0, hub QA 10/10, full normal-HMR containment 21/21 and invalid-content startup 3/3 pass. All fixtures restore exactly. The buildable M1 commit and M2 work are already authorized; M2/M3 editorial stops and final Phase 2a acceptance remain. Phase 1 remains accepted. Phase 2b is deferred. No milestone 2 article or milestone 3 case is authored, published or committed.
+Updated October21,2026. **M2 article approval retained; repairs are in progress, with the HMR plugin amendment awaiting approval.** Search QA state isolation and retained-callback fixes are implemented inside existing approved custom files. A review-only HMR prototype passes28native lifecycle checks but is not installed in shipping; it requires adding only `src/tooling/viteBuild.test.mjs` to the original-upstream allowlist (inventory63→64). Current user instruction authorizes repairs within the existing allowlist, preserves all article approval/receipts, and holds M2commit/M3until verification passes. No amendment is inferred. Earlier checkpoints below are historical.
 
 ## M1 final startup result — passed
 
@@ -186,3 +186,182 @@ M1 cannot be committed or treated as complete until containment is verified. Aft
 ### Transcript and parser clarification — October 21
 
 The full transcript supplied by the user corresponds to the later `03:01:12.815Z` run: initial readiness PASS, then Ctrl-C at malformed JSON, with exact restoration. It contains no schema-field step or failed answer and does not describe the separate `02:54:39.936Z` run. The parser classification and helper hash are retained in `.gev-logs/phase2a-m1/user-verification-2026-10-21/response-classification.json`. No helper, product source, receipt or assertion was edited. No restart or new browser test was performed. Containment remains unverified; a product defect is not established by the older Boolean alone.
+
+## M2 Knowledge Center and local search — editorial review stop
+
+The working tree contains nine original articles, seven published upstream-documentation items and all 25 unchanged admitted sections at pin `064d51f7be2675f1c69e16068e9c49d1a60144d1`. Article bodies total 32,365 bytes. Cases have not been authored. The seven upstream records change only their explicit publication flags; their admission paths, revision, lines, section identities, full-file hashes, section hashes and existing notices remain frozen. Published upstream items preserve the complete MIT copyright/permission notice and label selected upstream text separately from original authorship. Unknown upstream publication dates remain null.
+
+The shared Markdown parser supplies the renderer, contents navigation and search with the same heading IDs, including nested list/blockquote headings and repeated titles. Raw HTML, executable links and remote media do not become rendered elements or indexed content. Links resolve to reviewed local articles or pinned HTTPS references. Source-product search links retain canonical group guides and direct provider records when no group exists. No external article body, query telemetry, persistent index, new provider, credential handling, recorder or Phase 2b behavior was added.
+
+Two discovered contract mismatches were corrected within approved files: unknown publication dates were already allowed by the schema and are now accepted honestly by Node; authored route slugs are explicitly bounded to 64 characters in schema/Node to match the existing router. Generic IDs retain their separate 80-character bound. Knowledge route slugs are unique across original, external-summary and upstream kinds. Unicode query clipping cannot leave a split surrogate or throw during URL construction.
+
+### Native verification
+
+| Gate | Result | Retained evidence |
+| --- | --- | --- |
+| Full Node 24 unit/allocation suite | 8,265 passes, zero failures, one platform skip | `.gev-logs/phase2a-m2/reinstalled-native/unit-allocation.log` |
+| Terrain-cache preservation | Original/restored SHA-256 both `2c68ba361b8ccedc9fbdf57969573297ffbc7e2667ffa5ecb773da7516a2f1ab`; no test output cache created | `reinstalled-native/terrain-cache-preservation.json` in that directory |
+| Hub typecheck, adopted formatting, boundaries, doctor | All exit 0 | `reinstalled-native/{typecheck,format,boundaries,doctor}.log` |
+| Provider policy | Six offline checks pass; both camera packs remain off | `reinstalled-native/policy.log` |
+| Strict Library validation | 149 products, 16 published items, seven documents/25 sections; projection current | `reinstalled-native/library.log` |
+| Both unmodified production commands | Both complete with exit 0 after unchanged-lock dependency recovery | `build-reinstalled.log`, `build-panel-reinstalled.log` |
+| Actual production module graph | No Ajv/schema compiler anywhere; no Library corpus, Markdown or MiniSearch in initial hub/globe graphs | `bundle-review.json` |
+| Isolated manual-helper safety | Seven fixture scenarios pass: success, explicit failure, interrupt while missing, typo re-prompt, foreign-edit preservation, closed-input restoration, foreign-symlink preservation | `helper-fixture-tests-v2.json`; no shipping/browser/server activity |
+
+No dependency or lockfile changed after M1. M2 edits no original-upstream file. All application paths stay inside the approved 63-path inventory. The agent did not run any CLI browser harness.
+
+### Dependency environment recovery — preserved and verified
+
+The initial production commands completed compilation in 5.92/4.09 seconds but then spent about ten minutes progressing through Cesium’s filesystem asset-copy cleanup. Native sampling showed a worker waiting in `pread`, with no JavaScript CPU or network activity in the sampled root build. The installed Maki asset directory contained 117 canonical files plus 117 unexpected ` 3.png` copies. Sample duplicates matched canonical bytes and read quickly; the exact OS/FileProvider cause is not established. This was not a product/HMR assertion failure.
+
+Only the verified build processes and shipping listener were stopped. Both initial build attempts exited 143 and remain **interrupted, not passed** in `build.log` / `build-panel.log`. The entire original dependency directory was renamed, without deletion, to `.gev-cache/phase2a-m2-dependency-recovery-wq4m8Z/node_modules.original`. A fresh `npm ci` exited0, preserves identical package.json/package-lock.json SHA-256 values, and all 375 installed lock records match version and integrity. Fresh Maki assets contain117canonical files and zero suffix copies. No package version, application file, provider, credential or original-upstream file was repaired. Evidence: `.gev-logs/phase2a-m2/dependency-recovery.json` and `npm-ci-recovery.log`.
+
+After reinstall, the two **unmodified** build commands exit0 (compilation5.17/4.62seconds), followed by the complete unit/allocation suite8265/0 with one platform skip and all other native gates. The terrain-cache original/restored hashes match again; no test cache was produced. Post-reinstall logs are under `reinstalled-native/`; both initial and final evidence are retained. Production module bytes/graph remain identical to the earlier measurement. The old74.06ms native index sample is retained as `before-reinstall-corpus-search-measurements.json`; the current88.38ms sample includes ordinary runtime variation and is still not a browser latency measurement.
+
+Standard root dev was restarted with `--strictPort --force`: the extra flag only rebuilds Vite’s optimizer after installation; HMR remains normal, with no override/overlay suppression. The verified listener is PID83193 at `[::1]:4173`. Both Hong Kong/Taiwan policy gates remain OFF. The rehearsal listener4174 remains stopped and its artifacts are untouched.
+
+### Corpus and bundle measurements
+
+Production graph measurements use the same root transforms and strict validation with `write:false`, omitting only Cesium’s redundant filesystem asset-copy hook in the ignored measurement script. This is a measurement, not either acceptance build; both unmodified npm build commands still must exit successfully. Full data: `.gev-logs/phase2a-m2/corpus-search-measurements.json`.
+
+| Measurement | Raw | Gzip | Brotli |
+| --- | ---: | ---: | ---: |
+| Initial hub JS delta from M1 | +2,393 B | +759 B | +563 B |
+| Initial globe JS delta from M1 | 0 B | 0 B | 0 B |
+| Knowledge Center additional static JS | 44,559 B | 9,912 B | 8,606 B |
+| Article route additional static JS | 216,326 B | 62,358 B | 53,839 B |
+| Search route additional static JS | 181,089 B | 50,828 B | 44,215 B |
+
+Route costs exclude already-loaded initial hub chunks, include each route’s static dependencies, and overlap each other; do not add them together. Lazy raw corpus chunks are separate. Selected rendered/indexed article Markdown totals 121,646 bytes; the seven admitted upstream raw files total 772,637 bytes. External originals are not part of this corpus. The index covers 221 sections/source products. Its optional serialized size is 364,762 B raw / 83,045 B gzip / 66,151 B Brotli, for comparison only: no serialized index is shipped or persisted.
+
+Native Node 24.22.0 macOS arm64 measurements: first index build 88.38 ms, subsequent median 50.16 ms (15 runs), 270 query samples with p95 0.45 ms and maximum 1.45 ms. These are synchronous first-use work and native timing, not browser/mobile latency, network readiness, heap usage or globe FPS. Browser first-use responsiveness must still be observed before further corpus growth. No browser performance pass is inferred.
+
+### Articles requiring user editorial review before commit
+
+| New article | Content | Primary references |
+| --- | --- | --- |
+| [Project background](../../content/knowledge/project-background.md) | Original guide | [pinned README](https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/README.md#-why-this-exists); [data-source documentation](https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/DATA_SOURCES.md); [MIT license](https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/LICENSE); [third-party notices](https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/THIRD_PARTY_NOTICES.md); [responsible-use guidance](https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/SECURITY.md#responsible-use) |
+| [Your first five minutes](../../content/knowledge/first-five-minutes.md) | Original guide | [setup instructions](https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/CONTRIBUTING.md#getting-set-up); [Cesium content requirements](https://cesium.com/learn/ion/content-usage-and-attribution-guide/); [pinned data-source inventory](https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/DATA_SOURCES.md); [KartaView policy](https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/src/layers/streetLevel/providers/kartaview/policy.js); [Panoramax policy](https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/src/layers/streetLevel/providers/panoramax/policy.js); [Street Level guide](https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/README.md#-street-level) |
+| [Understanding data labels](../../content/knowledge/understanding-data-labels.md) | Original guide | [upstream source inventory](https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/DATA_SOURCES.md); [Recent Imagery description](https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/docs/CURRENT-STATE.md#recent-imagery-september-2026) |
+| [Layers and coverage](../../content/knowledge/layers-and-coverage.md) | Original guide | [pinned source inventory](https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/DATA_SOURCES.md); [camera catalog owner](https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/server/providers/cctv/catalog.js); [Street Level documentation](https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/README.md#-street-level); [Canadian AQHI explanation](https://www.canada.ca/en/environment-climate-change/services/air-quality-health-index.html); [GNSS implementation](https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/src/layers/gnss/index.js) |
+| [Keys, costs and intended use](../../content/knowledge/keys-and-costs.md) | Original guide | [upstream security guide](https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/SECURITY.md#how-secrets-are-handled); [Google Maps security guidance](https://developers.google.com/maps/api-security-best-practices); [Cesium token controls](https://cesium.com/learn/ion/cesium-ion-access-tokens/); [Cesium content conditions](https://cesium.com/learn/ion/content-usage-and-attribution-guide/); [OpenSky's current terms](https://opensky-network.org/about/terms-of-use); [upstream local-server threat model](https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/SECURITY.md#network-exposure--the-operator-threat-model) |
+| [GIS and GEOINT fundamentals](../../content/knowledge/gis-geoint-fundamentals.md) | Original guide | [source inventory](https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/DATA_SOURCES.md); [reviewed Recent Imagery description](https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/docs/CURRENT-STATE.md#recent-imagery-september-2026); [responsible-use expectations](https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/SECURITY.md#responsible-use) |
+| [Development and upstream updates](../../content/knowledge/development-and-updates.md) | Original guide | [upstream contribution guide](https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/CONTRIBUTING.md); [upstream testing guide](https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/TESTING.md) |
+| [September update: GEV, WorldFX and Astra](../../content/knowledge/gods-eye-view-blew-up-then-astra-summary.md) | Original external-article summary | [God’s Eye View Blew Up. Astra Showed Up.](https://www.spatialintelligence.ai/p/gods-eye-view-blew-up-then-astra); [event provenance](https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/public/events/bhote-koshi-2026/README.md); [source and coverage documentation](https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/DATA_SOURCES.md) |
+| [The open-source release announcement](../../content/knowledge/i-open-sourced-gods-eye-view-summary.md) | Original external-article summary | [I Open Sourced God’s Eye View](https://www.spatialintelligence.ai/p/i-open-sourced-gods-eye-view); [README](https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/README.md); [source documentation](https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/DATA_SOURCES.md); [security guidance](https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/SECURITY.md) |
+
+The two external-summary rows require comparison with their original Spatial Intelligence articles. Both primary pages were read; summaries use original prose (105 and 108 source-derived words respectively), link author/title/date provenance and distinguish historical author reports from capabilities at the current pin. No copied external body, transcript, screenshot or media is stored. September’s current primary heading is **“God’s Eye View Blew Up. Astra Showed Up.”**; the earlier plan included “Then.” The slug/source URL is unchanged; this is a recorded title correction, not a change to the approved admission. Full article metadata and hashes are retained in `.gev-logs/phase2a-m2/editorial-corpus.json`.
+
+### User-run rendered checks pending
+
+Normal HMR is restored through the standard root CLI at localhost:4173 (verified PID 83193); 4174 remains stopped. Server log: `.gev-logs/phase2a-m2/dev-normal-hmr-reinstalled.log`. No HMR-off or overlay suppression was used. The browser-policy denial remains respected; native serving/SSR/unit evidence does not establish rendered acceptance.
+
+From `/Users/getumwanna/Documents/GEV`, use Node 24.22.0 and run:
+
+```sh
+QA_BASE_URL=http://localhost:4173 npm run qa:hub
+node .gev-logs/phase2a-m2/manual-article-hmr-check.mjs
+```
+
+QA now has 12 assertions: the previous ten plus article provenance/section focus and local search filters/results/anchors. It does not start a server or acquire feeds. The manual helper has five explicit observations for changed-hash and missing published Markdown, Library-only errors and automatic restoration/recovery. It backs up and restores the article, never drives the browser/server, re-prompts typos and preserves unexpected concurrent edits. Keep the globe and the first-five-minutes article open. Check unchanged globe view/controls, usable Dashboard/Settings, no automatic document reload, Vite overlay, unhandled error or server exit, then HMR-only recovery. Any actual containment failure means stop/report; do not weaken the requirement. The helper’s isolated fixture tests do not pass these browser observations.
+
+Also observe the new article/search pages in both themes, at narrow width and with keyboard navigation: readable tables/TOC, empty results, filter labels, section focus and responsive first-use search. Record limitations honestly. No redundant tracking rerun is requested for this Library-only milestone; the existing normal-mode tracking prerequisite is already passed.
+
+**Stop here before staging/committing M2.** Resolve user editorial review and pending verification before the milestone commit. Do not author M3 case pages in this stop.
+
+## M2 user editorial approval and verification contradiction — October 21
+
+The user explicitly approved all nine original articles, including both Spatial Intelligence summaries, and reports all manual UI checks passed. All nine current article bytes and manifest records match the reviewed editorial corpus. The first-five-minutes original/current bytes match SHA-256 `eb1c03f7c28427bca4b3ff6737e081ddaafad66e177431e99f1d3d896003bc45`; no active manual helper remains. Article approval is complete and must be preserved.
+
+The user reports QA12/12, then confirms the posted run is the latest. The actual latest retained receipt `.gev-logs/qa-custom-hub-2026-10-21T16-33-03-652Z.json` contains **11true assertions out of12 and overall passed:false**, with Library search failing at `hub-route-heading` / `browser-check-failure`. Its SHA-256 is `66c0ef2b2c358a7495d526a2caae24624c621a1134b369b1360b6cca4d74316e`. No later retained12/12 receipt exists. No startup/dependency HTTP failures or unhandled browser exceptions are recorded. Native search/router tests still pass17/17; this does not pass the browser gate. A source-level hypothesis is carried-over search filters during same-document hash navigation; exact failing browser substep is not yet established. Do not relabel the failed receipt or weaken assertions.
+
+The supplied manual receipt `.gev-logs/phase2a-m2/manual-article-hmr-2026-10-21T16-33-03.697Z-K77nH4/receipt.json` records **5/5 explicitPASS**, outcome passed and restored true; SHA-256 `920207d46d6a302450f496ba8a8d0977b53597e1c89399923237d1cb0a8a7881`. Helper hash matches current code and restoration is independently verified. Preserve that user-observation receipt unchanged.
+
+**Native containment contradiction:** the shipping server log emits `(client) page reload content/knowledge/first-five-minutes.md` at **12:34:32,12:34:37 and12:34:38 EDT**, all within the manual receipt interval12:33:03.698–12:34:50.397. Installed Vite6.4.3 source `node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:39509–39518` logs this only in the needFullReload branch, immediately before `hot.send({type:full-reload,triggeredBy:...})` without an HTML path restriction. The WS implementation broadcasts this payload to open clients; `node_modules/vite/dist/client/client.mjs:974–987` schedules a full page reload on receipt. This establishes server-issued global reload commands, inconsistent with the required Library-only/no-automatic-reload contract. It does **not** establish that a particular browser received/reloaded or that the globe view reset; no browser navigation was observed by the agent.
+
+Evidence snapshot and hashes: `.gev-logs/phase2a-m2/acceptance-review-2026-10-21/{review.json,qa.json,hmr.json,server.log}`. Snapshotted server-log SHA-256 is `d0b3b681cbb187ff63080168bc17b96f2536aca2c9f8535809aeac05009566e1`. Independent read-only verification agrees. The agent did not run any browser harness, alter any article, restart the server, change a HMR/overlay setting or implement a repair during this audit.
+
+**Required stop:** AGENTS.md says “If Library HMR containment acceptance fails, stop/report rather than weakening it.” Therefore the requested M2 commit and M3 implementation are held. No staging/commit occurs. The already authorized nine-article editorial approval is retained; repair/verification must address authored-Markdown unlink/add HMR behavior and the failing search check under existing source/plugin constraints. A need for any extra original-upstream file/plugin must be reported as an amendment, not silently adopted. Read-only M3 facts research created no case/application files.
+
+## M2 repair checkpoint and requested HMR amendment — October21
+
+The user authorizes fixing search QA and article HMR without weakening checks, while retaining all nine article approvals and every receipt. M2commit and M3 remain held. No article, manifest, schema, dependency or original-upstream file changed during these repairs. All9current article hashes and metadata match the approved editorial corpus.
+
+### Repairs within the existing allowlist
+
+- `scripts/qa-custom-hub.mjs`: hash-only navigation retains React category/source filters. The failing test changed kind to original-article while Source directory/cctv remained selected. It now verifies retained filters, resets only the controls needed by the article-search scenario, waits for the intended query/results and labels each substep. Every original assertion remains; further filter-state assertions were added.
+- `src/custom/library/search.test.mjs`: real-corpus React/JSDOM regression reproduces the retained-filter failure and proves clearing the two filters restores valid section links. No browser or live page executes.
+- `hub/src/library/catalog.ts`: retained imports now call stable proxies into the current HMR generation’s loader and refresh callbacks. This fixes stale module-map/schema closures after a visited Library is unmounted during content edits.
+- `src/custom/library/rendering.test.mjs`: isolated nine-generation HMR lifecycle test reproduces the prior stale-ready behavior, then verifies malformed registry and missing/restored authored Markdown, schemas and admitted upstream docs through retained load/Retry callbacks.
+
+Native rendering/search/router checks pass **29/29**, hub typecheck passes, harness unit checks pass and strict Library validation passes. Logs live under `.gev-logs/phase2a-m2/repair-analysis-2026-10-21/`. No browser harness ran; these do not pass the still-required rendered gates. Shipping retains its original HMR transport until the amendment is decided.
+
+### Root cause and no-weaken alternatives
+
+Vite6.4.3 raw loading creates both a raw-module node and an added base-file watch node. Deleting an admitted file removes importer edges, leaving a dead end. Import-glob combines those old nodes with the catalog owner; any dead end requests global full reload despite catalog self-acceptance. Isolated native Vite module graphs reproduce this without Tailwind or browser execution. Eager raw and URL variants retain reload failures; key-only globs/static fetch miss ordinary-edit HMR; literal imports fail missing-file transformation. Polling or intercepting global reloads would change the approved contract. Evidence: `hmr-native-structural-probes.json` in that directory.
+
+### Exact amendment proposed, not adopted
+
+| Path | Status | Purpose |
+| --- | --- | --- |
+| `src/tooling/viteBuild.test.mjs` | **One additional original-upstream file; approval required** | Recognize exactly one honestly named `custom-library-hmr-content` serve-only/post-ordered plugin after the Tailwind suffix; retain upstream plugin prefix and all existing security/config checks, adding explicit plugin checks |
+| `build/customHub.js` | Already approved custom file | Host that narrow DEV HMR hook for the exact26admitted public content/schema/upstream paths. Invalidate raw/base nodes and both glob owners, then return the stable loaded catalog boundary (or no consumer update if Library has never loaded). No content parsing, server validation or endpoint |
+| `hub/src/library/catalog.ts` | Already approved; proxy repair done | Current-generation loader/refresh callbacks for retained consumers; schema/Node validation roles unchanged |
+| `src/custom/library/rendering.test.mjs` | Already approved | Native actual-plugin CRUD/missing-startup/positive-control regressions and retained-callback coverage |
+| Existing QA/search tests and status/ledger/validation docs | Already approved | Preserve checks and record exact evidence and user-run gates |
+
+The original-upstream allowlist would become `package.json`, `package-lock.json`, `src/tooling/viteBuild.test.mjs`, with inventory **63→64**. The package files need no new edits. No original runtime/provider/config/scene file, new dependency, raw-media copy, server-sideAjv, additional endpoint or global overlay/HMR suppression is proposed. Option(b) remains DEV-only browser Ajv plus authoritative Node validation/build preflights.
+
+Reviewable code: `.gev-logs/phase2a-m2/repair-analysis-2026-10-21/PROPOSED-HMR-AMENDMENT.patch` (syntax and `git apply --check` pass; **not applied**). The prototype and review notes are beside it. Its **28/28 native checks** cover ordinary edits, repeated delete/restore for articles/schemas/upstream docs, missing-file startup, timestamped upstream reloads, fresh restored bytes, unloaded Library and positive controls proving unrelated entries/unadmitted Markdown still reload normally. Independent review agrees. These are isolated server-module-graph/message tests, not browser navigation/globe/error-state evidence. No shipping plugin, upstream test edit or server restart has occurred.
+
+After amendment approval, adopt the hook and strengthen the existing upstream/custom tests, run relevant native gates and both builds, restart only the verified4173listener normally to discard pre-fix orphan module nodes, and provide fresh user commands for12-check QA and5-observation article HMR. Independently check the resulting server log for no global reload commands during the manual receipt interval; the prior5PASSreceipt remains unchanged. Keep M2commit/M3helduntil those gates pass. If approval is declined, keep the current source/plugin boundary and report the HMR limitation; do not disguise a plugin as Tailwind or weaken no-reload checks.
+
+Allowed-repair final native checks:29/29rendering/search/router tests,6/6harness units, typecheck, adopted formatting, boundaries, strict Library validation and both full production build commands pass. Historical QA/HMR receipt hashes are independently rechecked unchanged. The proposed HMR plugin and original-upstream test remain unapplied while the amendment question is pending. Search-only rerun is `QA_BASE_URL=http://localhost:4173 npm run qa:hub` from the root with Node24.22.0. Full article-HMR rerun waits for the actual transport repair and clean normal-server restart.
+
+## Approved HMR amendment applied; repair verification pending — October 21
+
+The user explicitly replied “Approve this amendment,” authorizing only `src/tooling/viteBuild.test.mjs` as the third Phase 2a original-upstream file (63→64 paths). The reviewed patch is applied to that test and existing project-owned `build/customHub.js`. The test preserves the exact standalone plugin prefix/security checks and strictly admits one named serve-only post HMR hook after the Tailwind plugins. The hook has the exact 26 public input paths; it refreshes raw/watch variants and loaded glob owners, returning the self-accepting catalog boundary or no update for unloaded Library. Other files/environments keep ordinary Vite behavior. No content parse/validation endpoint, overlay suppression, global reload interception, polling, or dependency change is introduced.
+
+The prior 11/12 QA receipt, 5/5 user observation receipt, and contradictory server-issued reload evidence are retained unchanged. All nine articles and both Spatial Intelligence summaries retain their editorial approval. Search QA filter reset/current-generation catalog repairs remain within existing custom paths. The verified root 4173 PID 83193 was stopped for cache-preserving native verification; 4174 stays stopped. Fresh native checks, both builds, normal-HMR restart, and user-run search/article HMR checks follow. Do not mark M2 accepted, stage/commit it, or begin M3 on this amendment alone.
+
+## M2 approved repairs verified natively; user reruns pending — October 21
+
+Applied the approved 64-path amendment. The only original-upstream change since M1 is `src/tooling/viteBuild.test.mjs`; the index is empty and HEAD remains M1 `e19e0f22148a71dd8c798b0396b7a8ac143e6334`. No M2 commit or M3 implementation occurred. Package files/dependencies, the approved nine article records/bodies, content manifest, admitted upstream-document set, earlier receipts, and rehearsal logs are preserved.
+
+The search harness explicitly verifies retained filters and clears category/source filters before the original-article scenario, retaining all twelve top-level checks and strengthening result assertions. A real-corpus React regression reproduces stale-filter zero results and recovery. The catalog dispatches retained load/Retry exports to the current HMR generation, with a multi-generation mounted/unmounted/schema/content regression.
+
+The actual shipping `custom-library-hmr-content` hook is exercised through installed Vite transforms, graph invalidation, import-glob updates, and emitted HMR payloads in isolated middleware-mode native fixtures. Nine new hook tests cover repeated article/schema/upstream edit/delete/restore cycles, missing-at-startup recovery, unloaded Library, all 26 admissions, non-client/unadmitted fallthrough, and unrelated-file full-reload positive controls. These tests use no bound listener/browser or shipping content edits. Independent review found no blocking issue and confirmed the positive controls detect real Vite reloads. This is native structural evidence, not rendered browser acceptance.
+
+Fresh Node 24.22.0 results:
+
+- Rendering/search/router: **38 passed, 0 failed**; config/provider-policy/harness unit checks: **21 passed, 0 failed**.
+- Required full unit/allocation gate: **8,276 passed, 0 failed, 1 platform skip** (8,277 tests). Terrain cache restored byte-for-byte, SHA-256 `2c68ba361b8ccedc9fbdf57969573297ffbc7e2667ffa5ecb773da7516a2f1ab`.
+- Typecheck, strict `check:library`, import/package boundaries, adopted formatting, doctor, and diff whitespace checks: passed.
+- Both unmodified acceptance builds: exit 0; website 5.23 s, panel 3.84 s. The separate measurement-only graph omits only redundant Cesium asset copying; it does not substitute for either build.
+- Production graph: no Ajv/schema compiler in any output chunk; no editable Library corpus/Markdown/search dependencies in the initial hub/globe graph. Initial globe raw/gzip/Brotli bytes are unchanged from M1. Initial hub delta from M1 is +2,393 raw / +758 gzip / +480 Brotli bytes.
+
+Evidence: `.gev-logs/phase2a-m2/approved-hmr-repair-owhjwkt9/`, including native logs, `unit-summary.json`, `terrain-cache-preservation.json`, `bundle-review.json`, `preservation-scope.json`, `upstream-test.diff`, and listener/config records. The 38-test log is `.gev-logs/phase2a-m2/repair-analysis-2026-10-21/actual-hmr-rendering-search-router.log`. All previous failed/inconclusive receipts remain unchanged. The initial configuration verifier expected literal `server.hmr:true`; Vite 6 represents its enabled default as unspecified and checks `!== false`. The corrected verifier checks installed-source semantics; no configuration or product change was made for that probe. Its note is retained in `hmr-config-probe-note.json`.
+
+Shipping restarted through standard root CLI, normal HMR enabled, PID **21447**, cwd `/Users/getumwanna/Documents/GEV`, loopback `[::1]:4173`, dedicated `node_modules/.vite-custom-hub` optimizer cache. Root and `/hub/` HTTP HEAD return 200; this is serving evidence only. New server log: `.gev-logs/phase2a-m2/approved-hmr-repair-owhjwkt9/dev-normal-hmr.log`. Rehearsal 4174 remains stopped; logs/worktree/dependency backup remain retained.
+
+**User verification required before M2 commit/M3:** freshly load the globe and first-five-minutes article once after this restart. Run the commands below; do not refresh during the HMR helper. Require 12/12 QA and 5/5 article HMR, byte-identical restoration, Library-only accessible errors, automatic recovery, and no automatic document reload, Vite overlay, unhandled browser error, or unusable globe/Dashboard/Settings. Inspect the new server log against the receipt window as an additional no-global-reload check. Any containment failure stops and is reported; the checks are unchanged. Existing article editorial approval and manual UI report remain recorded; no reapproval of unchanged prose is requested.
+
+```sh
+cd /Users/getumwanna/Documents/GEV
+source /Users/getumwanna/.nvm/nvm.sh
+nvm use 24.22.0
+QA_BASE_URL=http://localhost:4173 npm run qa:hub
+node .gev-logs/phase2a-m2/manual-article-hmr-check.mjs
+```
+
+The agent did not execute either browser harness or the live manual helper. M2 is uncommitted, M3 held, and Phase 2b deferred.
+
+## M2 final verification passed and editorial approval retained — October 21
+
+Fresh user-owned QA receipt `.gev-logs/qa-custom-hub-2026-10-21T17-11-15-946Z.json` has **12/12 true assertions**, overall passed, zero browser errors, and no failed/outdated local modules or optimized dependencies. SHA-256: `b35aa56dad6964ab672e52a81005625619c24aa02f5977a75940f843da80ffd4`.
+
+The user reported **5/5 article HMR observations, outcome passed, restored byte-for-byte**, matching `.gev-logs/phase2a-m2/manual-article-hmr-2026-10-21T17-11-15.989Z-sDhwbs/receipt.json`. SHA-256: `4159974b631dd9ecf69667fd15ba92cc63d3f18ce1f50b1812509506c44780e9`. The receipt window is **2026-10-21T17:11:15.989Z–2026-10-21T17:13:29.513Z**; current article, saved original and helper hashes match. Shipping server log shows only catalog/styles HMR updates within that window, with no global page reload, full-reload, errors, overlays or restart messages. Its retained snapshot SHA-256 is `55038b5cceee5608ab6322bc6469b9ea3d2e6d06f06815e6e3cdaefa996896dd`. Independent read-only review confirms these facts. PID21447 is normal root Vite on loopback4173; 4174 remains stopped.
+
+Acceptance snapshot: `.gev-logs/phase2a-m2/accepted-jgr5fok2/` (unchanged receipt copies, server log and verification/hash manifest). All prior failures and contradictory receipts remain retained as historical evidence. All nine unchanged articles, including both Spatial Intelligence summaries, retain the user's explicit editorial approval. The earlier search/HMR hold is resolved by these fresh checks plus the preceding native/build/graph gates. **M2 is ready for its already-authorized milestone commit. M3 may then proceed under the approved plan, retaining its separate pre-commit case editorial stop. Phase 2a final acceptance and Phase 2b remain deferred.** No browser harness or live helper was agent-executed.
+
+Workspace preservation: two untracked duplicates (`build/customHub 2.js` and `src/tooling/viteBuild.test 2.mjs`) were discovered during this verification. They differ from the approved files; origin is unproven. Their hashes/sizes are recorded in the snapshot. They are preserved unchanged and excluded from staging and the implementation allowlist; they are not customization repairs.

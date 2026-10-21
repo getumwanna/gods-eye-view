@@ -1,7 +1,7 @@
 {
   "version": 1,
   "upstreamRevision": "064d51f7be2675f1c69e16068e9c49d1a60144d1",
-  "reviewedDate": "2026-10-20",
+  "reviewedDate": "2026-10-21",
   "upstreamDocuments": [
     {
       "id": "readme",
@@ -43,7 +43,7 @@
         }
       ],
       "licenseNotice": "Upstream documentation by its original authors, under the repository MIT licence. Preserve copyright and permission notice; dataset/media rights remain separate.",
-      "published": false
+      "published": true
     },
     {
       "id": "docs-current-state",
@@ -95,7 +95,7 @@
         }
       ],
       "licenseNotice": "Upstream documentation by its original authors, under the repository MIT licence. Preserve copyright and permission notice; dataset/media rights remain separate.",
-      "published": false
+      "published": true
     },
     {
       "id": "data-sources",
@@ -177,7 +177,7 @@
         }
       ],
       "licenseNotice": "Upstream documentation by its original authors, under the repository MIT licence. Preserve copyright and permission notice; dataset/media rights remain separate.",
-      "published": false
+      "published": true
     },
     {
       "id": "security",
@@ -229,7 +229,7 @@
         }
       ],
       "licenseNotice": "Upstream documentation by its original authors, under the repository MIT licence. Preserve copyright and permission notice; dataset/media rights remain separate.",
-      "published": false
+      "published": true
     },
     {
       "id": "contributing",
@@ -281,7 +281,7 @@
         }
       ],
       "licenseNotice": "Upstream documentation by its original authors, under the repository MIT licence. Preserve copyright and permission notice; dataset/media rights remain separate.",
-      "published": false
+      "published": true
     },
     {
       "id": "testing",
@@ -313,7 +313,7 @@
         }
       ],
       "licenseNotice": "Upstream documentation by its original authors, under the repository MIT licence. Preserve copyright and permission notice; dataset/media rights remain separate.",
-      "published": false
+      "published": true
     },
     {
       "id": "third-party-notices",
@@ -335,8 +335,691 @@
         }
       ],
       "licenseNotice": "Upstream documentation by its original authors, under the repository MIT licence. Preserve copyright and permission notice; dataset/media rights remain separate.",
-      "published": false
+      "published": true
     }
   ],
-  "items": []
+  "items": [
+    {
+      "id": "project-background",
+      "slug": "project-background",
+      "kind": "original-article",
+      "category": "Project background",
+      "title": "Project background",
+      "tags": ["GEV", "scope", "provenance"],
+      "description": "A local introduction to the hub, its upstream globe, reference information and code/data rights.",
+      "author": "Geospatial Intelligence Hub",
+      "publishedDate": "2026-10-21",
+      "reviewedDate": "2026-10-21",
+      "contentPath": "content/knowledge/project-background.md",
+      "upstreamDocumentId": null,
+      "sectionIds": [],
+      "upstreamRevision": null,
+      "inputSha256": "0695eacedbcd1d32c72036f860ecf7cc9d7b57cc50939dd7fdcb0bffdcf02f42",
+      "references": [
+        {
+          "title": "pinned README",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/README.md#-why-this-exists",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "data-source documentation",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/DATA_SOURCES.md",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "MIT license",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/LICENSE",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "third-party notices",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/THIRD_PARTY_NOTICES.md",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "responsible-use guidance",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/SECURITY.md#responsible-use",
+          "reviewedDate": "2026-10-21"
+        }
+      ],
+      "sourceProductRefs": ["esri/world-imagery", "cesium-ion/ion-content"],
+      "licenseNotice": "Original project-authored summary or guide text under the repository MIT license. Linked source articles, datasets, images and media retain their own rights.",
+      "adaptationNotice": "Original project guide written for this Library against the reviewed upstream pin. Citations link to primary references; no external article body or media is republished.",
+      "status": "published",
+      "caseDetails": null
+    },
+    {
+      "id": "first-five-minutes",
+      "slug": "first-five-minutes",
+      "kind": "original-article",
+      "category": "Getting started",
+      "title": "Your first five minutes",
+      "tags": ["globe", "Street Level", "setup"],
+      "description": "Start with the default globe, inspect one layer, explore available Street Level imagery and keep a supported view.",
+      "author": "Geospatial Intelligence Hub",
+      "publishedDate": "2026-10-21",
+      "reviewedDate": "2026-10-21",
+      "contentPath": "content/knowledge/first-five-minutes.md",
+      "upstreamDocumentId": null,
+      "sectionIds": [],
+      "upstreamRevision": null,
+      "inputSha256": "eb1c03f7c28427bca4b3ff6737e081ddaafad66e177431e99f1d3d896003bc45",
+      "references": [
+        {
+          "title": "setup instructions",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/CONTRIBUTING.md#getting-set-up",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Cesium content requirements",
+          "url": "https://cesium.com/learn/ion/content-usage-and-attribution-guide/",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "pinned data-source inventory",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/DATA_SOURCES.md",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "KartaView policy",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/src/layers/streetLevel/providers/kartaview/policy.js",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Panoramax policy",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/src/layers/streetLevel/providers/panoramax/policy.js",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Street Level guide",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/README.md#-street-level",
+          "reviewedDate": "2026-10-21"
+        }
+      ],
+      "sourceProductRefs": [
+        "esri/world-imagery",
+        "mapillary/street-imagery",
+        "kartaview/street-imagery",
+        "panoramax/street-imagery"
+      ],
+      "licenseNotice": "Original project-authored summary or guide text under the repository MIT license. Linked source articles, datasets, images and media retain their own rights.",
+      "adaptationNotice": "Original project guide written for this Library against the reviewed upstream pin. Citations link to primary references; no external article body or media is republished.",
+      "status": "published",
+      "caseDetails": null
+    },
+    {
+      "id": "understanding-data-labels",
+      "slug": "understanding-data-labels",
+      "kind": "original-article",
+      "category": "Reading the data",
+      "title": "Understanding data labels",
+      "tags": ["labels", "health", "uncertainty"],
+      "description": "Separate per-value observation kinds from feed health, freshness, coverage and counts.",
+      "author": "Geospatial Intelligence Hub",
+      "publishedDate": "2026-10-21",
+      "reviewedDate": "2026-10-21",
+      "contentPath": "content/knowledge/understanding-data-labels.md",
+      "upstreamDocumentId": null,
+      "sectionIds": [],
+      "upstreamRevision": null,
+      "inputSha256": "8bf1b80b0e0b1e6f309b98c8e27bfc20654dab7984d8005feafc4aa44f5f43ae",
+      "references": [
+        {
+          "title": "upstream source inventory",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/DATA_SOURCES.md",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Recent Imagery description",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/docs/CURRENT-STATE.md#recent-imagery-september-2026",
+          "reviewedDate": "2026-10-21"
+        }
+      ],
+      "sourceProductRefs": [
+        "celestrak/orbital-elements",
+        "openstreetmap/mapped-features",
+        "usgs/earthquakes"
+      ],
+      "licenseNotice": "Original project-authored summary or guide text under the repository MIT license. Linked source articles, datasets, images and media retain their own rights.",
+      "adaptationNotice": "Original project guide written for this Library against the reviewed upstream pin. Citations link to primary references; no external article body or media is republished.",
+      "status": "published",
+      "caseDetails": null
+    },
+    {
+      "id": "layers-and-coverage",
+      "slug": "layers-and-coverage",
+      "kind": "original-article",
+      "category": "Reading the data",
+      "title": "Layers and coverage",
+      "tags": ["coverage", "cameras", "AQHI", "GNSS"],
+      "description": "Understand product-specific coverage and access gates, including camera policy, Canada AQHI and GNSS uncertainty.",
+      "author": "Geospatial Intelligence Hub",
+      "publishedDate": "2026-10-21",
+      "reviewedDate": "2026-10-21",
+      "contentPath": "content/knowledge/layers-and-coverage.md",
+      "upstreamDocumentId": null,
+      "sectionIds": [],
+      "upstreamRevision": null,
+      "inputSha256": "4bd51b06a8de46220d34905415298dbc4e087c76b28ae1f2eeb82d944dad7dd0",
+      "references": [
+        {
+          "title": "pinned source inventory",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/DATA_SOURCES.md",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "camera catalog owner",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/server/providers/cctv/catalog.js",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Street Level documentation",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/README.md#-street-level",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Canadian AQHI explanation",
+          "url": "https://www.canada.ca/en/environment-climate-change/services/air-quality-health-index.html",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "GNSS implementation",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/src/layers/gnss/index.js",
+          "reviewedDate": "2026-10-21"
+        }
+      ],
+      "sourceProductRefs": [
+        "cctv/ontario",
+        "eccc-aqhi/aqhi-observations",
+        "gnss-integrity/classification",
+        "kartaview/street-imagery",
+        "panoramax/street-imagery"
+      ],
+      "licenseNotice": "Original project-authored summary or guide text under the repository MIT license. Linked source articles, datasets, images and media retain their own rights.",
+      "adaptationNotice": "Original project guide written for this Library against the reviewed upstream pin. Citations link to primary references; no external article body or media is republished.",
+      "status": "published",
+      "caseDetails": null
+    },
+    {
+      "id": "keys-and-costs",
+      "slug": "keys-and-costs",
+      "kind": "original-article",
+      "category": "Getting started",
+      "title": "Keys, costs and intended use",
+      "tags": ["keys", "costs", "terms"],
+      "description": "Use the existing setup workflow while respecting secret boundaries, provider costs, imagery restrictions and OpenSky terms.",
+      "author": "Geospatial Intelligence Hub",
+      "publishedDate": "2026-10-21",
+      "reviewedDate": "2026-10-21",
+      "contentPath": "content/knowledge/keys-and-costs.md",
+      "upstreamDocumentId": null,
+      "sectionIds": [],
+      "upstreamRevision": null,
+      "inputSha256": "ac65db00df2925159bfa0739436c33bfa39fd1fad74b52c843c8e3f77979590a",
+      "references": [
+        {
+          "title": "upstream security guide",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/SECURITY.md#how-secrets-are-handled",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Google Maps security guidance",
+          "url": "https://developers.google.com/maps/api-security-best-practices",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Cesium token controls",
+          "url": "https://cesium.com/learn/ion/cesium-ion-access-tokens/",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Cesium content conditions",
+          "url": "https://cesium.com/learn/ion/content-usage-and-attribution-guide/",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "OpenSky's current terms",
+          "url": "https://opensky-network.org/about/terms-of-use",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "upstream local-server threat model",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/SECURITY.md#network-exposure--the-operator-threat-model",
+          "reviewedDate": "2026-10-21"
+        }
+      ],
+      "sourceProductRefs": [
+        "cesium-ion/ion-content",
+        "opensky/state-vectors",
+        "google-maps/maps-content"
+      ],
+      "licenseNotice": "Original project-authored summary or guide text under the repository MIT license. Linked source articles, datasets, images and media retain their own rights.",
+      "adaptationNotice": "Original project guide written for this Library against the reviewed upstream pin. Citations link to primary references; no external article body or media is republished.",
+      "status": "published",
+      "caseDetails": null
+    },
+    {
+      "id": "gis-geoint-fundamentals",
+      "slug": "gis-geoint-fundamentals",
+      "kind": "original-article",
+      "category": "Concepts",
+      "title": "GIS and GEOINT fundamentals",
+      "tags": ["GIS", "GEOINT", "evidence", "uncertainty"],
+      "description": "A practical introduction to spatial questions, observations, models, scale, time and evidence.",
+      "author": "Geospatial Intelligence Hub",
+      "publishedDate": "2026-10-21",
+      "reviewedDate": "2026-10-21",
+      "contentPath": "content/knowledge/gis-geoint-fundamentals.md",
+      "upstreamDocumentId": null,
+      "sectionIds": [],
+      "upstreamRevision": null,
+      "inputSha256": "91ea6767ddab8c0b0bc2254a41eec17a1264bcba887f9a91a846f1334ed7e9c8",
+      "references": [
+        {
+          "title": "source inventory",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/DATA_SOURCES.md",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "reviewed Recent Imagery description",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/docs/CURRENT-STATE.md#recent-imagery-september-2026",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "responsible-use expectations",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/SECURITY.md#responsible-use",
+          "reviewedDate": "2026-10-21"
+        }
+      ],
+      "sourceProductRefs": [
+        "celestrak/orbital-elements",
+        "nasa-gibs/dated-imagery",
+        "gnss-integrity/classification"
+      ],
+      "licenseNotice": "Original project-authored summary or guide text under the repository MIT license. Linked source articles, datasets, images and media retain their own rights.",
+      "adaptationNotice": "Original project guide written for this Library against the reviewed upstream pin. Citations link to primary references; no external article body or media is republished.",
+      "status": "published",
+      "caseDetails": null
+    },
+    {
+      "id": "development-and-updates",
+      "slug": "development-and-updates",
+      "kind": "original-article",
+      "category": "Development",
+      "title": "Development and upstream updates",
+      "tags": ["development", "validation", "upstream"],
+      "description": "Use the reviewed runtime, explicit validation gates, browser evidence boundaries and a bounded upstream-sync rehearsal.",
+      "author": "Geospatial Intelligence Hub",
+      "publishedDate": "2026-10-21",
+      "reviewedDate": "2026-10-21",
+      "contentPath": "content/knowledge/development-and-updates.md",
+      "upstreamDocumentId": null,
+      "sectionIds": [],
+      "upstreamRevision": null,
+      "inputSha256": "f03bab022ba59664c6e273c6c25af6de47d94386c6250e36bb7f2b95a5846068",
+      "references": [
+        {
+          "title": "upstream contribution guide",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/CONTRIBUTING.md",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "upstream testing guide",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/TESTING.md",
+          "reviewedDate": "2026-10-21"
+        }
+      ],
+      "sourceProductRefs": [],
+      "licenseNotice": "Original project-authored summary or guide text under the repository MIT license. Linked source articles, datasets, images and media retain their own rights.",
+      "adaptationNotice": "Original project guide written for this Library against the reviewed upstream pin. Citations link to primary references; no external article body or media is republished.",
+      "status": "published",
+      "caseDetails": null
+    },
+    {
+      "id": "gods-eye-view-blew-up-then-astra-summary",
+      "slug": "gods-eye-view-blew-up-then-astra-summary",
+      "kind": "external-summary",
+      "category": "Project background",
+      "title": "September update: GEV, WorldFX and Astra",
+      "tags": ["GEV", "WorldFX", "Astra", "provenance"],
+      "description": "Original summary of Bilawal Sidhu’s September update, separating external reconstruction demonstrations from the reviewed local project.",
+      "author": "Geospatial Intelligence Hub",
+      "publishedDate": "2026-10-21",
+      "reviewedDate": "2026-10-21",
+      "contentPath": "content/knowledge/gods-eye-view-blew-up-then-astra-summary.md",
+      "upstreamDocumentId": null,
+      "sectionIds": [],
+      "upstreamRevision": null,
+      "inputSha256": "b610ced3daa24aa6e4e0860123d4f20d7e8c5ad4089ebccca8eb233b0d5e0b47",
+      "references": [
+        {
+          "title": "God’s Eye View Blew Up. Astra Showed Up.",
+          "url": "https://www.spatialintelligence.ai/p/gods-eye-view-blew-up-then-astra",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "event provenance",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/public/events/bhote-koshi-2026/README.md",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "source and coverage documentation",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/DATA_SOURCES.md",
+          "reviewedDate": "2026-10-21"
+        }
+      ],
+      "sourceProductRefs": [
+        "launch-library/recent-launches",
+        "bhote-koshi/event-context"
+      ],
+      "licenseNotice": "Original project-authored summary or guide text under the repository MIT license. Linked source articles, datasets, images and media retain their own rights.",
+      "adaptationNotice": "An original summary, not a republication of the source article. Original author, title and publication date are identified in the article; local Library publication and review dates appear above. Source claims are separated from capabilities verified in this checkout.",
+      "status": "published",
+      "caseDetails": null
+    },
+    {
+      "id": "i-open-sourced-gods-eye-view-summary",
+      "slug": "i-open-sourced-gods-eye-view-summary",
+      "kind": "external-summary",
+      "category": "Project background",
+      "title": "The open-source release announcement",
+      "tags": ["GEV", "open source", "provenance"],
+      "description": "Original summary of the August source-code release announcement, with current coverage, credential and historical-data limits.",
+      "author": "Geospatial Intelligence Hub",
+      "publishedDate": "2026-10-21",
+      "reviewedDate": "2026-10-21",
+      "contentPath": "content/knowledge/i-open-sourced-gods-eye-view-summary.md",
+      "upstreamDocumentId": null,
+      "sectionIds": [],
+      "upstreamRevision": null,
+      "inputSha256": "ce9992c41827f51d55f9bafc8166353e3d6ab49876cb46f4303b8b6345104f75",
+      "references": [
+        {
+          "title": "I Open Sourced God’s Eye View",
+          "url": "https://www.spatialintelligence.ai/p/i-open-sourced-gods-eye-view",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "README",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/README.md",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "source documentation",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/DATA_SOURCES.md",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "security guidance",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/SECURITY.md",
+          "reviewedDate": "2026-10-21"
+        }
+      ],
+      "sourceProductRefs": [
+        "esri/world-imagery",
+        "opensky/state-vectors",
+        "mapillary/street-imagery"
+      ],
+      "licenseNotice": "Original project-authored summary or guide text under the repository MIT license. Linked source articles, datasets, images and media retain their own rights.",
+      "adaptationNotice": "An original summary, not a republication of the source article. Original author, title and publication date are identified in the article; local Library publication and review dates appear above. Source claims are separated from capabilities verified in this checkout.",
+      "status": "published",
+      "caseDetails": null
+    },
+    {
+      "id": "upstream-readme",
+      "slug": "upstream-readme",
+      "kind": "upstream-documentation",
+      "category": "Upstream documentation",
+      "title": "GEV overview and responsible use",
+      "tags": ["upstream", "documentation", "readme"],
+      "description": "Selected upstream README sections about purpose, Street Level and responsible use.",
+      "author": "God's Eye View upstream contributors",
+      "publishedDate": null,
+      "reviewedDate": "2026-10-21",
+      "contentPath": null,
+      "upstreamDocumentId": "readme",
+      "sectionIds": ["readme-1", "readme-2", "readme-3"],
+      "upstreamRevision": "064d51f7be2675f1c69e16068e9c49d1a60144d1",
+      "inputSha256": "71dcf820eaf5f38d0891818d7e7775b637f2832cd9e578b6e26bcde282bc3289",
+      "references": [
+        {
+          "title": "Pinned original: README.md",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/README.md",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Upstream MIT license and separate data/media exclusions",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/LICENSE",
+          "reviewedDate": "2026-10-21"
+        }
+      ],
+      "sourceProductRefs": [],
+      "licenseNotice": "MIT License\n\nCopyright (c) 2026 Bilawal Sidhu\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+      "adaptationNotice": "Selected upstream documentation reproduced under its MIT notice with original authorship and pinned source preserved. Only the reviewed heading ranges are admitted; remote media is not loaded. The upstream original publication date is not established. Dataset and media rights remain separate from the code/documentation license.",
+      "status": "published",
+      "caseDetails": null
+    },
+    {
+      "id": "upstream-current-state",
+      "slug": "upstream-current-state",
+      "kind": "upstream-documentation",
+      "category": "Upstream documentation",
+      "title": "Reviewed runtime and Recent Imagery notes",
+      "tags": ["upstream", "documentation", "docs-current-state"],
+      "description": "Selected upstream sections about documentation order, runtime baseline, Recent Imagery and maintenance.",
+      "author": "God's Eye View upstream contributors",
+      "publishedDate": null,
+      "reviewedDate": "2026-10-21",
+      "contentPath": null,
+      "upstreamDocumentId": "docs-current-state",
+      "sectionIds": [
+        "docs-current-state-1",
+        "docs-current-state-2",
+        "docs-current-state-3",
+        "docs-current-state-4"
+      ],
+      "upstreamRevision": "064d51f7be2675f1c69e16068e9c49d1a60144d1",
+      "inputSha256": "420279fd1ef76614e87bfd68f8e12490d1b0fbf90b07bda8fa5887d0528a592e",
+      "references": [
+        {
+          "title": "Pinned original: docs/CURRENT-STATE.md",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/docs/CURRENT-STATE.md",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Upstream MIT license and separate data/media exclusions",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/LICENSE",
+          "reviewedDate": "2026-10-21"
+        }
+      ],
+      "sourceProductRefs": [],
+      "licenseNotice": "MIT License\n\nCopyright (c) 2026 Bilawal Sidhu\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+      "adaptationNotice": "Selected upstream documentation reproduced under its MIT notice with original authorship and pinned source preserved. Only the reviewed heading ranges are admitted; remote media is not loaded. The upstream original publication date is not established. Dataset and media rights remain separate from the code/documentation license.",
+      "status": "published",
+      "caseDetails": null
+    },
+    {
+      "id": "upstream-data-sources",
+      "slug": "upstream-data-sources",
+      "kind": "upstream-documentation",
+      "category": "Upstream documentation",
+      "title": "Upstream data sources and attribution",
+      "tags": ["upstream", "documentation", "data-sources"],
+      "description": "Selected upstream source, bundled-data and attribution documentation.",
+      "author": "God's Eye View upstream contributors",
+      "publishedDate": null,
+      "reviewedDate": "2026-10-21",
+      "contentPath": null,
+      "upstreamDocumentId": "data-sources",
+      "sectionIds": [
+        "data-sources-1",
+        "data-sources-2",
+        "data-sources-3",
+        "data-sources-4",
+        "data-sources-5",
+        "data-sources-6",
+        "data-sources-7"
+      ],
+      "upstreamRevision": "064d51f7be2675f1c69e16068e9c49d1a60144d1",
+      "inputSha256": "fc18b241756d3b029c2c521de1fd73b27c0252529037620956f5ce1d4159242c",
+      "references": [
+        {
+          "title": "Pinned original: DATA_SOURCES.md",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/DATA_SOURCES.md",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Upstream MIT license and separate data/media exclusions",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/LICENSE",
+          "reviewedDate": "2026-10-21"
+        }
+      ],
+      "sourceProductRefs": [],
+      "licenseNotice": "MIT License\n\nCopyright (c) 2026 Bilawal Sidhu\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+      "adaptationNotice": "Selected upstream documentation reproduced under its MIT notice with original authorship and pinned source preserved. Only the reviewed heading ranges are admitted; remote media is not loaded. The upstream original publication date is not established. Dataset and media rights remain separate from the code/documentation license.",
+      "status": "published",
+      "caseDetails": null
+    },
+    {
+      "id": "upstream-security",
+      "slug": "upstream-security",
+      "kind": "upstream-documentation",
+      "category": "Upstream documentation",
+      "title": "Upstream security and responsible use",
+      "tags": ["upstream", "documentation", "security"],
+      "description": "Selected upstream sections covering vulnerability reporting, credential boundaries, scope and responsible use.",
+      "author": "God's Eye View upstream contributors",
+      "publishedDate": null,
+      "reviewedDate": "2026-10-21",
+      "contentPath": null,
+      "upstreamDocumentId": "security",
+      "sectionIds": ["security-1", "security-2", "security-3", "security-4"],
+      "upstreamRevision": "064d51f7be2675f1c69e16068e9c49d1a60144d1",
+      "inputSha256": "44be7e36c892af9311d8702f5574ebeff5bbca1843a6d0cf3202af2e68b3423f",
+      "references": [
+        {
+          "title": "Pinned original: SECURITY.md",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/SECURITY.md",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Upstream MIT license and separate data/media exclusions",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/LICENSE",
+          "reviewedDate": "2026-10-21"
+        }
+      ],
+      "sourceProductRefs": [],
+      "licenseNotice": "MIT License\n\nCopyright (c) 2026 Bilawal Sidhu\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+      "adaptationNotice": "Selected upstream documentation reproduced under its MIT notice with original authorship and pinned source preserved. Only the reviewed heading ranges are admitted; remote media is not loaded. The upstream original publication date is not established. Dataset and media rights remain separate from the code/documentation license.",
+      "status": "published",
+      "caseDetails": null
+    },
+    {
+      "id": "upstream-contributing",
+      "slug": "upstream-contributing",
+      "kind": "upstream-documentation",
+      "category": "Upstream documentation",
+      "title": "Upstream contribution practices",
+      "tags": ["upstream", "documentation", "contributing"],
+      "description": "Selected upstream guidance about coding style, pull requests and maintenance.",
+      "author": "God's Eye View upstream contributors",
+      "publishedDate": null,
+      "reviewedDate": "2026-10-21",
+      "contentPath": null,
+      "upstreamDocumentId": "contributing",
+      "sectionIds": [
+        "contributing-1",
+        "contributing-2",
+        "contributing-3",
+        "contributing-4"
+      ],
+      "upstreamRevision": "064d51f7be2675f1c69e16068e9c49d1a60144d1",
+      "inputSha256": "0fa5e6749f93a6decb05c25565c71bb155de72903ce1cee524a2e967d9d23833",
+      "references": [
+        {
+          "title": "Pinned original: CONTRIBUTING.md",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/CONTRIBUTING.md",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Upstream MIT license and separate data/media exclusions",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/LICENSE",
+          "reviewedDate": "2026-10-21"
+        }
+      ],
+      "sourceProductRefs": [],
+      "licenseNotice": "MIT License\n\nCopyright (c) 2026 Bilawal Sidhu\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+      "adaptationNotice": "Selected upstream documentation reproduced under its MIT notice with original authorship and pinned source preserved. Only the reviewed heading ranges are admitted; remote media is not loaded. The upstream original publication date is not established. Dataset and media rights remain separate from the code/documentation license.",
+      "status": "published",
+      "caseDetails": null
+    },
+    {
+      "id": "upstream-testing",
+      "slug": "upstream-testing",
+      "kind": "upstream-documentation",
+      "category": "Upstream documentation",
+      "title": "Upstream testing guide: selected sections",
+      "tags": ["upstream", "documentation", "testing"],
+      "description": "The upstream testing introduction and browser-renderer guidance, with historical-manual-scenario limits preserved.",
+      "author": "God's Eye View upstream contributors",
+      "publishedDate": null,
+      "reviewedDate": "2026-10-21",
+      "contentPath": null,
+      "upstreamDocumentId": "testing",
+      "sectionIds": ["testing-1", "testing-2"],
+      "upstreamRevision": "064d51f7be2675f1c69e16068e9c49d1a60144d1",
+      "inputSha256": "43a166e3e27d66f6226c8363fd91bb5364854d32795259a3bb880902e3ee7e22",
+      "references": [
+        {
+          "title": "Pinned original: TESTING.md",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/TESTING.md",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Upstream MIT license and separate data/media exclusions",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/LICENSE",
+          "reviewedDate": "2026-10-21"
+        }
+      ],
+      "sourceProductRefs": [],
+      "licenseNotice": "MIT License\n\nCopyright (c) 2026 Bilawal Sidhu\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+      "adaptationNotice": "Selected upstream documentation reproduced under its MIT notice with original authorship and pinned source preserved. Only the reviewed heading ranges are admitted; remote media is not loaded. The upstream original publication date is not established. Dataset and media rights remain separate from the code/documentation license.",
+      "status": "published",
+      "caseDetails": null
+    },
+    {
+      "id": "upstream-third-party-notices",
+      "slug": "upstream-third-party-notices",
+      "kind": "upstream-documentation",
+      "category": "Upstream documentation",
+      "title": "Upstream third-party notices",
+      "tags": ["upstream", "documentation", "third-party-notices"],
+      "description": "The admitted upstream third-party software and attribution notices.",
+      "author": "God's Eye View upstream contributors",
+      "publishedDate": null,
+      "reviewedDate": "2026-10-21",
+      "contentPath": null,
+      "upstreamDocumentId": "third-party-notices",
+      "sectionIds": ["third-party-notices-1"],
+      "upstreamRevision": "064d51f7be2675f1c69e16068e9c49d1a60144d1",
+      "inputSha256": "785419169c062ab4ec00ecbdf5e4c5a28dc94b3067ece5132dfed4b23960a614",
+      "references": [
+        {
+          "title": "Pinned original: THIRD_PARTY_NOTICES.md",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/THIRD_PARTY_NOTICES.md",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Upstream MIT license and separate data/media exclusions",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/LICENSE",
+          "reviewedDate": "2026-10-21"
+        }
+      ],
+      "sourceProductRefs": [],
+      "licenseNotice": "MIT License\n\nCopyright (c) 2026 Bilawal Sidhu\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
+      "adaptationNotice": "Selected upstream documentation reproduced under its MIT notice with original authorship and pinned source preserved. Only the reviewed heading ranges are admitted; remote media is not loaded. The upstream original publication date is not established. Dataset and media rights remain separate from the code/documentation license.",
+      "status": "published",
+      "caseDetails": null
+    }
+  ]
 }

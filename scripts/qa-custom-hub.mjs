@@ -352,6 +352,147 @@ try {
   );
 
   await check(
+    'Knowledge Center renders published articles with provenance and keyboard section focus',
+    async () => {
+      await route('#/library/knowledge', 'Knowledge Center');
+      checkpoint = 'knowledge-directory';
+      await page.waitForFunction(
+        () => document.querySelectorAll('.gih-knowledge-card').length === 16,
+      );
+      const articleTitle = await page.$eval(
+        'a[href="#/library/knowledge/first-five-minutes"]',
+        (link) => link.textContent.trim(),
+      );
+      await route('#/library/knowledge/first-five-minutes', articleTitle);
+      checkpoint = 'article-provenance';
+      await page.waitForSelector('.gih-article-provenance');
+      assert.equal(
+        await page.$eval(
+          'main',
+          (main) =>
+            main.textContent.includes('Provenance and permissions') &&
+            main.textContent.includes('Sources and further reading') &&
+            main.textContent.includes('not for operational use'),
+        ),
+        true,
+      );
+      const section = 'section-try-street-level-within-its-coverage';
+      await page.click(
+        `nav[aria-label="Article contents"] a[href$="?section=${section}"]`,
+      );
+      checkpoint = 'article-section-focus';
+      await page.waitForFunction(
+        (id) => document.activeElement?.id === id,
+        { timeout: 15_000 },
+        section,
+      );
+      assert.equal(
+        await page.$(
+          '.gih-article-content img, .gih-article-content iframe, .gih-article-content video',
+        ),
+        null,
+      );
+    },
+  );
+
+  await check(
+    'Library search filters local references and opens matching article sections',
+    async () => {
+      await route('#/library/search?q=Ontario', 'Library Search');
+      checkpoint = 'library-search-results';
+      await page.waitForSelector('.library-search-result');
+      checkpoint = 'library-search-source-filters';
+      await page.select('#search-kind', 'source-product');
+      await page.select('#search-category', 'Source directory');
+      await page.select('#search-source', 'cctv');
+      checkpoint = 'library-search-source-filter-values';
+      assert.deepEqual(
+        await page.$$eval(
+          '#search-kind, #search-category, #search-source',
+          (controls) => controls.map((control) => control.value),
+        ),
+        ['source-product', 'Source directory', 'cctv'],
+      );
+      checkpoint = 'library-search-filtered-source-results';
+      await page.waitForFunction(() =>
+        document
+          .querySelector('.library-search-results')
+          ?.textContent.includes('Ontario'),
+      );
+      assert.equal(
+        await page.$eval(
+          '.library-search-results',
+          (list) =>
+            list.textContent.includes('Ontario') &&
+            list.textContent.includes('Static reference information') &&
+            list.textContent.includes('not checked in Library'),
+        ),
+        true,
+      );
+      checkpoint = 'library-search-replace-query';
+      await replaceQaInput(
+        page,
+        '#library-query',
+        'no-matching-library-fixture',
+      );
+      await page.click('.library-search-form button[type="submit"]');
+      checkpoint = 'library-search-empty';
+      await page.waitForFunction(() =>
+        document
+          .querySelector('main')
+          ?.textContent.includes('No matching content'),
+      );
+      checkpoint = 'library-search-query-keeps-filters';
+      assert.deepEqual(
+        await page.$$eval(
+          '#search-kind, #search-category, #search-source',
+          (controls) => controls.map((control) => control.value),
+        ),
+        ['source-product', 'Source directory', 'cctv'],
+      );
+      await route('#/library/search?q=Street%20Level', 'Library Search');
+      checkpoint = 'library-search-article-query';
+      await page.waitForFunction(
+        () =>
+          document.querySelector('#library-query')?.value === 'Street Level',
+      );
+      checkpoint = 'library-search-article-filters';
+      await page.waitForSelector('#search-kind');
+      // Hash-only goto can preserve this mounted search component. Clear the
+      // source-directory filters before checking an original article result.
+      await page.select('#search-kind', 'original-article');
+      await page.select('#search-category', '');
+      await page.select('#search-source', '');
+      checkpoint = 'library-search-article-filter-values';
+      assert.deepEqual(
+        await page.$$eval(
+          '#search-kind, #search-category, #search-source',
+          (controls) => controls.map((control) => control.value),
+        ),
+        ['original-article', '', ''],
+      );
+      checkpoint = 'library-search-article-results';
+      await page.waitForSelector('.library-search-results a');
+      const href = await page.$eval('.library-search-results a', (link) =>
+        link.getAttribute('href'),
+      );
+      assert.match(
+        href,
+        /^#\/library\/knowledge\/[a-z0-9-]+\?section=section-[a-z0-9-]+$/,
+      );
+      checkpoint = 'library-search-open-article-result';
+      await page.click('.library-search-results a');
+      checkpoint = 'search-result-section-focus';
+      const target = new URL(href.slice(1), origin).searchParams.get('section');
+      await page.waitForFunction(
+        (id) => document.activeElement?.id === id,
+        { timeout: 15_000 },
+        target,
+      );
+    },
+  );
+
+  await check(
     'dark/light preference persists across hub navigation and reload',
     async () => {
       await route('#/settings', 'Settings');

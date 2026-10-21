@@ -31,12 +31,16 @@ async function fixture(t) {
   const registry = JSON.parse(
     await readFile(path.join(root, sourcesPath), 'utf8'),
   );
+  const manifest = JSON.parse(
+    await readFile(path.join(root, 'content/library.json'), 'utf8'),
+  );
   const files = new Set([
     sourcesPath,
     'content/sources.schema.json',
     'content/library.json',
     'content/library.schema.json',
     ...ADMITTED_DOCUMENTS.map((doc) => doc.path),
+    ...manifest.items.map((item) => item.contentPath).filter(Boolean),
     ...registry.sources.flatMap((source) =>
       source.products.flatMap((product) =>
         product.evidence.map((evidence) => evidence.path),

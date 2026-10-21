@@ -19,6 +19,18 @@ export function LibraryNavigation({
       >
         Data Sources
       </a>
+      <a
+        href="#/library/knowledge"
+        aria-current={active === 'knowledge' ? 'page' : undefined}
+      >
+        Knowledge Center
+      </a>
+      <a
+        href="#/library/search"
+        aria-current={active === 'search' ? 'page' : undefined}
+      >
+        Search
+      </a>
     </nav>
   );
 }

@@ -31,7 +31,11 @@ export function withHubConfig(standalone) {
         ]),
       ],
     },
-    plugins: [...standalone.plugins, ...tailwindcss()],
+    plugins: [
+      ...standalone.plugins,
+      ...tailwindcss(),
+      customLibraryHmrContent(root),
+    ],
     resolve: {
       ...standalone.resolve,
       alias: { ...standalone.resolve?.alias, '@': path.join(root, 'hub/src') },
@@ -63,6 +67,80 @@ export function withHubConfig(standalone) {
           globe: path.join(root, 'index.html'),
           hub: path.join(root, 'hub/index.html'),
         },
+      },
+    },
+  };
+}
+
+// DEV-only transport for the explicitly admitted public Library inputs.
+// Content remains DEV-browser validated; this hook only contains Vite graph invalidation.
+export const PUBLIC_LIBRARY_INPUTS = Object.freeze([
+  'content/sources.json',
+  'content/library.json',
+  'content/sources.schema.json',
+  'content/library.schema.json',
+  'content/knowledge/project-background.md',
+  'content/knowledge/first-five-minutes.md',
+  'content/knowledge/understanding-data-labels.md',
+  'content/knowledge/layers-and-coverage.md',
+  'content/knowledge/keys-and-costs.md',
+  'content/knowledge/gis-geoint-fundamentals.md',
+  'content/knowledge/development-and-updates.md',
+  'content/knowledge/gods-eye-view-blew-up-then-astra-summary.md',
+  'content/knowledge/i-open-sourced-gods-eye-view-summary.md',
+  'content/cases/nepal-flood.md',
+  'content/cases/hurricane-tracking.md',
+  'content/cases/launch-reconstruction.md',
+  'content/cases/aircraft-incidents.md',
+  'content/cases/satellite-imagery-change.md',
+  'content/cases/ai-reconstruction-demonstrations.md',
+  'README.md',
+  'docs/CURRENT-STATE.md',
+  'DATA_SOURCES.md',
+  'SECURITY.md',
+  'CONTRIBUTING.md',
+  'TESTING.md',
+  'THIRD_PARTY_NOTICES.md',
+]);
+const normalize = (value) => path.resolve(value).split(path.sep).join('/');
+
+export function customLibraryHmrContent(root) {
+  const admitted = new Set(
+    PUBLIC_LIBRARY_INPUTS.map((file) => normalize(path.join(root, file))),
+  );
+  const catalogId = normalize(path.join(root, 'hub/src/library/catalog.ts'));
+  const upstreamId = normalize(
+    path.join(root, 'hub/src/library/upstreamDocuments.ts'),
+  );
+  return {
+    name: 'custom-library-hmr-content',
+    apply: 'serve',
+    hotUpdate: {
+      order: 'post',
+      handler({ file, modules, timestamp }) {
+        if (
+          this.environment.name !== 'client' ||
+          !admitted.has(normalize(file))
+        )
+          return;
+        const graph = this.environment.moduleGraph;
+        const seen = new Set();
+        // Vite's raw watch node may have lost its importer during unlink; it still
+        // needs invalidation, but must not become the HMR propagation boundary.
+        const invalidated = new Set([
+          ...(graph.getModulesByFile(normalize(file)) || []),
+          ...modules,
+        ]);
+        // The admitted upstream-document glob is a separate cached module. Keep
+        // it fresh even when the changed file was absent at initial startup.
+        for (const ownerId of [upstreamId, catalogId]) {
+          const owner = graph.getModuleById(ownerId);
+          if (owner) invalidated.add(owner);
+        }
+        for (const module of invalidated)
+          graph.invalidateModule(module, seen, timestamp, true);
+        const catalog = graph.getModuleById(catalogId);
+        return catalog?.isSelfAccepting === true ? [catalog] : [];
       },
     },
   };

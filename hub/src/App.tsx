@@ -12,14 +12,36 @@ import { Settings } from './pages/Settings';
 import { parseHubRoute, routeTitle } from './router.js';
 import { branding } from '../../src/custom/shared/branding.js';
 
-type LibraryPageKind = 'overview' | 'sources' | 'source';
+type LibraryPageKind =
+  | 'overview'
+  | 'sources'
+  | 'source'
+  | 'knowledge'
+  | 'knowledge-article'
+  | 'search';
+type LibraryEntryProps = {
+  id: string;
+  slug: string;
+  query: string;
+  section: string | null;
+};
 async function loadLibraryPage(
   kind: LibraryPageKind,
-): Promise<{ default: React.ComponentType<{ id: string }> }> {
+): Promise<{ default: React.ComponentType<LibraryEntryProps> }> {
   if (kind === 'sources')
     return { default: (await import('./pages/DataSources')).DataSources };
   if (kind === 'source')
     return { default: (await import('./pages/SourceGuide')).SourceGuide };
+  if (kind === 'knowledge')
+    return {
+      default: (await import('./pages/KnowledgeCenter')).KnowledgeCenter,
+    };
+  if (kind === 'knowledge-article')
+    return {
+      default: (await import('./pages/KnowledgeArticle')).KnowledgeArticle,
+    };
+  if (kind === 'search')
+    return { default: (await import('./pages/LibrarySearch')).LibrarySearch };
   return { default: (await import('./pages/Library')).Library };
 }
 
@@ -60,10 +82,16 @@ function LibraryRoute({
   title,
   kind,
   sourceId = '',
+  slug = '',
+  query = '',
+  section = null,
 }: {
   title: string;
   kind: LibraryPageKind;
   sourceId?: string;
+  slug?: string;
+  query?: string;
+  section?: string | null;
 }) {
   const [attempt, setAttempt] = useState(0);
   // A new lazy identity lets Retry reattempt a failed chunk, rather than reuse React.lazy's rejected promise.
@@ -84,7 +112,7 @@ function LibraryRoute({
           </div>
         }
       >
-        <Entry id={sourceId} />
+        <Entry id={sourceId} slug={slug} query={query} section={section} />
       </Suspense>
     </LibraryErrorBoundary>
   );
@@ -99,6 +127,7 @@ export function App() {
   }, []);
   useEffect(() => {
     document.title = `${routeTitle(route)} · ${branding.shortName}`;
+    if (route.page === 'knowledge-article' && route.section) return;
     document.getElementById('main-content')?.focus({ preventScroll: true });
     window.scrollTo(0, 0);
   }, [route]);
@@ -109,6 +138,29 @@ export function App() {
   else if (route.page === 'data-sources')
     content = (
       <LibraryRoute title="Data Sources" kind="sources" key="data-sources" />
+    );
+  else if (route.page === 'knowledge')
+    content = (
+      <LibraryRoute title="Knowledge Center" kind="knowledge" key="knowledge" />
+    );
+  else if (route.page === 'knowledge-article' && route.slug)
+    content = (
+      <LibraryRoute
+        title="Knowledge article"
+        kind="knowledge-article"
+        slug={route.slug}
+        section={route.section}
+        key={`knowledge-${route.slug}`}
+      />
+    );
+  else if (route.page === 'library-search')
+    content = (
+      <LibraryRoute
+        title="Library search"
+        kind="search"
+        query={route.query}
+        key="library-search"
+      />
     );
   else if (route.page === 'settings') content = <Settings />;
   else if (route.page === 'source' && route.sourceId)

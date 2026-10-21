@@ -100,20 +100,45 @@ export type AdmittedDocument = {
   licenseNotice: string;
   published: boolean;
 };
+export type LibraryItem = {
+  id: string;
+  slug: string;
+  kind:
+    | 'original-article'
+    | 'external-summary'
+    | 'case-study'
+    | 'upstream-documentation';
+  category: string;
+  title: string;
+  tags: string[];
+  description: string;
+  author: string;
+  publishedDate: string | null;
+  reviewedDate: string;
+  contentPath: string | null;
+  upstreamDocumentId: string | null;
+  sectionIds: string[];
+  upstreamRevision: string | null;
+  inputSha256: string | null;
+  references: { title: string; url: string; reviewedDate: string }[];
+  sourceProductRefs: string[];
+  licenseNotice: string;
+  adaptationNotice: string;
+  status: 'draft' | 'published';
+  caseDetails: {
+    interactivity:
+      'interactive' | 'partial' | 'demonstration-only' | 'view-only';
+    limitations: string[];
+    globeUrl: string | null;
+    restoredScope: string | null;
+  } | null;
+};
 export type LibraryManifest = {
   version: number;
   upstreamRevision: string;
   reviewedDate: string;
   upstreamDocuments: AdmittedDocument[];
-  items: {
-    id: string;
-    contentPath: string | null;
-    upstreamDocumentId: string | null;
-    sectionIds: string[];
-    sourceProductRefs: string[];
-    references: { title: string; url: string; reviewedDate: string }[];
-    [key: string]: unknown;
-  }[];
+  items: LibraryItem[];
 };
 export type LibraryCatalog = {
   registry: SourceRegistry;

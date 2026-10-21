@@ -1,7 +1,8 @@
 # Geospatial Intelligence Hub status
 
-Updated October 21, 2026, America/New_York. **All Phase 2a milestone 1 gates pass:** native checks, tracking 109/0/0, hub QA 10/10, full normal-HMR containment 21/21 and invalid-content startup 3/3. All user receipts match and all five fixture files independently restore exactly. Standard root server runs normal HMR at localhost:4173 (verified PID 41062); 4174 stays stopped with rehearsal artifacts retained. M1 validation is complete and its buildable milestone commit is authorized. Continue to M2 under existing approval, stopping for editorial review of all nine articles before committing. Phase 2a final acceptance remains pending; Phase 2b stays deferred. See `docs/custom/PHASE-2A-VALIDATION.md`.
+Updated October 21, 2026, America/New_York.
 
+**M2 verification complete; authorized milestone commit next, then M3 case editorial stop.** Fresh user-owned QA12/12 and article HMR5/5 receipts pass; article restoration hashes match and the shipping server log contains no global reload/error/restart during the test. Nine original articles/both Spatial summaries retain editorial approval. Native gates and both builds pass; all receipts and historical failures are preserved. The approved inventory is 64 paths, with only the three explicitly allowed original-upstream files. Normal HMR runs at loopback4173/PID21447;4174 stays stopped. Two untracked duplicate files are preserved/excluded from staging. Record M2 commit, implement approved M3, run checks, list every case/reference and stop before its commit for editorial review. Phase2b remains deferred; final Phase2a acceptance remains required.
 
 ## Completed and verified
 

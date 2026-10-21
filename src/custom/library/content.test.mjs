@@ -37,6 +37,7 @@ async function fixture(t) {
     'content/library.json',
     'content/library.schema.json',
     ...ADMITTED_DOCUMENTS.map((doc) => doc.path),
+    ...manifest.items.map((item) => item.contentPath).filter(Boolean),
     ...registry.sources.flatMap((source) =>
       source.products.flatMap((product) =>
         product.evidence.map((evidence) => evidence.path),
@@ -332,6 +333,9 @@ test('manifest items require existing original files, exact hashes and resolved 
     const text =
       '# Test-only original fixture\n\nThis bounded fixture is never application content.\n';
     const contentPath = 'content/knowledge/project-background.md';
+    f.manifest.items = f.manifest.items.filter(
+      (item) => item.contentPath !== contentPath,
+    );
     await mkdir(path.join(f.root, 'content/knowledge'), { recursive: true });
     await writeFile(path.join(f.root, contentPath), text);
     const item = {
@@ -379,7 +383,7 @@ test('manifest items require existing original files, exact hashes and resolved 
         checkProjection: false,
       });
       assert.equal(result.ok, true, JSON.stringify(result.errors));
-      assert.equal(result.stats.items, 1);
+      assert.equal(result.stats.items, f.manifest.items.length);
     },
   );
   const cases = [
@@ -443,4 +447,125 @@ test('manifest items require existing original files, exact hashes and resolved 
         code,
       );
     });
+});
+
+test('published upstream documentation keeps an unknown original publication date honest', async (t) => {
+  const f = await fixture(t);
+  const upstream = f.manifest.items.find(
+    (item) => item.kind === 'upstream-documentation',
+  );
+  assert.ok(
+    upstream,
+    'real milestone corpus includes admitted upstream documentation',
+  );
+  assert.equal(upstream.status, 'published');
+  assert.equal(upstream.publishedDate, null);
+  const valid = await validateLibrary({ root: f.root, checkProjection: false });
+  assert.equal(valid.ok, true, JSON.stringify(valid.errors));
+  upstream.publishedDate = '2026-99-99';
+  await f.saveManifest();
+  rejected(
+    await validateLibrary({ root: f.root, checkProjection: false }),
+    'CONTENT_MISMATCH',
+  );
+});
+
+test('manifest publication metadata is required and route slugs are unique across knowledge kinds', async (t) => {
+  for (const field of [
+    'tags',
+    'author',
+    'upstreamDocumentId',
+    'upstreamRevision',
+    'references',
+    'licenseNotice',
+  ])
+    await t.test(`missing ${field}`, async (child) => {
+      const f = await fixture(child);
+      delete f.manifest.items[0][field];
+      await f.saveManifest();
+      rejected(
+        await validateLibrary({ root: f.root, checkProjection: false }),
+        'SCHEMA_MISMATCH',
+      );
+    });
+  await t.test(
+    'original and upstream items cannot share a knowledge route',
+    async (child) => {
+      const f = await fixture(child);
+      const original = f.manifest.items.find(
+        (item) => item.kind === 'original-article',
+      );
+      const upstream = f.manifest.items.find(
+        (item) => item.kind === 'upstream-documentation',
+      );
+      upstream.slug = original.slug;
+      await f.saveManifest();
+      rejected(
+        await validateLibrary({ root: f.root, checkProjection: false }),
+        'DUPLICATE_ID',
+      );
+    },
+  );
+});
+
+test('published article slugs match the existing 64-character route limit', async (t) => {
+  const schema = JSON.parse(
+    await readFile(path.join(root, 'content/library.schema.json'), 'utf8'),
+  );
+  assert.equal(
+    schema.definitions.id.maxLength,
+    80,
+    'non-route stable identifiers retain their approved generic bound',
+  );
+  assert.equal(
+    schema.definitions.item.properties.slug.$ref,
+    '#/definitions/routeSlug',
+  );
+  assert.equal(schema.definitions.routeSlug.maxLength, 64);
+  await t.test('64-character published slug passes', async (child) => {
+    const f = await fixture(child);
+    f.manifest.items[0].slug = 'a'.repeat(64);
+    await f.saveManifest();
+    const result = await validateLibrary({
+      root: f.root,
+      checkProjection: false,
+    });
+    assert.equal(result.ok, true, JSON.stringify(result.errors));
+  });
+  for (const length of [65, 80])
+    await t.test(
+      `${length}-character published slug fails schema`,
+      async (child) => {
+        const f = await fixture(child);
+        f.manifest.items[0].slug = 'a'.repeat(length);
+        await f.saveManifest();
+        rejected(
+          await validateLibrary({ root: f.root, checkProjection: false }),
+          'SCHEMA_MISMATCH',
+        );
+      },
+    );
+  await t.test(
+    'Node enforces the route limit even if an editable schema is widened',
+    async (child) => {
+      const f = await fixture(child);
+      f.manifest.items[0].slug = 'a'.repeat(65);
+      await f.saveManifest();
+      const editable = JSON.parse(
+        await readFile(
+          path.join(f.root, 'content/library.schema.json'),
+          'utf8',
+        ),
+      );
+      editable.definitions.routeSlug.maxLength = 80;
+      await writeFile(
+        path.join(f.root, 'content/library.schema.json'),
+        JSON.stringify(editable),
+      );
+      rejected(
+        await validateLibrary({ root: f.root, checkProjection: false }),
+        'DUPLICATE_ID',
+      );
+    },
+  );
 });

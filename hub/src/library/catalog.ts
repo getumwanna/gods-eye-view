@@ -202,7 +202,18 @@ export function validateBrowserManifest(
       );
     ids.add(doc.id);
   }
+  const routeSlugs = new Set<string>();
   for (const item of manifest.items) {
+    const routeKey = `${item.kind === 'case-study' ? 'cases' : 'knowledge'}/${item.slug}`;
+    if (!isLibraryId(item.slug) || routeSlugs.has(routeKey))
+      errors.push(
+        issue(
+          'library.json',
+          'route-reference',
+          'A Library article route is ambiguous or invalid.',
+        ),
+      );
+    routeSlugs.add(routeKey);
     if (
       !isLibraryId(item.id) ||
       ids.has(item.id) ||
@@ -236,6 +247,37 @@ export function validateBrowserManifest(
           ),
         );
     }
+    if (item.kind === 'upstream-documentation') {
+      const document = manifest.upstreamDocuments.find(
+        (document) => document.id === item.upstreamDocumentId,
+      );
+      if (
+        item.contentPath !== null ||
+        !document ||
+        item.inputSha256 !== document.sha256 ||
+        item.upstreamRevision !== registry.upstreamRevision ||
+        (item.status === 'published' && !document.published)
+      )
+        errors.push(
+          issue(
+            'library.json',
+            'document-reference',
+            'A Library article differs from its reviewed upstream input.',
+          ),
+        );
+    } else if (
+      item.contentPath === null ||
+      item.upstreamDocumentId !== null ||
+      item.upstreamRevision !== null ||
+      item.sectionIds.length
+    )
+      errors.push(
+        issue(
+          'library.json',
+          'content-reference',
+          'An original article has an invalid input reference.',
+        ),
+      );
     const productRefs = new Set(
       registry.sources.flatMap((source) =>
         source.products.map((product) => `${source.id}/${product.id}`),
@@ -262,6 +304,7 @@ type Store = {
   listeners: Set<() => void>;
   pending: Promise<LibrarySnapshot> | null;
   reload: () => Promise<LibrarySnapshot>;
+  refresh: () => void;
 };
 const initialSnapshot: LibrarySnapshot = {
   status: 'idle',
@@ -273,7 +316,8 @@ const store: Store = import.meta.hot?.data.libraryStore || {
   snapshot: initialSnapshot,
   listeners: new Set(),
   pending: null,
-  reload: loadLibrary,
+  reload: loadCurrentLibrary,
+  refresh: refreshCurrentLibrary,
 };
 let schemaCache: {
   key: string;
@@ -403,6 +447,10 @@ async function validateSchemas(
 }
 
 export function loadLibrary(): Promise<LibrarySnapshot> {
+  return store.reload();
+}
+
+function loadCurrentLibrary(): Promise<LibrarySnapshot> {
   if (store.pending) return store.pending;
   if (store.snapshot.status === 'ready' || store.snapshot.status === 'error')
     return Promise.resolve(store.snapshot);
@@ -470,6 +518,41 @@ export function loadLibrary(): Promise<LibrarySnapshot> {
           Object.keys(originalDocuments),
         ),
       ];
+      if (import.meta.env.DEV) {
+        for (const item of manifest.items) {
+          if (item.contentPath === null) continue;
+          const content = originalDocuments[item.contentPath];
+          if (
+            typeof content !== 'string' ||
+            !content.trim() ||
+            new TextEncoder().encode(content).byteLength > 256 * 1024
+          ) {
+            errors.push(
+              issue(
+                'Authored Library content',
+                'content-size',
+                'An authored article is unavailable or exceeds its size limit.',
+              ),
+            );
+            continue;
+          }
+          const digest = await globalThis.crypto.subtle.digest(
+            'SHA-256',
+            new TextEncoder().encode(content),
+          );
+          const hash = Array.from(new Uint8Array(digest), (byte) =>
+            byte.toString(16).padStart(2, '0'),
+          ).join('');
+          if (hash !== item.inputSha256)
+            errors.push(
+              issue(
+                'Authored Library content',
+                'content-revision',
+                'An authored article differs from its reviewed revision.',
+              ),
+            );
+        }
+      }
       const upstreamDocuments = await loadUpstreamDocuments();
       if (
         [...Object.values(raw), ...Object.values(upstreamDocuments)].reduce(
@@ -533,10 +616,14 @@ export function loadLibrary(): Promise<LibrarySnapshot> {
   });
   return pending;
 }
-store.reload = loadLibrary;
+store.reload = loadCurrentLibrary;
 
 /** Self-accept raw data changes: only mounted Library subscribers refresh. Dashboard, Settings and globe do not reload. */
 export function refreshLibrary() {
+  store.refresh();
+}
+
+function refreshCurrentLibrary() {
   schemaCache = null;
   store.pending = null;
   publish({
@@ -547,6 +634,10 @@ export function refreshLibrary() {
   });
   if (store.listeners.size) void store.reload();
 }
+// Existing Library mounts retain their original exports across self-acceptance.
+// Delegate through the shared store so those consumers and Retry callbacks use
+// this module generation's raw imports and schema cache after each replacement.
+store.refresh = refreshCurrentLibrary;
 if (import.meta.hot) {
   import.meta.hot.dispose((data) => {
     data.libraryStore = store;
