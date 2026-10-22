@@ -1,6 +1,6 @@
 # Phase 2a validation
 
-Updated October 21, 2026, America/New_York. **M3 and the separate I1 plan are committed. The explicitly approved Vite 6.4.5 repair and fresh M4 native checks pass; final user browser checks and Phase 2a acceptance remain pending.** All editorial approvals and historical evidence are retained. I1 runtime work stays deferred.
+Updated October 21, 2026, America/New_York. **Phase 2a is accepted by the user after all M1–M4 gates, final Vite 6.4.5 QA 14/14, article/case HMR 5/5 each with exact restoration, and user-reported tracking 109/0/0.** All editorial approvals and historical evidence are retained. I1 implementation remains deferred until a separate explicit go-ahead; other Phase 2b work stays deferred. Earlier pending passages are historical checkpoints.
 
 ## M1 final startup result — passed
 
@@ -652,7 +652,7 @@ not browser/mobile latency or globe FPS. All six case hashes, nine article bodie
 both unrelated duplicates and historical receipts are preserved. No I1 runtime,
 provider, credential, media, recorder or deployment change is included.
 
-### Final user checks on Vite 6.4.5 — pending
+### Historical procedure: final user checks on Vite 6.4.5
 
 Shipping is ready at `http://localhost:4173/` with standard root CLI, normal HMR
 and existing security/provider/cache settings. Native HTTP checks are serving
@@ -687,3 +687,59 @@ and four CTA approvals carry forward. Broader M1 rendered checks require repeati
 only if a new failure or concern warrants it. No assertion is removed or weakened.
 After fresh gates pass, explicit final Phase 2a acceptance remains required. I1
 implementation requires its separate go-ahead.
+
+
+## Final Phase 2a acceptance — October 21, 2026, America/New_York
+
+The user explicitly reported all final checks passed and directed **“mark Phase
+2a accepted”**, retaining the separate I1 implementation go-ahead. All four
+milestones and their gates are complete. The accepted shipping code checkpoint
+is `27ccdce77c55d78201518e46664dd1b26ab989b7` (approved Vite 6.4.5 repair);
+source/doc pin stays `064d51f7be2675f1c69e16068e9c49d1a60144d1`.
+
+| Final gate | Result and evidence |
+| --- | --- |
+| Hub/Library QA | **14/14**, all assertion flags true, overall passed, timestamp `2026-10-22T02:57:05.942Z`; zero page errors/local module/optimized-dependency failures. Receipt `.gev-logs/qa-custom-hub-2026-10-22T02-57-05-941Z.json`. |
+| Article HMR | **5/5**, passed and restored true, `02:57:05.985–02:57:19.617Z`. Receipt `.gev-logs/phase2a-m2/manual-article-hmr-2026-10-22T02-57-05.984Z-CBDqW6/receipt.json`. |
+| Case HMR | **5/5**, passed and restored true, `02:57:19.652–02:57:41.585Z`. Receipt `.gev-logs/phase2a-m3/manual-case-hmr-2026-10-22T02-57-19.651Z-i4GY0L/receipt.json`. |
+| Tracking, normal HMR, offline imagery | **109 passed / 0 failed / 0 skipped**, latest explicit user report. No matching new persisted tracking transcript was found in the bounded log inventory; do not claim agent execution or a transcript-backed result. |
+| Editorial / manual UI | All nine articles including both Spatial summaries, all six cases/references, theme/narrow/keyboard checks and all four CTAs retain their earlier explicit approvals. |
+
+The UTC receipt dates above correspond to October 21 at 22:57 EDT. Both content
+files were independently verified byte-for-byte against `original.md` and their
+receipt hashes; both helper source hashes match the receipts. Article
+`first-five-minutes.md` SHA-256:
+`eb1c03f7c28427bca4b3ff6737e081ddaafad66e177431e99f1d3d896003bc45`.
+Case `nepal-flood.md` SHA-256:
+`14aa95663f91f52470d13fa1697c526c036d0117e4474f972d0cac92a51868b9`.
+
+The retained Vite 6.4.5 server log corroborates only catalog/styles HMR updates
+at 22:57:14–22:57:40 EDT, during both helper windows, with no global document
+reload, error or restart. These rendered results are user-owned observations;
+the agent did not run browser harnesses/helpers or bypass the existing denial.
+
+Frozen evidence directory:
+`.gev-logs/phase2a-m4/acceptance-2026-10-21-y_gk33fn/`. It contains exact receipt
+copies, original-file copies, restoration verification, a server-log snapshot,
+the exact user report/acceptance record, and a SHA-256 artifact manifest.
+
+| Evidence | SHA-256 |
+| --- | --- |
+| QA receipt | `74596d0e5c84b72b4af83b28cb304252f31a264ac5bde0a86daa8a451c1e93ec` |
+| Article HMR receipt | `32e26ba4282078e01c94d5315506be5b8852520b9627e34a3093315ff4e05960` |
+| Case HMR receipt | `9f9e0104ee156adbf715374ffa0169b356fcf797cbeea0b1bebc4d29717ac832` |
+| Vite server-log snapshot | `98abe461a1d8446867f58ab6379fc8604976ebd76efe87d529ee1c7d12a4024c` |
+
+Fresh M4 clean-install/audit/native/allocation/build/graph passes recorded above
+remain valid. All earlier failed, inconclusive and interrupted evidence is
+preserved as historical; no old receipt is converted into a pass. Explicitly
+waived Phase 0 baselines remain waived. Synthetic tracking and bounded QA do not
+establish live-provider availability or a GPU/FPS baseline.
+
+This docs-only acceptance changes no application/content/dependency/upstream
+file and requires no redundant test run. Both unrelated untracked duplicates,
+4174's stopped rehearsal/worktree/logs and all existing source/security/terms
+constraints remain preserved. **Phase 2a is closed and accepted. Phase 2b – I1
+remains deferred until the user's separate explicit implementation go-ahead.**
+Its approved 47-path plan is unchanged; no provider signup, key handling, paid
+call, source integration or other Phase 2b work is authorized by this acceptance.

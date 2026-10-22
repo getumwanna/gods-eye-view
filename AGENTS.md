@@ -2,6 +2,16 @@
 
 ## Scope and authorization
 
+**Phase 2a is accepted.** The user explicitly accepted it after final Vite 6.4.5
+QA 14/14, article HMR 5/5, case HMR 5/5, both restored byte-for-byte, and tracking
+109/0/0. Receipts, restoration hashes and the server log agree; tracking is the
+latest user report. See `docs/custom/PHASE-2A-VALIDATION.md`. All M1–M4 gates and
+article/case reviews are complete. Earlier conditional/pending checkpoint text
+below is historical, not an active blocker. **I1 remains deferred until a separate
+explicit user go-ahead**; its approved plan does not authorize implementation.
+Other Phase 2b work, new providers/credentials, recorder and hosting remain outside
+this acceptance. Keep all prior evidence and the existing browser-denial boundary.
+
 **Phase 1 is accepted.** The user ran `npm run qa:hub`, reported all 9 checks passing, and explicitly approved acceptance. The matching receipt at `2026-10-20T16:48:33.899Z` has nine true assertions and overall `passed: true`; see `docs/custom/PHASE-1-VALIDATION.md`. The `cn` dependency review is resolved, all four milestones are complete, and earlier failed receipts remain historical evidence. The agent did not execute the CLI browser harness. Missing historical Phase 0 baselines remain explicitly waived, not passed. Official MIT shadcn/ui supersedes the 21st.dev choice.
 
 The user approved the Phase 2a reverification amendments: generated projection (63 paths), Ajv option(b) as devDependency/DEV-only lazy Library validation with Node-authoritative checks and both builds, and frozen-pin facts/doc admissions with hashes/case/article requirements. Two original-upstream files remain allowed. The normal-HMR prerequisite now passed: the latest user attachment matches the retained 109/0/0 result and the completed server log has no reload. Phase 2a implementation from milestone 1 onward is explicitly authorized; do not ask for that approval again. Preserve milestone 2/3 pre-commit editorial stops and final phase acceptance. If Library HMR containment acceptance fails, stop/report rather than weakening it. Phase 2b remains deferred; 4174 stays stopped with logs/worktree retained.
@@ -224,7 +234,7 @@ case approvals. Do not accept Phase2a before the user's explicit final acceptanc
 No I1 runtime/provider/credential implementation is authorized by this checkpoint.
 
 
-## Current M4 Vite repair verified; final user checks pending — October 21
+## Historical M4 Vite repair verified; final user checks pending — October 21
 
 The user explicitly approved the reviewed Vite 6.4.5 patch. It is applied only to
 `package.json` and `package-lock.json`, preserving all other 475 lock records.
@@ -249,3 +259,23 @@ alternate driver. Any actual containment failure requires restoration and
 stop/report without weakening checks. Final Phase 2a acceptance remains explicit
 and pending. I1 and other Phase 2b runtime work require that acceptance and a
 separate implementation go-ahead.
+
+
+## Current Phase 2a accepted; I1 implementation deferred — October 21
+
+Final user acceptance is explicit. QA receipt `2026-10-22T02:57:05.942Z` has all
+14 true assertions. Article/case helper receipts cover
+02:57:05.985–02:57:19.617Z and 02:57:19.652–02:57:41.585Z; each is 5/5, passed,
+and restored. Both live files match saved originals/receipt hashes, and helper
+hashes match. The Vite 6.4.5 log shows only catalog/styles HMR updates during
+both windows, with no global reload/error/restart. Tracking 109/0/0 is the latest
+explicit user report; no new persisted transcript is claimed. Frozen evidence:
+`.gev-logs/phase2a-m4/acceptance-2026-10-21-y_gk33fn/`.
+
+The native/build/audit evidence at `.gev-logs/phase2a-m4/vite645-kp6255jw/` remains
+valid. Acceptance documentation changes no application, content, dependency or
+original-upstream file. Preserve the two unrelated untracked duplicates, all
+historical receipts and the stopped 4174 rehearsal. Do not start I1, create a
+CDSE account, configure credentials or execute its 47-path plan without the
+user's separate explicit implementation go-ahead. Other Phase 2b work stays
+deferred. Do not ask to repeat completed Phase 2a gates absent a new concern.

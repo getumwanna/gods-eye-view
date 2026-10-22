@@ -2,6 +2,13 @@
 
 Decision record and file-level plan, October 21, 2026.
 
+**Current authorization checkpoint — October 21, 2026:** Phase 2a M3/M4 and final
+Phase 2a acceptance are complete. This I1 plan remains approved as documentation
+only; implementation is **deferred until the user's separate explicit go-ahead**.
+The 47-path inventory, quota/request model, scope and acceptance gates are unchanged.
+No account, credentials, runtime code, dependencies or upstream edits are authorized
+by recording Phase 2a acceptance. Other Phase 2b work stays deferred.
+
 ## Authorization and sequence
 
 The user approved this plan and its QA-file amendment, expressly authorizing

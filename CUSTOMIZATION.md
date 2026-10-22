@@ -3,7 +3,7 @@
 ## Provenance
 
 - Request: Geospatial Intelligence Hub, v2, October 19, 2026.
-- Authorized scope: Phase 1 accepted; upstream integration and post-pin review complete. User approves the 63-path generated projection and dev-only lazy Ajv role plus pin facts/admissions/case/article requirements. Phase 2a implementation milestone 1 onward is approved only after normal-HMR tracking passes on 4173; diagnose any failure first. Two-file upstream allowlist and editorial gates remain; Phase 2b deferred. No keys configured.
+- Authorized scope: Phases 1 and 2a accepted. Phase 2a closes at the approved 64-path inventory and three original-upstream paths, including the approved Vite 6.4.5 package repair. I1 has an approved 47-path plan but remains deferred until a separate explicit implementation go-ahead; other Phase 2b work is deferred. No credentials are configured by this documentation closeout.
 - Upstream: https://github.com/bilawalsidhu/gods-eye-view
 - User-owned fork: https://github.com/getumwanna/gods-eye-view
 - Verified upstream pin: `064d51f7be2675f1c69e16068e9c49d1a60144d1` (approved shipping integration; original Phase 0 pin retained in historical checkpoints).
@@ -359,3 +359,22 @@ server is restored on localhost:4173 (verified Vite PID 84521). Fresh user QA,
 tracking and article/case HMR checks precede final Phase 2a acceptance. All earlier
 receipts and editorial/manual approvals remain retained. I1 runtime work stays
 deferred; no new provider, credential, hosting or recorder is introduced.
+
+
+### Phase 2a accepted — October 21, 2026
+
+The user explicitly accepted M1–M4 after final QA 14/14, article HMR 5/5, case
+HMR 5/5 with both byte-for-byte restorations, and tracking 109/0/0. QA/HMR are
+receipt-backed and server-log corroborated; tracking is the latest explicit user
+report. All nine article/six case editorial and manual UI/CTA approvals carry
+forward. Receipt snapshots, restoration verification, server-log snapshot and
+hash inventory are retained at
+`.gev-logs/phase2a-m4/acceptance-2026-10-21-y_gk33fn/`.
+
+This acceptance checkpoint edits project-owned documentation only. No upstream,
+application, content, dependency, provider, credential or server change occurs.
+The code checkpoint is `27ccdce77c55d78201518e46664dd1b26ab989b7`; source/doc pin
+remains `064d51f7be2675f1c69e16068e9c49d1a60144d1`. Existing native/build/audit
+results and all earlier failed/interrupted/inconclusive receipts remain retained.
+I1 stays planning-only until a separate explicit implementation go-ahead; other
+Phase 2b work stays deferred. No redundant test suite is run for docs-only edits.

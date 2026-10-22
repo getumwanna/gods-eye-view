@@ -2,29 +2,33 @@
 
 Updated October 21, 2026, America/New_York.
 
-**M3 and the separate I1 plan are committed. The approved Vite 6.4.5 repair and M4 native validation pass; final user browser checks and explicit Phase 2a acceptance remain pending.**
+**Phase 2a is accepted.** The user explicitly accepted the completed phase after
+QA **14/14**, article HMR **5/5**, case HMR **5/5**, both restored byte-for-byte,
+and tracking **109 passed / 0 failed / 0 skipped**. The QA/HMR receipts match;
+restoration hashes and the Vite 6.4.5 no-reload server log are corroborated.
+Tracking is the latest explicit user report, not an agent-run harness result.
 
-M3: `dae36cf0de737116615fd9e5efc615be965cd81e`. I1 plan only:
-`a860327edc694fbcc313eb0791629fe88070a0b0`. All nine article and six case
-approvals, four CTA/manual approvals, and historical receipts remain retained.
+M1–M4 are complete. All nine article and six case editorial approvals, four CTA
+and manual UI approvals, and historical receipts remain retained. Shipping code
+is `27ccdce77c55d78201518e46664dd1b26ab989b7`, including the approved Vite 6.4.5
+repair. Earlier clean-install/native/allocation/build/graph checks remain passed:
+8,298 unit/allocation passes, zero failures, one platform skip; audit zero known
+vulnerabilities. Source/doc pin remains
+`064d51f7be2675f1c69e16068e9c49d1a60144d1`.
 
-The user explicitly approved the reviewed two-file security patch. Shipping now
-pins Vite 6.4.5; all other 475 lock records are unchanged. Clean install and audit
-pass with zero known vulnerabilities. Library/typecheck/boundaries/format/doctor/
-policy, 8,298 unit/allocation passes (zero failures, one platform skip), both
-builds, and production graph checks pass. The terrain cache, article/case bytes,
-and unrelated duplicates are preserved. Evidence:
-`.gev-logs/phase2a-m4/vite645-kp6255jw/`.
+Final acceptance evidence:
+`.gev-logs/phase2a-m4/acceptance-2026-10-21-y_gk33fn/` and
+`docs/custom/PHASE-2A-VALIDATION.md`. Earlier pending/conditional entries below
+are historical checkpoints superseded by this acceptance. No historical failed,
+inconclusive or interrupted receipt is removed or promoted to a pass; the waived
+Phase 0 baselines remain waived.
 
-Normal-HMR root CLI is restored on `[::1]:4173`, verified Vite PID **84521**.
-Verify its identity before any later stop. Port 4174 stays stopped and all
-rehearsal logs/worktrees remain retained. User reruns are pending: QA **14/14**,
-article HMR **5/5**, case HMR **5/5** (both restored byte-for-byte), and tracking
-**109/0/0**. Exact commands and unchanged containment criteria are in
-`docs/custom/PHASE-2A-VALIDATION.md`.
-
-Phase 2a is not yet accepted. I1 runtime work and other Phase 2b work remain
-deferred until Phase 2a acceptance and the separate implementation go-ahead.
+**Phase 2b – I1 remains deferred until the user's separate explicit go-ahead.**
+Its 47-path plan is approved; runtime/dependency/upstream implementation is not
+authorized by Phase 2a acceptance. Other Phase 2b work also stays deferred. Port
+4174 stays stopped with all rehearsal logs/worktrees retained. No server restart,
+credential setup, new provider, hosting or recorder is part of this docs-only
+closeout. Both unrelated untracked duplicate files remain untouched.
 
 ## Completed and verified
 
