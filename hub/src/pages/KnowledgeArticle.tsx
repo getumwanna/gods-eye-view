@@ -5,7 +5,7 @@ import { ArticleRenderer } from '../components/library/ArticleRenderer';
 import { LibraryNavigation } from '../components/library/LibraryNavigation';
 import { ReferenceLink } from '../components/library/SourceRecord';
 import { getArticleMarkdown, parseMarkdownSections } from '../library/markdown';
-import { knowledgeHref } from '../library/links';
+import { caseGlobeHref, libraryItemHref } from '../library/links';
 import { LibraryData } from './Library';
 import { articleKindLabel } from './KnowledgeCenter';
 import type { LibraryCatalog, LibraryItem } from '../library/types';
@@ -19,6 +19,11 @@ export function KnowledgeArticleView({
   catalog: LibraryCatalog;
   section?: string | null;
 }) {
+  const isCase = item.kind === 'case-study';
+  const directoryHref = isCase ? '#/library/cases' : '#/library/knowledge';
+  const directoryTitle = isCase ? 'Case studies' : 'Knowledge Center';
+  const titleId = isCase ? 'case-study-title' : 'knowledge-article-title';
+  const globeHref = caseGlobeHref(item);
   const markdown = getArticleMarkdown(item, catalog);
   const parsed = useMemo(
     () => parseMarkdownSections(markdown || ''),
@@ -33,22 +38,22 @@ export function KnowledgeArticleView({
     const destination =
       section && sectionExists
         ? document.getElementById(section)
-        : document.getElementById('knowledge-article-title');
+        : document.getElementById(titleId);
     destination?.focus({ preventScroll: true });
     if (destination && section && sectionExists)
       destination.scrollIntoView({ behavior: 'auto', block: 'start' });
-  }, [item.id, item.title, section, sectionExists, catalog]);
+  }, [item.id, item.title, section, sectionExists, catalog, titleId]);
   return (
     <>
-      <a href="#/library/knowledge" className="gih-back-link">
+      <a href={directoryHref} className="gih-back-link">
         <ArrowLeft size={16} aria-hidden="true" />
-        Knowledge Center
+        {directoryTitle}
       </a>
       <header className="gih-page-heading">
         <p className="gih-eyebrow">
           {articleKindLabel(item.kind)} · STATIC REFERENCE
         </p>
-        <h1 id="knowledge-article-title" tabIndex={-1}>
+        <h1 id={titleId} tabIndex={-1}>
           {item.title}
         </h1>
         <p>{item.description}</p>
@@ -57,19 +62,66 @@ export function KnowledgeArticleView({
           {item.publishedDate && <> · Published {item.publishedDate}</>}
         </p>
       </header>
-      <LibraryNavigation active="knowledge" />
+      <LibraryNavigation active={isCase ? 'cases' : 'knowledge'} />
+      {isCase && item.caseDetails && (
+        <section
+          className="gih-card gih-case-context"
+          aria-labelledby="case-context-heading"
+        >
+          <h2 id="case-context-heading">Local capability and limits</h2>
+          <p className="gih-eyebrow">
+            {
+              {
+                interactive: 'Interactive',
+                partial: 'Partial',
+                'demonstration-only': 'Demonstration only',
+                'view-only': 'View only',
+              }[item.caseDetails.interactivity]
+            }
+            {' · STATIC REFERENCE'}
+          </p>
+          <ul>
+            {item.caseDetails.limitations.map((limitation) => (
+              <li key={limitation}>{limitation}</li>
+            ))}
+          </ul>
+          {item.caseDetails.restoredScope && (
+            <p>
+              <strong>Restored by the globe link:</strong>{' '}
+              {item.caseDetails.restoredScope}
+            </p>
+          )}
+          {globeHref ? (
+            <a href={globeHref} className="gih-directory-link">
+              Open globe view
+            </a>
+          ) : item.caseDetails.globeUrl &&
+            item.caseDetails.interactivity !== 'demonstration-only' ? (
+            <p role="alert">
+              This case's globe link could not be validated. Continue with the
+              reviewed reference below.
+            </p>
+          ) : (
+            <p className="gih-note">
+              This reference has no local globe handoff. Its sources do not
+              establish that the demonstrated workflow is available here.
+            </p>
+          )}
+        </section>
+      )}
       {!sectionExists && (
         <p className="gih-library-section-warning" role="alert">
-          The linked section is unavailable in this reviewed article. The
-          article is shown from its beginning.
+          The linked section is unavailable in this reviewed{' '}
+          {isCase ? 'case study' : 'article'}. The{' '}
+          {isCase ? 'case study' : 'article'} is shown from its beginning.
         </p>
       )}
       <div className="gih-article-layout">
         <aside className="gih-article-aside">
-          <nav aria-label="Article contents">
+          <nav aria-label={isCase ? 'Case study contents' : 'Article contents'}>
             <h2>On this page</h2>
-            <a href={knowledgeHref(item.slug, 'section-start')}>
-              Article beginning
+            <a href={libraryItemHref(item, 'section-start')}>
+              {isCase ? 'Case beginning' : 'Article beginning'}
             </a>
             <ol>
               {parsed.headings.map((heading) => (
@@ -78,7 +130,7 @@ export function KnowledgeArticleView({
                   className={`gih-toc-depth-${Math.min(heading.depth, 4)}`}
                 >
                   <a
-                    href={knowledgeHref(item.slug, heading.id)}
+                    href={libraryItemHref(item, heading.id)}
                     aria-current={
                       heading.id === section ? 'location' : undefined
                     }

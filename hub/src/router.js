@@ -37,6 +37,8 @@ export function parseHubRoute(hash = '') {
     return { page: 'data-sources', sourceId: null };
   if (parts.length === 3 && parts[2] === 'knowledge' && !queryString)
     return { page: 'knowledge', sourceId: null };
+  if (parts.length === 3 && parts[2] === 'cases' && !queryString)
+    return { page: 'case-studies', sourceId: null };
   if (
     parts.length === 3 &&
     parts[2] === 'search' &&
@@ -59,14 +61,14 @@ export function parseHubRoute(hash = '') {
     return { page: 'source', sourceId: parts[3] };
   if (
     parts.length === 4 &&
-    parts[2] === 'knowledge' &&
+    (parts[2] === 'knowledge' || parts[2] === 'cases') &&
     idPattern.test(parts[3]) &&
     [...query.keys()].every((key) => key === 'section')
   ) {
     const section = query.get('section');
     if (section !== null && !sectionPattern.test(section)) return unavailable();
     return {
-      page: 'knowledge-article',
+      page: parts[2] === 'cases' ? 'case-study' : 'knowledge-article',
       sourceId: null,
       slug: parts[3],
       section,
@@ -85,6 +87,8 @@ export function routeTitle(route) {
       'data-sources': 'Data Sources',
       knowledge: 'Knowledge Center',
       'knowledge-article': 'Knowledge article',
+      'case-studies': 'Case studies',
+      'case-study': 'Case study',
       'library-search': 'Library search',
       'not-found': 'Page not found',
     }[route.page] || 'Page not found'

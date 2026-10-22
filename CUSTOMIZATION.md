@@ -295,3 +295,27 @@ Authorized custom-file repairs preserve approved articles and receipts: search Q
 The user approved the narrow Phase 2a inventory amendment, 63→64, adding only original-upstream `src/tooling/viteBuild.test.mjs`. Its customization ledger entry: retain the exact original standalone plugin prefix and all security/config assertions; replace the Tailwind-only suffix assertion with assertions for the preceding Tailwind plugins and exactly one final `custom-library-hmr-content` plugin (`apply: serve`, post hotUpdate, function handler). No other upstream test behavior changes.
 
 Project-owned `build/customHub.js` installs that honestly named DEV-only hook for the exact 26 admitted public Library inputs. It invalidates changed raw/watch modules plus the loaded upstream-documents/catalog owners and propagates only through the self-accepting catalog; unloaded Library returns no update, and unrelated/non-client events fall through. No content parsing, server-side validation, endpoint, reload interception, overlay suppression, polling, or dependency change is introduced. Existing approved custom tests cover the actual hook. Search QA explicitly resets retained category/source filters between scenarios while preserving and strengthening all assertions. Catalog exports dispatch to the current HMR generation so old consumers and Retry callbacks cannot reuse stale loaders. All approved article bytes and historical receipts remain preserved. Verification and user reruns are recorded separately; no M2 commit/M3 advancement is implied.
+
+## M3 working-tree case pages — October 21
+
+Approved custom paths now contain the six case Markdown bodies and manifest records, lazy CaseStudies/CaseStudy pages, kind-aware route/search/Markdown/TOC links and validated geographic handoffs. The shared article view retains provenance and adds visible case classification, limitations and exact restored scope. Unavailable case routes focus their heading for both slug and section changes. Source facts/dependencies/upstream code are unchanged; only the shared projection digest regenerates with the manifest. The five source-supported cases are published for review; imagery remains draft/unpublished pending actual A/B coverage. No incident/AI/draft globe action, new source, media, recorder, codec or extra upstream repair is added. Existing custom tests and the user-owned ignored case helper cover new behavior; browser/editorial checks remain pending, M3 uncommitted. See PHASE-2A-VALIDATION.md for the six-file/reference/scope review table and evidence.
+
+### M3 imagery observation admitted — October 21
+
+The last case now uses the user's successful rendered A/B observation and screenshots, with source and resolution limits rather than invented change detection. Only imageryMarkdown/itsmanifestrecord, the generateddigest and existingcustomtest/QAexpectations changed after the five-case checkpoint. Other21manifestrecords are preserved. Four geographicCTA scopes are now tested; draft behavior remains covered through explicitfixtures. No renderer/HUD/provider/upstream/dependency/codec changes were made. Screenshots remain private ignored evidence, absent fromapplicationassets. Allsixcasesawaiteditorial/renderedgates; M3uncommitted.
+
+
+### Phase 2a M3 accepted; separate planning commit and M4 next
+
+The user approves all six case pages/references and reports all manual checks
+passed. Latest user-owned QA14/14 and caseHMR5/5 match retained receipts; Nepal
+restores byte-for-byte, all six admitted case hashes match, and the matching
+normal-HMR server log shows updates without global reload/error/restart.
+Evidence: .gev-logs/phase2a-m3/acceptance-2026-10-21-vzi0ewdx/ and the M3 acceptance
+section in docs/custom/PHASE-2A-VALIDATION.md. All prior receipts remain retained.
+
+M3 is confined to 28 approved project-owned paths. No original-upstream edit or
+new provider/dependency/codec/media acquisition is introduced; M2 articles remain
+unchanged. The user authorizes M3 commit, then a separate docs-only I1-plan commit,
+then unchanged M4 validation. The 47-path free-imagery plan remains a later
+runtime milestone, contingent on Phase2a acceptance and its separate go-ahead.

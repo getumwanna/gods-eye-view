@@ -26,6 +26,12 @@ export function LibraryNavigation({
         Knowledge Center
       </a>
       <a
+        href="#/library/cases"
+        aria-current={active === 'cases' ? 'page' : undefined}
+      >
+        Case studies
+      </a>
+      <a
         href="#/library/search"
         aria-current={active === 'search' ? 'page' : undefined}
       >

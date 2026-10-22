@@ -2,7 +2,7 @@
 // prettier-ignore
 export const SOURCE_REGISTRY_PROJECTION = {
   "upstreamRevision": "064d51f7be2675f1c69e16068e9c49d1a60144d1",
-  "inputDigest": "ca414559ba660d7036408d801d06ce3c1dae9e79578f4ab644815d12cc1da59b",
+  "inputDigest": "e61697670ea3ed57589e0de992a0556e9568efb2dcb25bc3b3711c872027906a",
   "sourceGuides": [
     {
       "id": "google-maps",

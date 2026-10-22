@@ -118,15 +118,18 @@ export function Library() {
               <section className="gih-card">
                 <div className="gih-section-label">
                   <FileText size={18} aria-hidden="true" />
-                  <span>UPCOMING LIBRARY MILESTONE</span>
+                  <span>WORKFLOW REFERENCES</span>
                 </div>
                 <h2>Case studies</h2>
                 <p>
-                  Original case pages will distinguish current local
-                  capabilities, geographic views and external demonstrations,
-                  with explicit limits and sources.
+                  Original case pages distinguish current local capabilities,
+                  geographic views and external demonstrations, with explicit
+                  limits and sources.
                 </p>
-                <span className="gih-phase-badge">Not yet available</span>
+                <a href="#/library/cases" className="gih-directory-link">
+                  Browse case studies{' '}
+                  <ArrowRight size={16} aria-hidden="true" />
+                </a>
               </section>
             </div>
             <section className="gih-card gih-source-section">

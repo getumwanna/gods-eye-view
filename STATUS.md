@@ -1,8 +1,16 @@
 # Geospatial Intelligence Hub status
 
-Updated October 21, 2026, America/New_York.
+Updated October21,2026,America/New_York.
 
-**M2 verification complete; authorized milestone commit next, then M3 case editorial stop.** Fresh user-owned QA12/12 and article HMR5/5 receipts pass; article restoration hashes match and the shipping server log contains no global reload/error/restart during the test. Nine original articles/both Spatial summaries retain editorial approval. Native gates and both builds pass; all receipts and historical failures are preserved. The approved inventory is 64 paths, with only the three explicitly allowed original-upstream files. Normal HMR runs at loopback4173/PID21447;4174 stays stopped. Two untracked duplicate files are preserved/excluded from staging. Record M2 commit, implement approved M3, run checks, list every case/reference and stop before its commit for editorial review. Phase2b remains deferred; final Phase2a acceptance remains required.
+**M3 accepted; commit authorized, followed by the separate I1 plan and M4.**
+The latest user QA receipt passes 14/14; case HMR passes 5/5 with exact restoration
+and matching normal-HMR server-log corroboration. The user approves all six cases
+and references, themes/narrow/keyboard behavior and all four CTAs. The acceptance
+snapshots are retained under .gev-logs/phase2a-m3/acceptance-2026-10-21-vzi0ewdx/.
+M3 scope has no new upstream edits/providers/dependencies and preserves all M2
+articles. Keep the I1 plan and unrelated duplicate files out of the M3 commit.
+M4 final validation and explicit Phase 2a acceptance remain outstanding. I1 runtime
+work still requires that closeout and a separate go-ahead; 4174 remains stopped.
 
 ## Completed and verified
 

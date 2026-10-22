@@ -18,6 +18,8 @@ type LibraryPageKind =
   | 'source'
   | 'knowledge'
   | 'knowledge-article'
+  | 'cases'
+  | 'case-study'
   | 'search';
 type LibraryEntryProps = {
   id: string;
@@ -40,6 +42,10 @@ async function loadLibraryPage(
     return {
       default: (await import('./pages/KnowledgeArticle')).KnowledgeArticle,
     };
+  if (kind === 'cases')
+    return { default: (await import('./pages/CaseStudies')).CaseStudies };
+  if (kind === 'case-study')
+    return { default: (await import('./pages/CaseStudy')).CaseStudy };
   if (kind === 'search')
     return { default: (await import('./pages/LibrarySearch')).LibrarySearch };
   return { default: (await import('./pages/Library')).Library };
@@ -127,7 +133,11 @@ export function App() {
   }, []);
   useEffect(() => {
     document.title = `${routeTitle(route)} · ${branding.shortName}`;
-    if (route.page === 'knowledge-article' && route.section) return;
+    if (
+      (route.page === 'knowledge-article' || route.page === 'case-study') &&
+      route.section
+    )
+      return;
     document.getElementById('main-content')?.focus({ preventScroll: true });
     window.scrollTo(0, 0);
   }, [route]);
@@ -160,6 +170,20 @@ export function App() {
         kind="search"
         query={route.query}
         key="library-search"
+      />
+    );
+  else if (route.page === 'case-studies')
+    content = (
+      <LibraryRoute title="Case studies" kind="cases" key="case-studies" />
+    );
+  else if (route.page === 'case-study' && route.slug)
+    content = (
+      <LibraryRoute
+        title="Case study"
+        kind="case-study"
+        slug={route.slug}
+        section={route.section}
+        key={`case-${route.slug}`}
       />
     );
   else if (route.page === 'settings') content = <Settings />;

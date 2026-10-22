@@ -833,6 +833,20 @@
   gap: 2.5rem;
   align-items: start;
 }
+.gih-case-context {
+  margin-bottom: 2rem;
+  overflow-wrap: anywhere;
+}
+.gih-case-context ul {
+  list-style: disc;
+  padding-left: 1.3rem;
+  margin: 1rem 0;
+  font-size: 0.85rem;
+  line-height: 1.8;
+}
+.gih-case-context li + li {
+  margin-top: 0.45rem;
+}
 .gih-article-aside {
   position: sticky;
   top: 1.5rem;

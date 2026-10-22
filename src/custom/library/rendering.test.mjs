@@ -59,6 +59,7 @@ const expectedHmrInputs = [
 ];
 
 const hmrArticle = 'content/knowledge/first-five-minutes.md';
+const hmrCase = 'content/cases/nepal-flood.md';
 const hmrSchema = 'content/library.schema.json';
 const hmrDocument = 'README.md';
 const hmrOriginal = (file) =>
@@ -73,7 +74,8 @@ async function libraryHmrFixture({ missing = [], loaded = true } = {}) {
   const fixtureRoot = await mkdtemp(path.join(temp, 'native-hmr-'));
   await mkdir(path.join(fixtureRoot, 'hub/src/library'), { recursive: true });
   await mkdir(path.join(fixtureRoot, 'content/knowledge'), { recursive: true });
-  for (const file of [hmrArticle, hmrSchema, hmrDocument]) {
+  await mkdir(path.join(fixtureRoot, 'content/cases'), { recursive: true });
+  for (const file of [hmrArticle, hmrCase, hmrSchema, hmrDocument]) {
     if (!missing.includes(file)) {
       await writeFile(path.join(fixtureRoot, file), hmrOriginal(file));
     }
@@ -82,7 +84,7 @@ async function libraryHmrFixture({ missing = [], loaded = true } = {}) {
     path.join(fixtureRoot, 'hub/src/library/catalog.ts'),
     `import { docs } from './upstreamDocuments';
 export const corpus = import.meta.glob(
-  ['/content/knowledge/first-five-minutes.md', '/content/library.schema.json'],
+  ['/content/knowledge/first-five-minutes.md', '/content/cases/nepal-flood.md', '/content/library.schema.json'],
   { query: '?raw', import: 'default' },
 );
 export { docs };
@@ -175,7 +177,7 @@ if (import.meta.hot) import.meta.hot.accept();
     assert.equal(server.httpServer, null, 'middleware fixture has no listener');
     if (loaded) {
       await transformCatalog();
-      for (const file of [hmrArticle, hmrSchema, hmrDocument]) {
+      for (const file of [hmrArticle, hmrCase, hmrSchema, hmrDocument]) {
         if (!missing.includes(file)) await loadRaw(file);
       }
     }
@@ -212,7 +214,7 @@ before(async () => {
   await build({
     absWorkingDir: root,
     stdin: {
-      contents: `export * from './hub/src/library/catalog.ts'; export * from './hub/src/library/links.ts'; export * from './hub/src/library/upstreamDocuments.ts'; export * from './hub/src/pages/Library.tsx'; export * from './hub/src/pages/SourceGuide.tsx'; export * from './hub/src/pages/DataSources.tsx'; export * from './hub/src/components/library/SourceRecord.tsx'; export * from './hub/src/library/markdown.ts'; export * from './hub/src/components/library/ArticleRenderer.tsx'; export * from './hub/src/pages/KnowledgeCenter.tsx'; export * from './hub/src/pages/KnowledgeArticle.tsx';`,
+      contents: `export * from './hub/src/library/catalog.ts'; export * from './hub/src/library/links.ts'; export * from './hub/src/library/upstreamDocuments.ts'; export * from './hub/src/pages/Library.tsx'; export * from './hub/src/pages/SourceGuide.tsx'; export * from './hub/src/pages/DataSources.tsx'; export * from './hub/src/components/library/SourceRecord.tsx'; export * from './hub/src/library/markdown.ts'; export * from './hub/src/components/library/ArticleRenderer.tsx'; export * from './hub/src/pages/KnowledgeCenter.tsx'; export * from './hub/src/pages/KnowledgeArticle.tsx'; export * from './hub/src/pages/CaseStudies.tsx'; export * from './hub/src/pages/CaseStudy.tsx';`,
       resolveDir: root,
       loader: 'ts',
     },
@@ -323,6 +325,11 @@ test('retained Library consumers use the current raw modules after unmounted HMR
         code: 'content-reference',
       },
       {
+        name: 'missing published case Markdown',
+        missing: ['content/cases/nepal-flood.md'],
+        code: 'content-reference',
+      },
+      {
         name: 'missing schema',
         missing: ['content/library.schema.json'],
         code: 'missing-schema',
@@ -386,7 +393,10 @@ test('real admitted corpus validates inside the caught lazy Library loader witho
   );
   assert.equal(catalog.registry.guideGroups.length, 38);
   assert.equal(catalog.manifest.upstreamDocuments.length, 7);
-  assert.equal(catalog.manifest.items.length, 16);
+  assert.equal(
+    catalog.manifest.items.filter((item) => item.kind !== 'case-study').length,
+    16,
+  );
   assert.equal(
     catalog.manifest.items.filter(
       (item) => item.kind === 'upstream-documentation',
@@ -816,6 +826,7 @@ test('DEV Library HMR admits exactly the reviewed public paths and preserves oth
 
 for (const [file, label] of [
   [hmrArticle, 'original article'],
+  [hmrCase, 'case study'],
   [hmrSchema, 'schema'],
   [hmrDocument, 'admitted upstream document'],
 ]) {
@@ -963,5 +974,300 @@ test('native Vite still broadcasts default reloads for unrelated JS and unadmitt
     );
   } finally {
     await fixture.server.close();
+  }
+});
+
+test('published case directory and detail pages expose reviewed limits, safe handoffs and case-only sections', () => {
+  const cases = catalog.manifest.items.filter(
+    (item) => item.kind === 'case-study',
+  );
+  const published = cases.filter((item) => item.status === 'published');
+  assert.ok(published.length > 0);
+  const directoryCatalog = structuredClone(catalog);
+  const draftCase = {
+    ...structuredClone(published[0]),
+    id: 'synthetic-draft-case',
+    slug: 'synthetic-draft-case',
+    status: 'draft',
+  };
+  directoryCatalog.manifest.items.push(draftCase);
+  const directory = new JSDOM(
+    render(application.CaseDirectory, { catalog: directoryCatalog }),
+  );
+  try {
+    const document = directory.window.document;
+    assert.equal(
+      document.querySelectorAll('.gih-case-card').length,
+      published.length,
+    );
+    assert.ok(document.querySelector('label[for="case-category"]'));
+    assert.match(
+      document.querySelector('[role="status"]').textContent,
+      new RegExp(`${published.length} published case stud`),
+    );
+    for (const item of published)
+      assert.ok(
+        document.querySelector(`a[href="#/library/cases/${item.slug}"]`),
+      );
+    for (const item of directoryCatalog.manifest.items.filter(
+      (item) => item.kind === 'case-study' && item.status === 'draft',
+    ))
+      assert.equal(
+        document.querySelector(`a[href="#/library/cases/${item.slug}"]`),
+        null,
+      );
+  } finally {
+    directory.window.close();
+  }
+  for (const item of published) {
+    const dom = new JSDOM(
+      render(application.KnowledgeArticleView, { item, catalog }),
+    );
+    try {
+      const document = dom.window.document;
+      assert.equal(
+        document.querySelector('h1#case-study-title').textContent,
+        item.title,
+      );
+      assert.ok(
+        document.querySelector('a.gih-back-link[href="#/library/cases"]'),
+      );
+      const disclosure = document.querySelector(
+        'section[aria-labelledby="case-context-heading"]',
+      );
+      assert.ok(disclosure);
+      assert.ok(
+        disclosure.textContent.includes(
+          application.caseInteractivityLabel(item.caseDetails.interactivity),
+        ),
+      );
+      for (const limit of item.caseDetails.limitations)
+        assert.ok(disclosure.textContent.includes(limit));
+      const ctas = [...disclosure.querySelectorAll('a')].filter(
+        (anchor) => anchor.textContent.trim() === 'Open globe view',
+      );
+      if (item.caseDetails.globeUrl) {
+        assert.equal(ctas.length, 1);
+        assert.equal(
+          ctas[0].getAttribute('href'),
+          application.caseGlobeHref(item),
+        );
+        assert.ok(
+          disclosure.textContent.includes(item.caseDetails.restoredScope),
+        );
+      } else assert.equal(ctas.length, 0);
+      const toc = document.querySelector(
+        'nav[aria-label="Case study contents"]',
+      );
+      const parsed = application.parseMarkdownSections(
+        application.getArticleMarkdown(item, catalog),
+      );
+      assert.ok(parsed.headings.length > 0);
+      for (const heading of parsed.headings) {
+        const href = application.caseHref(item.slug, heading.id);
+        assert.ok(toc.querySelector(`a[href="${href}"]`), href);
+        assert.ok(document.getElementById(heading.id));
+      }
+      assert.equal(
+        document.querySelector(
+          '.gih-article-content img, .gih-article-content iframe, .gih-article-content video, .gih-article-content script',
+        ),
+        null,
+      );
+      assert.match(document.body.textContent, /not for operational use/);
+      assert.match(document.body.textContent, /Provenance and permissions/);
+    } finally {
+      dom.window.close();
+    }
+  }
+});
+
+test('case renderer never emits unsafe, credential-bearing or demonstration-only globe handoffs', () => {
+  const original = catalog.manifest.items.find(
+    (item) => item.kind === 'case-study' && item.caseDetails?.globeUrl,
+  );
+  assert.ok(original);
+  for (const globeUrl of [
+    'https://example.org/#v=2&lat=1&lon=2&alt=3',
+    '/#v=2&lat=1&lon=2&alt=3&token=fixture-only',
+    '/#v=2&lat=999&lon=2&alt=3',
+    'javascript:alert(1)',
+  ]) {
+    const item = structuredClone(original);
+    item.caseDetails.globeUrl = globeUrl;
+    const dom = new JSDOM(
+      render(application.KnowledgeArticleView, { item, catalog }),
+    );
+    try {
+      assert.equal(
+        [...dom.window.document.querySelectorAll('a')].some(
+          (anchor) => anchor.textContent.trim() === 'Open globe view',
+        ),
+        false,
+      );
+      assert.match(
+        dom.window.document.querySelector('.gih-case-context [role="alert"]')
+          .textContent,
+        /could not be validated/,
+      );
+      assert.equal(application.caseGlobeHref(item), null);
+    } finally {
+      dom.window.close();
+    }
+  }
+  const demo = structuredClone(original);
+  demo.caseDetails.interactivity = 'demonstration-only';
+  const html = render(application.KnowledgeArticleView, {
+    item: demo,
+    catalog,
+  });
+  assert.doesNotMatch(html, /Open globe view/);
+  assert.match(html, /no local globe handoff/);
+  assert.equal(application.caseGlobeHref(demo), null);
+});
+
+test('case section focus and missing-section recovery stay in the case route without document navigation', async () => {
+  const item = catalog.manifest.items.find(
+    (item) => item.kind === 'case-study' && item.status === 'published',
+  );
+  assert.ok(item);
+  const section = application.parseMarkdownSections(
+    application.getArticleMarkdown(item, catalog),
+  ).headings[0].id;
+  const dom = new JSDOM('<div id="case-root"></div>', {
+    url: `http://localhost:4173/hub/#/library/cases/${item.slug}`,
+  });
+  const previous = {
+    window: globalThis.window,
+    document: globalThis.document,
+    act: globalThis.IS_REACT_ACT_ENVIRONMENT,
+  };
+  globalThis.window = dom.window;
+  globalThis.document = dom.window.document;
+  globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  const scrolled = [];
+  dom.window.HTMLElement.prototype.scrollIntoView = function () {
+    scrolled.push(this.id);
+  };
+  const client = createRoot(dom.window.document.getElementById('case-root'));
+  const href = dom.window.location.href;
+  try {
+    await act(async () =>
+      client.render(
+        React.createElement(application.KnowledgeArticleView, {
+          item,
+          catalog,
+          section,
+        }),
+      ),
+    );
+    assert.equal(dom.window.document.activeElement.id, section);
+    assert.deepEqual(scrolled, [section]);
+    await act(async () =>
+      client.render(
+        React.createElement(application.KnowledgeArticleView, {
+          item,
+          catalog,
+          section: 'section-unavailable-fixture',
+        }),
+      ),
+    );
+    assert.equal(dom.window.document.activeElement.id, 'case-study-title');
+    assert.match(
+      dom.window.document.querySelector('[role="alert"]').textContent,
+      /linked section is unavailable/,
+    );
+    assert.equal(dom.window.location.href, href);
+  } finally {
+    await act(async () => client.unmount());
+    for (const [key, value] of [
+      ['window', previous.window],
+      ['document', previous.document],
+      ['IS_REACT_ACT_ENVIRONMENT', previous.act],
+    ]) {
+      if (value === undefined) delete globalThis[key];
+      else globalThis[key] = value;
+    }
+    dom.window.close();
+  }
+});
+
+test('draft and unknown case section routes move focus to the unavailable heading without exposing content', async () => {
+  const published = catalog.manifest.items.find(
+    (item) => item.kind === 'case-study' && item.status === 'published',
+  );
+  assert.ok(published);
+  const draft = {
+    ...structuredClone(published),
+    id: 'synthetic-draft-case',
+    slug: 'synthetic-draft-case',
+    status: 'draft',
+  };
+  const originalItems = catalog.manifest.items;
+  catalog.manifest.items = [...originalItems, draft];
+  assert.equal(application.caseGlobeHref(draft), null);
+  const dom = new JSDOM(
+    '<button id="previous-focus">Previous route</button><div id="case-root"></div>',
+    { url: 'http://localhost:4173/hub/' },
+  );
+  const previous = {
+    window: globalThis.window,
+    document: globalThis.document,
+    act: globalThis.IS_REACT_ACT_ENVIRONMENT,
+  };
+  globalThis.window = dom.window;
+  globalThis.document = dom.window.document;
+  globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  const client = createRoot(dom.window.document.getElementById('case-root'));
+  try {
+    for (const slug of [draft.slug, 'no-such-case']) {
+      dom.window.history.replaceState(
+        null,
+        '',
+        `#/library/cases/${slug}?section=section-start`,
+      );
+      dom.window.document.getElementById('previous-focus').focus();
+      await act(async () =>
+        client.render(
+          React.createElement(application.CaseStudy, {
+            slug,
+            section: 'section-start',
+          }),
+        ),
+      );
+      assert.equal(
+        dom.window.document.activeElement.id,
+        'case-study-unavailable-title',
+      );
+      assert.equal(dom.window.document.activeElement.tabIndex, -1);
+      assert.equal(
+        dom.window.document.querySelector(
+          '.gih-article-content, .gih-case-context',
+        ),
+        null,
+      );
+      assert.equal(
+        [...dom.window.document.querySelectorAll('a')].some(
+          (anchor) => anchor.textContent.trim() === 'Open globe view',
+        ),
+        false,
+      );
+      assert.match(
+        dom.window.document.querySelector('[role="alert"]').textContent,
+        /Case study unavailable/,
+      );
+    }
+  } finally {
+    await act(async () => client.unmount());
+    catalog.manifest.items = originalItems;
+    for (const [key, value] of [
+      ['window', previous.window],
+      ['document', previous.document],
+      ['IS_REACT_ACT_ENVIRONMENT', previous.act],
+    ]) {
+      if (value === undefined) delete globalThis[key];
+      else globalThis[key] = value;
+    }
+    dom.window.close();
   }
 });

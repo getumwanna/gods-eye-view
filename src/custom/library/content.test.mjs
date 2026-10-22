@@ -13,6 +13,9 @@ import {
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { validateGlobeLink } from '../shared/shareHandoff.js';
+import { viewFromParams } from '../../view/index.js';
+import { decodeLayerStateParams } from '../../data/layerState.js';
 import {
   validateLibrary,
   ADMITTED_DOCUMENTS,
@@ -568,4 +571,234 @@ test('published article slugs match the existing 64-character route limit', asyn
       );
     },
   );
+});
+
+test('reviewed case classifications expose only bounded camera/layer handoffs with user-observed imagery coverage', async () => {
+  const manifest = JSON.parse(
+    await readFile(path.join(root, 'content/library.json'), 'utf8'),
+  );
+  const expected = new Map([
+    ['nepal-flood', ['published', 'interactive']],
+    ['hurricane-tracking', ['published', 'partial']],
+    ['launch-reconstruction', ['published', 'interactive']],
+    ['aircraft-incidents', ['published', 'demonstration-only']],
+    ['satellite-imagery-change', ['published', 'partial']],
+    ['ai-reconstruction-demonstrations', ['published', 'demonstration-only']],
+  ]);
+  const cases = manifest.items.filter((item) => item.kind === 'case-study');
+  assert.deepEqual(
+    new Set(cases.map((item) => item.slug)),
+    new Set(expected.keys()),
+  );
+  for (const item of cases) {
+    assert.deepEqual(
+      [item.status, item.caseDetails.interactivity],
+      expected.get(item.slug),
+    );
+    assert.ok(item.caseDetails.limitations.length > 0, item.id);
+    assert.ok(item.references.length > 0, item.id);
+    assert.match(item.adaptationNotice, /original/i);
+    if (
+      item.caseDetails.interactivity === 'demonstration-only' ||
+      item.status === 'draft'
+    ) {
+      assert.equal(item.caseDetails.globeUrl, null, item.id);
+      assert.equal(item.caseDetails.restoredScope, null, item.id);
+      continue;
+    }
+    const url = new URL(validateGlobeLink(item.caseDetails.globeUrl));
+    assert.equal(url.origin, 'http://localhost:4173');
+    assert.equal(url.pathname, '/');
+    assert.equal(url.search, '');
+    const params = new URLSearchParams(url.hash.slice(1));
+    const allowed = new Set([
+      'v',
+      'lat',
+      'lon',
+      'alt',
+      'heading',
+      'pitch',
+      'roll',
+      'style',
+      'map',
+      'l',
+      'lo',
+    ]);
+    assert.ok(
+      [...params.keys()].every((key) => allowed.has(key)),
+      item.id,
+    );
+    assert.equal(params.get('v'), '2');
+    const imagery = item.slug === 'satellite-imagery-change';
+    assert.equal(
+      params.get('lo'),
+      imagery
+        ? 'f.e.1_1.w.-7422481_1.s.4031969_1.e.-7421304_1.n.4032950_1.m.2_k.o.n'
+        : 'f.e.1_k.o.n',
+    );
+    if (imagery) {
+      assert.deepEqual(
+        decodeLayerStateParams(params).options['recent-imagery'],
+        {
+          west: -7422481,
+          south: 4031969,
+          east: -7421304,
+          north: 4032950,
+          a: null,
+          b: null,
+          mode: 2,
+          split: 50,
+          viirs: false,
+        },
+      );
+      assert.match(item.caseDetails.restoredScope, /manual|select/i);
+    }
+    const view = viewFromParams(params);
+    assert.equal(view.map, 'esri-imagery');
+    assert.equal(view.follow, null);
+    assert.deepEqual(view.annotations, []);
+    const scopes = {
+      'nepal-flood': {
+        camera: {
+          lat: 28.21,
+          lon: 85.34,
+          altitude_m: 100000,
+          heading_deg: 0,
+          pitch_deg: -75,
+        },
+        layers: ['bhote-koshi-2026', 'bhote-koshi-locator'],
+      },
+      'hurricane-tracking': {
+        camera: {
+          lat: 25,
+          lon: -70,
+          altitude_m: 4000000,
+          heading_deg: 0,
+          pitch_deg: -90,
+        },
+        layers: ['weather-cyclones', 'weather-satellite'],
+      },
+      'launch-reconstruction': {
+        camera: {
+          lat: 28.56,
+          lon: -80.58,
+          altitude_m: 250000,
+          heading_deg: 0,
+          pitch_deg: -65,
+        },
+        layers: ['rocket-launches'],
+      },
+      'satellite-imagery-change': {
+        camera: {
+          lat: 40.3239,
+          lon: -74.2184,
+          altitude_m: 731,
+          heading_deg: 342,
+          pitch_deg: -86,
+        },
+        layers: ['recent-imagery'],
+      },
+    };
+    assert.deepEqual(view.camera, scopes[item.slug].camera);
+    assert.deepEqual(view.layers, scopes[item.slug].layers);
+    assert.equal(view.style, 'normal');
+    assert.match(item.caseDetails.restoredScope, /camera/i);
+  }
+});
+
+test('case validation rejects missing bodies, unsafe URLs, invalid classifications and mismatched restored scopes', async (t) => {
+  const cases = [
+    [
+      'missing case Markdown',
+      async (f, item) => rm(path.join(f.root, item.contentPath)),
+      'FILE_UNAVAILABLE',
+    ],
+    [
+      'changed case hash',
+      async (_f, item) => {
+        item.inputSha256 = '0'.repeat(64);
+      },
+      'CONTENT_MISMATCH',
+    ],
+    [
+      'knowledge path on a case',
+      async (_f, item) => {
+        item.contentPath = 'content/knowledge/first-five-minutes.md';
+      },
+      'CONTENT_MISMATCH',
+    ],
+    [
+      'external globe destination',
+      async (_f, item) => {
+        item.caseDetails.globeUrl =
+          'https://example.org/#v=2&lat=1&lon=2&alt=3';
+      },
+      'SCHEMA_MISMATCH',
+    ],
+    [
+      'credential-shaped globe state',
+      async (_f, item) => {
+        item.caseDetails.globeUrl += '&token=TEST_SECRET_DO_NOT_ECHO';
+      },
+      'UNSAFE_URL',
+    ],
+    [
+      'invalid camera coordinate',
+      async (_f, item) => {
+        item.caseDetails.globeUrl = '/#v=2&lat=999&lon=2&alt=3';
+      },
+      'UNSAFE_URL',
+    ],
+    [
+      'invalid interactivity',
+      async (_f, item) => {
+        item.caseDetails.interactivity = 'live';
+      },
+      'SCHEMA_MISMATCH',
+    ],
+    [
+      'missing limitations',
+      async (_f, item) => {
+        item.caseDetails.limitations = [];
+      },
+      'SCHEMA_MISMATCH',
+    ],
+    [
+      'URL without declared scope',
+      async (_f, item) => {
+        item.caseDetails.restoredScope = null;
+      },
+      'CONTENT_MISMATCH',
+    ],
+    [
+      'scope without a URL',
+      async (_f, item) => {
+        item.caseDetails.globeUrl = null;
+      },
+      'CONTENT_MISMATCH',
+    ],
+    [
+      'case metadata attached to article',
+      async (f, item) => {
+        f.manifest.items.find(
+          (value) => value.kind === 'original-article',
+        ).caseDetails = structuredClone(item.caseDetails);
+      },
+      'CONTENT_MISMATCH',
+    ],
+  ];
+  for (const [name, mutate, code] of cases)
+    await t.test(name, async (child) => {
+      const f = await fixture(child);
+      const item = f.manifest.items.find(
+        (value) => value.kind === 'case-study' && value.caseDetails.globeUrl,
+      );
+      assert.ok(item);
+      await mutate(f, item);
+      await f.saveManifest();
+      rejected(
+        await validateLibrary({ root: f.root, checkProjection: false }),
+        code,
+      );
+    });
 });

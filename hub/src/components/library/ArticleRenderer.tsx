@@ -9,6 +9,7 @@ import {
 } from '../../library/markdown';
 import {
   knowledgeHref,
+  libraryItemHref,
   pinnedRepositoryUrl,
   resolveRepositoryReference,
   safeExternalUrl,
@@ -45,7 +46,7 @@ export function resolveArticleHref(
   if (href.startsWith('#/library')) return safeLibraryHref(href);
   if (href.startsWith('#')) {
     const section = matchingSection(href.slice(1), item, catalog);
-    return section ? knowledgeHref(item.slug, section) : null;
+    return section ? libraryItemHref(item, section) : null;
   }
   const external = safeExternalUrl(href);
   if (external) return external;

@@ -72,7 +72,9 @@ function fixture(markdown, changes = {}) {
 
 test('real published corpus and all canonical source products are searchable without acquisition', () => {
   assert.equal(
-    catalog.manifest.items.filter((item) => item.status === 'published').length,
+    catalog.manifest.items.filter(
+      (item) => item.status === 'published' && item.kind !== 'case-study',
+    ).length,
     16,
   );
   assert.equal(
@@ -120,7 +122,10 @@ test('each article result points to the exact stable heading IDs used by the ren
     assert.ok(documents.length > 0, item.id);
     for (const document of documents) {
       const url = new URL(document.href.slice(1), 'https://local.invalid');
-      assert.equal(url.pathname, `/library/knowledge/${item.slug}`);
+      assert.equal(
+        url.pathname,
+        `/library/${item.kind === 'case-study' ? 'cases' : 'knowledge'}/${item.slug}`,
+      );
       assert.ok(valid.has(url.searchParams.get('section')), document.href);
     }
   }
@@ -432,4 +437,64 @@ test('search UI uses native text escaping and safe internal links; no query stor
   );
   assert.match(malicious, /&lt;script&gt;/);
   assert.doesNotMatch(malicious, /<script|<img|<svg/);
+});
+
+test('published cases index only their own case routes and draft cases never enter search', () => {
+  const cases = catalog.manifest.items.filter(
+    (item) => item.kind === 'case-study',
+  );
+  assert.ok(cases.some((item) => item.status === 'published'));
+  const draft = {
+    ...structuredClone(cases.find((item) => item.status === 'published')),
+    id: 'synthetic-draft-case',
+    slug: 'synthetic-draft-case',
+    title: 'Quarantinedcasefixture',
+    status: 'draft',
+  };
+  const localCatalog = structuredClone(catalog);
+  localCatalog.manifest.items.push(draft);
+  const localIndex = application.createLibrarySearchIndex(localCatalog);
+  assert.deepEqual(
+    localIndex.documents.filter((document) =>
+      document.id.startsWith(`${draft.id}/`),
+    ),
+    [],
+  );
+  assert.equal(
+    application.searchLibrary(localIndex, draft.title, { kind: 'case-study' })
+      .total,
+    0,
+  );
+  for (const item of cases) {
+    const documents = index.documents.filter((document) =>
+      document.id.startsWith(`${item.id}/`),
+    );
+    if (item.status === 'draft') {
+      assert.deepEqual(
+        documents,
+        [],
+        `${item.id}: drafts must not enter the index`,
+      );
+      continue;
+    }
+    assert.ok(documents.length > 0, item.id);
+    assert.ok(documents.every((document) => document.kind === 'case-study'));
+    assert.ok(
+      documents.every((document) =>
+        document.href.startsWith(
+          `#/library/cases/${item.slug}?section=section-`,
+        ),
+      ),
+    );
+    const found = application.searchLibrary(index, item.title, {
+      kind: 'case-study',
+    });
+    assert.ok(
+      found.results.some((document) => document.id.startsWith(`${item.id}/`)),
+      item.id,
+    );
+    assert.ok(
+      found.results.every((document) => document.kind === 'case-study'),
+    );
+  }
 });

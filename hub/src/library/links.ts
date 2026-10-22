@@ -1,4 +1,6 @@
 import { boundedHubQuery } from '../router.js';
+import { validateGlobeLink } from '../../../src/custom/shared/shareHandoff.js';
+import type { LibraryItem } from './types';
 
 const idPattern = /^[a-z0-9][a-z0-9-]{0,63}$/;
 const upstreamRevision = '064d51f7be2675f1c69e16068e9c49d1a60144d1';
@@ -66,7 +68,7 @@ export function safeLibraryHref(value: unknown): string | null {
   )
     return value;
   if (
-    /^#\/library\/knowledge\/[a-z0-9][a-z0-9-]{0,63}\?section=section-[a-z0-9][a-z0-9-]{0,119}$/.test(
+    /^#\/library\/(?:knowledge|cases)\/[a-z0-9][a-z0-9-]{0,63}\?section=section-[a-z0-9][a-z0-9-]{0,119}$/.test(
       value,
     )
   )
@@ -81,6 +83,36 @@ export function knowledgeHref(slug?: string, section?: string | null): string {
   return section && /^section-[a-z0-9][a-z0-9-]{0,119}$/.test(section)
     ? `${base}?section=${encodeURIComponent(section)}`
     : base;
+}
+export function caseHref(slug?: string, section?: string | null): string {
+  if (!slug || !isLibraryId(slug)) return '#/library/cases';
+  const base = `#/library/cases/${slug}`;
+  return section && /^section-[a-z0-9][a-z0-9-]{0,119}$/.test(section)
+    ? `${base}?section=${encodeURIComponent(section)}`
+    : base;
+}
+export function libraryItemHref(item: LibraryItem, section?: string | null) {
+  return item.kind === 'case-study'
+    ? caseHref(item.slug, section)
+    : knowledgeHref(item.slug, section);
+}
+
+/** A case handoff uses the existing validator and never grants an external demo a local CTA. */
+export function caseGlobeHref(item: LibraryItem): string | null {
+  if (
+    item.kind !== 'case-study' ||
+    item.status !== 'published' ||
+    !item.caseDetails?.globeUrl ||
+    !item.caseDetails.restoredScope ||
+    item.caseDetails.interactivity === 'demonstration-only' ||
+    !item.caseDetails.globeUrl.startsWith('/#v=2&')
+  )
+    return null;
+  try {
+    return validateGlobeLink(item.caseDetails.globeUrl);
+  } catch {
+    return null;
+  }
 }
 export function librarySearchHref(query = '') {
   const bounded = boundedHubQuery(query);

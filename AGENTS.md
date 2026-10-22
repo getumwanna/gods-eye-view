@@ -166,3 +166,34 @@ The approved 64-path amendment and repairs are installed. Native gates pass (8,2
 ## M2 fresh gates resolved — October 21
 
 New user-owned QA receipt17:11:15.946Z passes12/12; new user-reported article HMR receipt17:11:15.989Z-sDhwbs passes5/5 with exact restoration. The normal4173 server log corroborates only HMR updates throughout its window, no global reload/error/restart. Both hashes and snapshots are retained in the M2 acceptance directory and validation record. All nine articles/both Spatial summaries retain editorial approval. This resolves the prior commit/M3 hold: commit M2 under existing user authorization, then proceed with approved M3, preserving its pre-commit editorial stop. Native/build/graph checks already passed. Do not stage the two unrelated untracked duplicate files; preserve them unchanged. Phase2b/final2a acceptance remain deferred.
+
+## Current M3 pre-commit gate — October 21
+
+M2 committed as 6bc45033982de7b9a31c7b49f7b5ff2038ad8d9e after resolved QA12/12 and HMR5/5 gates. M3 is authorized and underway only in approved paths. Keep all six case constraints, no new source/media/codec/dependency, exact supported CTA scope and static-reference provenance. Imagery must remain draft until user-observed current-window A/B coverage supports a concrete example; an async text-only request is pending. Run checks then stop before staging/committing M3, listing every case with references, limitations and CTA scope for user editorial review. All unchanged M2 article approvals and all receipts remain retained. Final2a acceptance and2b are still deferred; 4174 remains stopped. Preserve/exclude both unrelated untracked duplicates.
+
+## Current M3 coverage, rendered and editorial stop — October 21
+
+M2 is committed as 6bc45033982de7b9a31c7b49f7b5ff2038ad8d9e. M3 has sixcasefiles but only fivepublished; satellite-imagery-change remains draftuntil user-observed current-windowA/Bcoverage supports an example. The asyncobservationrequest remains pending. M3nativepasses8,298/0/1, focused107/107, QA-unit6/6, typecheck/format/strictLibrary/boundaries/doctor/bothbuilds/graph. Initialnativeunavailable-focusfailure was fixed withslug+sectioneffect andstrongreuse regression; allfailedlogs retained. Normalroot4173PID58187;4174stopped. Do notstage/commitM3. Await imagerycompletion, userQA14checks, caseHMR5observations withrestoration/no-reloadlogcorroboration, manualthemes/narrow/keyboard/threeCTA scopes, and explicitall-sixcaseeditorialreview. Everycase/reference/actionscope is listed in thevalidationrecord. RetainM2articleapproval/allreceipts. No newupstreamedit/dependency/provider/media/codec; preserve/excludetwountrackedduplicates. Final2aacceptance/2b remain separate.
+
+## Current all-six-case review stop — October 21
+
+The imagery coverage input is now satisfied by user-reported successful A/B rendering plus supplied screenshots: Oct13S30/Oct12L30,30m, URL-suppliedNJbox. Imagerycase is published in the uncommitted working tree with explicit user-observed provenance, mixedsensor/cloud/resolution/HUD/currentwindow limits and no groundchangeclaim. Allsixcasesnowpublished; fourvalidglobeCTAs. NewimageryCTA restorescamera+Esri+layer+box+A/Bmodeonly,nodates/images. Freshaffected107tests/6QA-unit/strictLibrary/typecheck/bothbuilds/graph pass; priorfull8298/0/1 sourcebaseline is retained, notclaimednewcontentfullrun. M2HEADunchanged6bc45033; noM3stage/commit. AwaitfreshuserQA14,caseHMR5+restore/noreloadlog,manualthemes/narrow/keyboard/fourCTAs andexplicitall-sixcaseeditorialapproval. Priorpendingimageryparagraphs arehistorical/superseded. No additionalupstreamrepair; HUD0.27mexistingcameraformula limitation documentedonly. No browser/providerAPI/livehelperexecutedbyagent. Final2aacceptance/2b remain deferred;4174stopped/preservelogsandduplicates.
+
+
+## Current M3 gates resolved; M4 authorized — October 21
+
+The user explicitly reports QA14/14, caseHMR5/5/restored, all manual theme/narrow/
+keyboard/four-CTA checks passed, and approves all six cases/references. Native
+review matches the latest UTC22 02:05/02:06 receipts, exact Nepal restoration,
+all six manifest hashes and only HMR updates in the matching normal-server log.
+Acceptance snapshots: .gev-logs/phase2a-m3/acceptance-2026-10-21-vzi0ewdx/.
+
+Commit M3 under the existing 28-path scope, excluding the I1 plan and both
+unrelated duplicates. Then commit only docs/custom/FREE-IMAGERY-PLAN.md separately,
+as explicitly requested, and proceed with the unchanged Phase2a M4 clean-install/
+native/build/graph/final-diff checks. Final user-owned QA/tracking and explicit
+Phase2a acceptance remain required. Preserve all historical receipts and article/
+case approvals. Do not execute browser harnesses or re-run completed live helpers.
+I1's approved 47-path plan (including the QA amendment and near-cap measurements)
+does not authorize runtime work before Phase2a closes and the user gives the go.
+Verify the current listener before any M4 stop/restart; retain 4174 stopped/logs.

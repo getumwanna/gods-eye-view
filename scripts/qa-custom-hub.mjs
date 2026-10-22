@@ -17,12 +17,15 @@
  * a denied browser action. The coding agent did not execute this harness.
  */
 import assert from 'node:assert/strict';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, writeFile, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import puppeteer from 'puppeteer';
 import { chromeExecutablePath } from './qa-chrome.mjs';
 import { branding } from '../src/custom/shared/branding.js';
+import { validateGlobeLink } from '../src/custom/shared/shareHandoff.js';
+import { viewFromParams } from '../src/view/index.js';
+import { decodeLayerStateParams } from '../src/data/layerState.js';
 import { replaceQaInput } from './qa-custom-hub-input.mjs';
 import {
   hubIsReady,
@@ -60,6 +63,19 @@ if (
 }
 const origin = base.origin;
 const root = fileURLToPath(new URL('../', import.meta.url));
+const libraryManifest = JSON.parse(
+  await readFile(path.join(root, 'content/library.json'), 'utf8'),
+);
+const caseItems = libraryManifest.items.filter(
+  (item) => item.kind === 'case-study',
+);
+const publishedCases = caseItems.filter((item) => item.status === 'published');
+const unavailableCaseSlugs = [
+  ...caseItems
+    .filter((item) => item.status === 'draft')
+    .map((item) => item.slug),
+  'unpublished-case-fixture',
+];
 const timeout = 90_000;
 const assertions = [];
 const requests = { blockedAcquisition: 0, setupReads: 0 };
@@ -272,8 +288,11 @@ try {
     await route('#/library', 'Library');
     await page.waitForSelector('.gih-library-directory');
     assert.equal(
-      await page.$eval('main', (main) =>
-        main.textContent.includes('Not yet available'),
+      await page.$eval(
+        'main',
+        (main) =>
+          main.textContent.includes('feed health is not checked in Library') &&
+          Boolean(main.querySelector('a[href="#/library/cases"]')),
       ),
       true,
     );
@@ -392,6 +411,197 @@ try {
         ),
         null,
       );
+    },
+  );
+
+  await check(
+    'Case studies publish reviewed capabilities and only validated camera/layer handoffs',
+    async () => {
+      await route('#/library/cases', 'Case studies');
+      checkpoint = 'case-directory';
+      assert.ok(publishedCases.length > 0);
+      await page.waitForFunction(
+        (expected) =>
+          document.querySelectorAll('.gih-case-card').length === expected,
+        { timeout: 15_000 },
+        publishedCases.length,
+      );
+      assert.equal(
+        caseItems.some((item) => item.slug === 'unpublished-case-fixture'),
+        false,
+      );
+      for (const slug of unavailableCaseSlugs) {
+        assert.equal(await page.$(`a[href="#/library/cases/${slug}"]`), null);
+      }
+      const labels = {
+        interactive: 'Interactive',
+        partial: 'Partial',
+        'demonstration-only': 'Demonstration only',
+        'view-only': 'View only',
+      };
+      for (const item of publishedCases) {
+        await route(`#/library/cases/${item.slug}`, item.title);
+        checkpoint = `case-context-${item.slug}`;
+        await page.waitForSelector(
+          'section[aria-labelledby="case-context-heading"]',
+        );
+        const disclosure = await page.$eval(
+          'section[aria-labelledby="case-context-heading"]',
+          (node) => node.textContent,
+        );
+        assert.ok(disclosure.includes(labels[item.caseDetails.interactivity]));
+        for (const limit of item.caseDetails.limitations)
+          assert.ok(disclosure.includes(limit));
+        assert.equal(
+          await page.$(
+            '.gih-article-content img, .gih-article-content iframe, .gih-article-content video',
+          ),
+          null,
+        );
+        const cta = await page.$$eval('main a', (anchors) =>
+          anchors
+            .filter(
+              (anchor) => anchor.textContent?.trim() === 'Open globe view',
+            )
+            .map((anchor) => anchor.href),
+        );
+        if (item.caseDetails.globeUrl) {
+          assert.notEqual(item.caseDetails.interactivity, 'demonstration-only');
+          assert.deepEqual(cta, [
+            validateGlobeLink(item.caseDetails.globeUrl, { origin }),
+          ]);
+          const expected = new URL(item.caseDetails.globeUrl, origin);
+          const actual = new URL(cta[0]);
+          assert.equal(actual.origin, origin);
+          assert.equal(actual.pathname, '/');
+          assert.equal(actual.search, '');
+          assert.equal(actual.hash, expected.hash);
+          const view = viewFromParams(
+            new URLSearchParams(actual.hash.slice(1)),
+          );
+          assert.equal(view.map, 'esri-imagery');
+          assert.equal(view.follow, null);
+          assert.deepEqual(view.annotations, []);
+          if (item.slug === 'satellite-imagery-change') {
+            assert.deepEqual(view.camera, {
+              lat: 40.3239,
+              lon: -74.2184,
+              altitude_m: 731,
+              heading_deg: 342,
+              pitch_deg: -86,
+            });
+            assert.deepEqual(view.layers, ['recent-imagery']);
+            assert.deepEqual(
+              decodeLayerStateParams(new URLSearchParams(actual.hash.slice(1)))
+                .options['recent-imagery'],
+              {
+                west: -7422481,
+                south: 4031969,
+                east: -7421304,
+                north: 4032950,
+                a: null,
+                b: null,
+                mode: 2,
+                split: 50,
+                viirs: false,
+              },
+            );
+          }
+          assert.ok(disclosure.includes(item.caseDetails.restoredScope));
+        } else {
+          assert.deepEqual(cta, []);
+        }
+        const href = await page.$eval(
+          'nav[aria-label="Case study contents"] ol a',
+          (anchor) => anchor.getAttribute('href'),
+        );
+        assert.match(
+          href,
+          new RegExp(
+            `^#/library/cases/${item.slug}\\?section=section-[a-z0-9-]+$`,
+          ),
+        );
+        const section = new URL(href.slice(1), origin).searchParams.get(
+          'section',
+        );
+        await page.click(
+          `nav[aria-label="Case study contents"] a[href="${href}"]`,
+        );
+        checkpoint = `case-section-focus-${item.slug}`;
+        await page.waitForFunction(
+          (id) => document.activeElement?.id === id,
+          { timeout: 15_000 },
+          section,
+        );
+      }
+    },
+  );
+
+  await check(
+    'Case search returns published case sections and keeps drafts unavailable',
+    async () => {
+      const item = publishedCases.find((item) => item.slug === 'nepal-flood');
+      assert.ok(item);
+      await route(
+        `#/library/search?q=${encodeURIComponent('Nepal')}`,
+        'Library Search',
+      );
+      checkpoint = 'case-search-filters';
+      await page.select('#search-kind', 'case-study');
+      await page.select('#search-category', '');
+      await page.select('#search-source', '');
+      assert.deepEqual(
+        await page.$$eval(
+          '#search-kind, #search-category, #search-source',
+          (controls) => controls.map((control) => control.value),
+        ),
+        ['case-study', '', ''],
+      );
+      checkpoint = 'case-search-results';
+      await page.waitForSelector(
+        `.library-search-results a[href^="#/library/cases/${item.slug}?section="]`,
+      );
+      const links = await page.$$eval('.library-search-results a', (anchors) =>
+        anchors.map((anchor) => anchor.getAttribute('href')),
+      );
+      assert.ok(links.length > 0);
+      assert.ok(
+        links.every((href) =>
+          /^#\/library\/cases\/[a-z0-9-]+\?section=section-[a-z0-9-]+$/.test(
+            href,
+          ),
+        ),
+      );
+      for (const slug of unavailableCaseSlugs)
+        assert.ok(links.every((href) => !href.includes(`/cases/${slug}?`)));
+      const href = links.find((href) =>
+        href.startsWith(`#/library/cases/${item.slug}?section=`),
+      );
+      await page.click(`.library-search-results a[href="${href}"]`);
+      checkpoint = 'case-search-section-focus';
+      const section = new URL(href.slice(1), origin).searchParams.get(
+        'section',
+      );
+      await page.waitForFunction(
+        (id) => document.activeElement?.id === id,
+        { timeout: 15_000 },
+        section,
+      );
+      for (const slug of unavailableCaseSlugs) {
+        await route(
+          `#/library/cases/${slug}?section=section-start`,
+          'Case study unavailable',
+        );
+        assert.equal(
+          await page.$('.gih-case-context, .gih-article-content'),
+          null,
+        );
+        checkpoint = 'unavailable-case-section-focus';
+        await page.waitForFunction(
+          () => document.activeElement?.id === 'case-study-unavailable-title',
+          { timeout: 15_000 },
+        );
+      }
     },
   );
 

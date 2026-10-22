@@ -1,6 +1,6 @@
 import MiniSearch from 'minisearch';
 import { getArticleMarkdown, parseMarkdownSections } from './markdown';
-import { knowledgeHref, sourceDirectoryHref } from './links';
+import { libraryItemHref, sourceDirectoryHref } from './links';
 import type { LibraryCatalog, LibraryItem } from './types';
 import { boundedHubQuery } from '../router.js';
 
@@ -71,7 +71,7 @@ export function librarySearchDocuments(
         sources: [
           ...new Set(item.sourceProductRefs.map((ref) => ref.split('/')[0])),
         ],
-        href: knowledgeHref(item.slug, section.id),
+        href: libraryItemHref(item, section.id),
       });
     }
   }

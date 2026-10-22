@@ -1020,6 +1020,380 @@
       "adaptationNotice": "Selected upstream documentation reproduced under its MIT notice with original authorship and pinned source preserved. Only the reviewed heading ranges are admitted; remote media is not loaded. The upstream original publication date is not established. Dataset and media rights remain separate from the code/documentation license.",
       "status": "published",
       "caseDetails": null
+    },
+    {
+      "id": "nepal-flood",
+      "slug": "nepal-flood",
+      "kind": "case-study",
+      "category": "Bundled event context",
+      "title": "Nepal: reading the bundled flood scene",
+      "tags": [
+        "Nepal",
+        "Bhote Koshi",
+        "imagery",
+        "provenance"
+      ],
+      "description": "Explore the existing Nepal scene while distinguishing historical imagery, licensed event context and schematic river progression.",
+      "author": "Geospatial Intelligence Hub",
+      "publishedDate": "2026-10-21",
+      "reviewedDate": "2026-10-21",
+      "contentPath": "content/cases/nepal-flood.md",
+      "upstreamDocumentId": null,
+      "sectionIds": [],
+      "upstreamRevision": null,
+      "inputSha256": "14aa95663f91f52470d13fa1697c526c036d0117e4474f972d0cac92a51868b9",
+      "references": [
+        {
+          "title": "Bhote Koshi event provenance and licenses",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/public/events/bhote-koshi-2026/README.md",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Authored scene recipes",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/src/scenes/recipes.js",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Nepal map fallback policy",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/src/scenes/packs/nepal.js",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Schematic flood centerline",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/src/data/bhoteKoshiFloodPath.js",
+          "reviewedDate": "2026-10-21"
+        }
+      ],
+      "sourceProductRefs": [
+        "bhote-koshi/event-context"
+      ],
+      "licenseNotice": "Original project-authored case text under the repository MIT license. Linked articles, datasets, images and media retain their own rights; Nepal event assets retain their documented non-commercial terms.",
+      "adaptationNotice": "Original case narrative written against the reviewed upstream pin. Citations link to evidence and reviewed primary accounts; no external article body, image, video or dataset is republished.",
+      "status": "published",
+      "caseDetails": {
+        "interactivity": "interactive",
+        "limitations": [
+          "The 2021 image is historical context, not an immediate pre-event baseline; the post-event image retains clouds.",
+          "The corridor width and progression are schematic, not an inundation or arrival-time model.",
+          "Vantor imagery and GeoPera-derived material have CC BY-NC 4.0 restrictions; linked media retain separate rights.",
+          "The globe link restores camera, Esri imagery and the two Bhote Koshi layers only; choose the authored Director scene and playback position manually."
+        ],
+        "globeUrl": "/#v=2&lat=28.2100&lon=85.3400&alt=100000&heading=0&pitch=-75&roll=0&style=normal&map=esri-imagery&l=h.z&lo=f.e.1_k.o.n",
+        "restoredScope": "Bhote Koshi camera view on Esri imagery with the two bundled Bhote Koshi layers enabled. No Director scene, shot, evidence selection or playback time is restored."
+      }
+    },
+    {
+      "id": "hurricane-tracking",
+      "slug": "hurricane-tracking",
+      "kind": "case-study",
+      "category": "Current observations and estimates",
+      "title": "Hurricanes: current advisories and bounded weather history",
+      "tags": [
+        "hurricanes",
+        "cyclones",
+        "weather",
+        "coverage"
+      ],
+      "description": "Use existing cyclone advisories and weather imagery without implying a global forecast, hazard footprint or archived storm replay.",
+      "author": "Geospatial Intelligence Hub",
+      "publishedDate": "2026-10-21",
+      "reviewedDate": "2026-10-21",
+      "contentPath": "content/cases/hurricane-tracking.md",
+      "upstreamDocumentId": null,
+      "sectionIds": [],
+      "upstreamRevision": null,
+      "inputSha256": "3760081d5d04af45c0d20925f43cd0244698d1d30864429a6eea407f2d6e3606",
+      "references": [
+        {
+          "title": "Cyclone and weather source documentation",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/DATA_SOURCES.md",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Cyclone source owner",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/src/layers/cyclones/source.js",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Weather timeline and coverage limits",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/server/providers/weather.js",
+          "reviewedDate": "2026-10-21"
+        }
+      ],
+      "sourceProductRefs": [
+        "nhc-cphc/cyclone-advisories",
+        "noaa-nowcoast/satellite"
+      ],
+      "licenseNotice": "Original project-authored case text under the repository MIT license. Linked articles, datasets, images and media retain their own rights; Nepal event assets retain their documented non-commercial terms.",
+      "adaptationNotice": "Original case narrative written against the reviewed upstream pin. Citations link to evidence and reviewed primary accounts; no external article body, image, video or dataset is republished.",
+      "status": "published",
+      "caseDetails": {
+        "interactivity": "partial",
+        "limitations": [
+          "NHC/CPHC cyclone coverage is Atlantic and eastern/central North Pacific, not global.",
+          "Forecast cones concern the future storm center; they do not show the full hazard footprint.",
+          "Weather products have different coverage and expose at most 13 frames from the preceding 24 hours.",
+          "The globe link does not select a storm, advisory issue time, weather frame or historical replay."
+        ],
+        "globeUrl": "/#v=2&lat=25.0000&lon=-70.0000&alt=4000000&heading=0&pitch=-90&roll=0&style=normal&map=esri-imagery&l=y.o&lo=f.e.1_k.o.n",
+        "restoredScope": "Atlantic camera view on Esri imagery with cyclone advisories and weather satellite imagery enabled. No named storm, advisory time, weather frame or historical track is restored."
+      }
+    },
+    {
+      "id": "launch-reconstruction",
+      "slug": "launch-reconstruction",
+      "kind": "case-study",
+      "category": "Reconstructed motion",
+      "title": "Launches: understanding a recent mission reconstruction",
+      "tags": [
+        "launches",
+        "Space Missions",
+        "estimates",
+        "telemetry"
+      ],
+      "description": "Read the existing Space Missions experience as a constrained reconstruction rather than measured continuous launch telemetry.",
+      "author": "Geospatial Intelligence Hub",
+      "publishedDate": "2026-10-21",
+      "reviewedDate": "2026-10-21",
+      "contentPath": "content/cases/launch-reconstruction.md",
+      "upstreamDocumentId": null,
+      "sectionIds": [],
+      "upstreamRevision": null,
+      "inputSha256": "939759a5971f5a961ef970894df0cea149cd1e8afb1e617aa3d1ffb52903b4ee",
+      "references": [
+        {
+          "title": "Launch source owner",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/src/layers/launches/source.js",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Estimated launch paths",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/src/layers/launches/paths.js",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Mission reconstruction policy",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/src/layers/launches/policyHelpers.js",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Launch provider documentation",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/DATA_SOURCES.md",
+          "reviewedDate": "2026-10-21"
+        }
+      ],
+      "sourceProductRefs": [
+        "launch-library/recent-launches",
+        "celestrak/orbital-elements"
+      ],
+      "licenseNotice": "Original project-authored case text under the repository MIT license. Linked articles, datasets, images and media retain their own rights; Nepal event assets retain their documented non-commercial terms.",
+      "adaptationNotice": "Original case narrative written against the reviewed upstream pin. Citations link to evidence and reviewed primary accounts; no external article body, image, video or dataset is republished.",
+      "status": "published",
+      "caseDetails": {
+        "interactivity": "interactive",
+        "limitations": [
+          "Reconstructed geometry and timing are estimates, not continuous measured vehicle telemetry.",
+          "Available mission records and orbital elements do not establish complete trajectories or successful outcomes.",
+          "Failed launches must not receive fabricated fallback orbit markers.",
+          "The Cape Canaveral link enables the existing launch layer but does not select a mission or replay clock; select an available recent mission manually in Space Missions.",
+          "No upcoming-launch query, new provider, historical replay dataset or recorder is added."
+        ],
+        "globeUrl": "/#v=2&lat=28.5600&lon=-80.5800&alt=250000&heading=0&pitch=-65&roll=0&style=normal&map=esri-imagery&l=x&lo=f.e.1_k.o.n",
+        "restoredScope": "Cape Canaveral camera view on Esri imagery with the existing rocket-launch layer enabled. No mission, launch-site association, replay time or telemetry is restored."
+      }
+    },
+    {
+      "id": "aircraft-incidents",
+      "slug": "aircraft-incidents",
+      "kind": "case-study",
+      "category": "Evidence boundaries",
+      "title": "Aircraft incidents: separating a live view from historical evidence",
+      "tags": [
+        "aircraft",
+        "incidents",
+        "provenance",
+        "coverage"
+      ],
+      "description": "A demonstration-only account of why current contacts and synthetic regression fixtures cannot establish a historical incident track or cause.",
+      "author": "Geospatial Intelligence Hub",
+      "publishedDate": "2026-10-21",
+      "reviewedDate": "2026-10-21",
+      "contentPath": "content/cases/aircraft-incidents.md",
+      "upstreamDocumentId": null,
+      "sectionIds": [],
+      "upstreamRevision": null,
+      "inputSha256": "f6367bdf266ffcad7af3cd8a4ca79ba508cf1476cee6477437eb5d44ee7b7def",
+      "references": [
+        {
+          "title": "Current flight layer",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/src/layers/flights/index.js",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Aircraft source coverage and terms",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/DATA_SOURCES.md",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Responsible-use guidance",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/SECURITY.md#responsible-use",
+          "reviewedDate": "2026-10-21"
+        }
+      ],
+      "sourceProductRefs": [
+        "adsb-lol/aircraft",
+        "opensky/state-vectors"
+      ],
+      "licenseNotice": "Original project-authored case text under the repository MIT license. Linked articles, datasets, images and media retain their own rights; Nepal event assets retain their documented non-commercial terms.",
+      "adaptationNotice": "Original case narrative written against the reviewed upstream pin. Citations link to evidence and reviewed primary accounts; no external article body, image, video or dataset is republished.",
+      "status": "published",
+      "caseDetails": {
+        "interactivity": "demonstration-only",
+        "limitations": [
+          "No historical incident dataset, complete aircraft track or accident-cause finding is provided.",
+          "Current contacts and interpolated paths cannot substitute for time-specific historical evidence.",
+          "Tracking regression fixtures are synthetic software tests, never real incident observations.",
+          "Anonymous OpenSky access is also subject to its terms; future recording or archiving proposals require a prior terms review.",
+          "No named-person tracking or incident globe action is offered."
+        ],
+        "globeUrl": null,
+        "restoredScope": null
+      }
+    },
+    {
+      "id": "satellite-imagery-change",
+      "slug": "satellite-imagery-change",
+      "kind": "case-study",
+      "category": "Imagery interpretation",
+      "title": "Satellite imagery: an observed A/B comparison at 30 m",
+      "tags": [
+        "imagery",
+        "HLS",
+        "VIIRS",
+        "A/B",
+        "coverage"
+      ],
+      "description": "A user-observed October 12/13 HLS comparison shows both images render, with explicit 30 m resolution, mixed-sensor and current-window limits.",
+      "author": "Geospatial Intelligence Hub",
+      "publishedDate": "2026-10-21",
+      "reviewedDate": "2026-10-21",
+      "contentPath": "content/cases/satellite-imagery-change.md",
+      "upstreamDocumentId": null,
+      "sectionIds": [],
+      "upstreamRevision": null,
+      "inputSha256": "c185a288944e3895e515ae4c52e3ec37e9f359a827ebd675e795105bc81d6511",
+      "references": [
+        {
+          "title": "Recent Imagery product and box limits",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/src/layers/recentImagery/model.js",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "HLS and VIIRS catalog behavior",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/src/layers/recentImagery/catalog.js",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Recent Imagery rendering",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/src/layers/recentImagery/rendering.js",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "NASA HLS S30 product description",
+          "url": "https://hls.gsfc.nasa.gov/products-description/s30/",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "NASA HLS L30 product description",
+          "url": "https://hls.gsfc.nasa.gov/products-description/l30/",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Pinned HUD camera-derived GSD display",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/src/hud.js",
+          "reviewedDate": "2026-10-21"
+        }
+      ],
+      "sourceProductRefs": [
+        "nasa-gibs/dated-imagery",
+        "nasa-cmr/hls-catalog"
+      ],
+      "licenseNotice": "Original project-authored case text under the repository MIT license. Linked articles, datasets, images and media retain their own rights; Nepal event assets retain their documented non-commercial terms.",
+      "adaptationNotice": "Original case narrative written against the reviewed upstream pin. Citations link to evidence and reviewed primary accounts; no external article body, image, video or dataset is republished.",
+      "status": "published",
+      "caseDetails": {
+        "interactivity": "partial",
+        "limitations": [
+          "User-observed coverage on October 21, 2026: A is October 13 HLS S30 and B is October 12 HLS L30. Both rendered; the agent did not independently inspect a browser.",
+          "The supplied URL records west −74.22481°, south 40.31969°, east −74.21304°, north 40.32950°. This roughly 1.0 by 1.09 km area contains only about 33 by 36 samples at 30 m; building-scale detail cannot be recovered by zooming.",
+          "The 4% and 43% cloud figures are catalog metadata, not measured cloud cover over the selected box. This mixed-sensor pair supports coverage and workflow observation, not a like-for-like ground-change conclusion.",
+          "The Esri basemap capture date is unverified. HUD GSD is derived from camera altitude and does not represent the HLS product resolution.",
+          "HLS S30/L30 are 30 m; VIIRS NOAA-21 is 250 m. The tool covers the last 30 UTC days, so the observed dates expire; each box side is limited to 1,000 km.",
+          "The globe action restores only camera, Esri map, Recent Imagery enabled, selected box and A/B mode. Image assignments, product choices and observed dates require manual selection; no archive or new service is added."
+        ],
+        "globeUrl": "/#v=2&lat=40.3239&lon=-74.2184&alt=731&heading=342&pitch=-86&roll=0&style=normal&map=esri-imagery&l=1&lo=f.e.1_1.w.-7422481_1.s.4031969_1.e.-7421304_1.n.4032950_1.m.2_k.o.n",
+        "restoredScope": "Camera at 40.3239° N, 74.2184° W, altitude 731 m, heading 342°, pitch −86°; normal style and Esri imagery; Recent Imagery enabled; box west −74.22481°, south 40.31969°, east −74.21304°, north 40.32950°; A/B mode only. No A/B image assignments, observed dates or product choices are restored; choose available candidates manually."
+      }
+    },
+    {
+      "id": "ai-reconstruction-demonstrations",
+      "slug": "ai-reconstruction-demonstrations",
+      "kind": "case-study",
+      "category": "External demonstrations",
+      "title": "AI reconstruction: external demonstrations and local limits",
+      "tags": [
+        "AI",
+        "WorldFX",
+        "Astra",
+        "reconstruction",
+        "rights"
+      ],
+      "description": "Distinguish the author's external WorldFX/Astra demonstrations from the specific capabilities in this local checkout.",
+      "author": "Geospatial Intelligence Hub",
+      "publishedDate": "2026-10-21",
+      "reviewedDate": "2026-10-21",
+      "contentPath": "content/cases/ai-reconstruction-demonstrations.md",
+      "upstreamDocumentId": null,
+      "sectionIds": [],
+      "upstreamRevision": null,
+      "inputSha256": "c8227eb17c1d620ee20d0f8402d75ba0c7add01d73655a2bce4c0763fc7cec33",
+      "references": [
+        {
+          "title": "Pinned project overview",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/README.md",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Pinned third-party rights notices",
+          "url": "https://github.com/bilawalsidhu/gods-eye-view/blob/064d51f7be2675f1c69e16068e9c49d1a60144d1/THIRD_PARTY_NOTICES.md",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Bilawal Sidhu: I Open Sourced God’s Eye View",
+          "url": "https://www.spatialintelligence.ai/p/i-open-sourced-gods-eye-view",
+          "reviewedDate": "2026-10-21"
+        },
+        {
+          "title": "Bilawal Sidhu: God’s Eye View Blew Up. Astra Showed Up.",
+          "url": "https://www.spatialintelligence.ai/p/gods-eye-view-blew-up-then-astra",
+          "reviewedDate": "2026-10-21"
+        }
+      ],
+      "sourceProductRefs": [],
+      "licenseNotice": "Original project-authored case text under the repository MIT license. Linked articles, datasets, images and media retain their own rights; Nepal event assets retain their documented non-commercial terms.",
+      "adaptationNotice": "Original case narrative written against the reviewed upstream pin. Citations link to evidence and reviewed primary accounts; no external article body, image, video or dataset is republished.",
+      "status": "published",
+      "caseDetails": {
+        "interactivity": "demonstration-only",
+        "limitations": [
+          "WorldFX/Astra demonstrations are external proprietary work, not a local arbitrary-video or historical-event reconstruction feature.",
+          "Author claims are not independently reproduced observations; reviewed original summaries preserve that distinction.",
+          "No model/provider calls, credentials, copied article bodies, media, transcripts or proprietary data are introduced.",
+          "No local reconstruction action is offered."
+        ],
+        "globeUrl": null,
+        "restoredScope": null
+      }
     }
   ]
 }

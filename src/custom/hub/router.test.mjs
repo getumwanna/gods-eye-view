@@ -197,7 +197,8 @@ test('library and settings distinguish working controls from future features', a
   const library = await render('#/library');
   assert.match(library, /<h1>Library<\/h1>/);
   assert.match(library, /Data Sources/);
-  assert.match(library, /Not yet available/);
+  assert.match(library, /feed health is not checked in Library/);
+  assert.match(library, /href="#\/library\/cases"/);
   assert.match(library, /\/hub\/#\/library\/sources\//);
   const settings = await render('#/settings');
   assert.match(settings, /<h1>Settings<\/h1>/);
@@ -279,4 +280,81 @@ test('knowledge pages and local search stay under the existing four-item shell',
   assert.match(search, /Library search/);
   assert.doesNotMatch(search, /<iframe/);
   assert.match(search, /Library search/);
+});
+
+test('case routes accept only bounded slugs and section selectors with case-specific titles', () => {
+  assert.deepEqual(parseHubRoute('#/library/cases'), {
+    page: 'case-studies',
+    sourceId: null,
+  });
+  assert.deepEqual(
+    parseHubRoute('#/library/cases/nepal-flood?section=section-limitations'),
+    {
+      page: 'case-study',
+      sourceId: null,
+      slug: 'nepal-flood',
+      section: 'section-limitations',
+    },
+  );
+  assert.equal(routeTitle({ page: 'case-studies' }), 'Case studies');
+  assert.equal(routeTitle({ page: 'case-study' }), 'Case study');
+  for (const hash of [
+    '#/library/cases/../settings',
+    '#/library/cases/%2F',
+    '#/library/cases/nepal-flood?url=https://example.org',
+    '#/library/cases/nepal-flood?section=section-one&section=section-two',
+    '#/library/cases/nepal-flood?section=javascript:alert(1)',
+    '#/library/cases?section=section-one',
+    '#/library/cases/' + 'a'.repeat(65),
+  ])
+    assert.equal(parseHubRoute(hash).page, 'not-found', hash);
+});
+
+test('published case routes render safely in the shared shell while drafts and unknown cases stay unavailable', async () => {
+  const manifest = JSON.parse(
+    await readFile(
+      new URL('../../../content/library.json', import.meta.url),
+      'utf8',
+    ),
+  );
+  const directory = await render('#/library/cases');
+  assert.match(directory, /<h1>Case studies<\/h1>/);
+  assert.match(directory, /aria-label="Library navigation"/);
+  const directoryDom = new JSDOM(directory);
+  try {
+    assert.equal(
+      directoryDom.window.document.querySelectorAll(
+        'nav[aria-label="Main navigation"] a',
+      ).length,
+      4,
+    );
+    assert.ok(
+      directoryDom.window.document.querySelector(
+        'nav[aria-label="Library navigation"] a[aria-current="page"][href="#/library/cases"]',
+      ),
+    );
+  } finally {
+    directoryDom.window.close();
+  }
+  for (const item of manifest.items.filter(
+    (item) => item.kind === 'case-study',
+  )) {
+    const html = await render(`#/library/cases/${item.slug}`);
+    if (item.status === 'draft') {
+      assert.match(html, /Case study unavailable/);
+      assert.doesNotMatch(html, /gih-article-content|Open globe view/);
+    } else {
+      assert.match(html, /id="case-study-title"/);
+      assert.match(html, /Case study contents/);
+      assert.match(html, /Local capability and limits/);
+    }
+  }
+  assert.match(
+    await render('#/library/cases/no-such-case'),
+    /Case study unavailable/,
+  );
+  assert.match(
+    await render('#/library/knowledge/nepal-flood'),
+    /Article unavailable/,
+  );
 });
