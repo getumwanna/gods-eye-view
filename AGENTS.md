@@ -199,7 +199,7 @@ does not authorize runtime work before Phase2a closes and the user gives the go.
 Verify the current listener before any M4 stop/restart; retain 4174 stopped/logs.
 
 
-## Current M4 native checkpoint and dependency-review hold — October 21
+## Historical M4 native checkpoint and dependency-review hold — October 21
 
 M3 is committed dae36cf0de737116615fd9e5efc615be965cd81e after verified user
 QA14/14, caseHMR5/5/restoration/no-reload evidence and explicit manual/editorial
@@ -222,3 +222,30 @@ After the intended dependency state is verified, give final user-owned QA14 and
 tracking109 commands; preserve the browser-denial boundary and all prior article/
 case approvals. Do not accept Phase2a before the user's explicit final acceptance.
 No I1 runtime/provider/credential implementation is authorized by this checkpoint.
+
+
+## Current M4 Vite repair verified; final user checks pending — October 21
+
+The user explicitly approved the reviewed Vite 6.4.5 patch. It is applied only to
+`package.json` and `package-lock.json`, preserving all other 475 lock records.
+The Phase 2a original-upstream allowance remains those package files and the
+specifically approved `src/tooling/viteBuild.test.mjs`. The frozen source/doc pin
+remains `064d51f7be2675f1c69e16068e9c49d1a60144d1`.
+
+Fresh clean install/audit (zero known vulnerabilities), Library/typecheck/
+boundaries/format/doctor/policy, full unit/allocation suite (8,298 passed, zero
+failed, one platform skip), both builds and production graph checks pass. Actual
+installed-Vite native HMR fixtures pass; they do not replace rendered observations.
+Terrain cache, article/case bytes, unrelated duplicates and historical receipts
+are preserved. Evidence: `.gev-logs/phase2a-m4/vite645-kp6255jw/`.
+
+Standard root CLI with normal HMR is restored on `[::1]:4173`, verified Vite PID
+84521; verify identity before any later stop. Port 4174 remains stopped. Await
+fresh user-owned QA 14/14, article HMR 5/5, case HMR 5/5 with exact restoration
+and no automatic reload/overlay/error, and tracking 109/0/0. Corroborate helper
+windows against the new server log. Existing article/case editorial and manual
+approvals carry forward. Preserve browser denial; no agent harness/helper or
+alternate driver. Any actual containment failure requires restoration and
+stop/report without weakening checks. Final Phase 2a acceptance remains explicit
+and pending. I1 and other Phase 2b runtime work require that acceptance and a
+separate implementation go-ahead.

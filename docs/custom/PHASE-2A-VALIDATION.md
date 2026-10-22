@@ -1,6 +1,6 @@
 # Phase 2a validation
 
-Updated October 21, 2026, America/New_York. **M3 and the separate I1 plan are committed. M4 native validation passes; a Vite security-patch decision and final user checks/Phase 2a acceptance remain pending.** All article/case approvals and historical evidence remain retained. No imagery implementation or dependency upgrade has been applied.
+Updated October 21, 2026, America/New_York. **M3 and the separate I1 plan are committed. The explicitly approved Vite 6.4.5 repair and fresh M4 native checks pass; final user browser checks and Phase 2a acceptance remain pending.** All editorial approvals and historical evidence are retained. I1 runtime work stays deferred.
 
 ## M1 final startup result — passed
 
@@ -593,3 +593,97 @@ intermediate browser rerun. Existing unchanged article/case/manual approvals
 carry forward; repeat affected rendered containment checks only if the dependency
 repair requires them. Final Phase2a acceptance remains explicit. Other Phase2b
 work and I1 implementation remain deferred.
+
+
+## Approved Vite 6.4.5 repair — October 21, 2026
+
+The user explicitly replied **“Approve Vite 6.4.5 patch.”** This supersedes the
+unapplied-proposal hold above. Earlier 6.4.3 results remain historical evidence.
+Applied exactly `PROPOSED-VITE-6.4.5.patch`, SHA-256
+`3bc4652ba92df8cd67a301476a5494261700cb5148827befa90b962a9af739bb`.
+Only `package.json` and `package-lock.json` change: root Vite specifier and Vite
+version/resolved URL/integrity. All other 475 lock records remain identical;
+no package is added/removed or changes role/license/edges. Installed Vite is
+6.4.5. The source/doc pin remains `064d51f7be2675f1c69e16068e9c49d1a60144d1`.
+
+### Fresh native evidence
+
+Directory: `.gev-logs/phase2a-m4/vite645-kp6255jw/`.
+
+| Gate | Result | Evidence in that directory |
+| --- | --- | --- |
+| Clean install / dependency audit | Both exit 0; installed Vite 6.4.5; zero known vulnerabilities | `npm-ci.log`, `audit.log`, `applied.json` |
+| Library / typecheck / boundaries / format / doctor | All pass | `library.log`, `typecheck.log`, `boundaries.log`, `format.log`, `doctor.log` |
+| Camera policy | 6/6 offline scenarios; HK/Taiwan requests and rows remain zero | `policy.log` |
+| Full Node 24 unit/allocation suite | 8,298 passed, 0 failed, 1 platform skip, 0 cancelled | `unit-allocation.log`, `unit-summary.json` |
+| Serial allocation confirmation | Both calibrated probes pass without concurrent builds | `allocation-serial-confirmation.log`, `allocation-serial-confirmation.json` |
+| Terrain cache | Restored byte-for-byte; original/restored SHA-256 `e328984514db51bec9169286b48b82a20b3f67d27cfb3e4caf45833324c7da61` | `terrain-cache-preservation.json` |
+| Website / panel builds | Exit 0; 4.55 s / 3.44 s | `build.log`, `build-panel.log` |
+| Production graph / corpus | No compiler modules; no React/Tailwind/hub leakage into initial globe | `bundle-review.json`, `graph-confirmation.json`, `corpus-search-measurements.json` |
+| Normal-HMR server | Vite 6.4.5, PID 84521, root cwd, `[::1]:4173`; 4174 stopped | `server-launch.json`, `shipping-listener.json`, `resolved-config.json`, `server.log` |
+| Native serving / optimizer | Four entry/module requests return 200; optimizer metadata stable | `http-check.json` |
+
+Both builds retain existing large-chunk warnings. The full suite tests the actual
+committed `build/customHub.js` hook against installed Vite 6.4.5: edit/delete/re-add,
+schema/admitted-doc changes, unloaded Library, and missing-file startup/recovery.
+Positive controls still require normal full reload for unrelated inputs. Security,
+Host, preview and configuration assertions remain intact. Native tests do not
+prove rendered behavior.
+
+The first website build overlapped the end of the initial allocation window;
+both calibrated probes were then repeated serially without a build and passed.
+Initial logs remain retained. A graph-summary read attempted before measurement
+completion returned missing-file; the completed measurement and subsequent graph
+assertion exit 0. This evidence-ordering error required no source repair or
+weakened assertion.
+
+Supplementary `write:false` graph measurement retains all transforms and strict
+validation, omitting only redundant Cesium copying; it replaces neither full build.
+Entry raw/gzip/Brotli bytes and deltas from M1:
+
+| Entry | Bytes | Delta from M1 |
+| --- | --- | --- |
+| Hub | 399,109 / 126,684 / 108,953 | +3,232 / +959 / +674 |
+| Globe | 3,565,887 / 1,106,868 / 834,049 | 0 / 0 / 0 |
+
+The corpus has 22 published items and 241 indexed sections/products. Native Node
+load 12.04 ms, cold index 75.05 ms and query p95 0.305 ms are local Node timings,
+not browser/mobile latency or globe FPS. All six case hashes, nine article bodies,
+both unrelated duplicates and historical receipts are preserved. No I1 runtime,
+provider, credential, media, recorder or deployment change is included.
+
+### Final user checks on Vite 6.4.5 — pending
+
+Shipping is ready at `http://localhost:4173/` with standard root CLI, normal HMR
+and existing security/provider/cache settings. Native HTTP checks are serving
+evidence only. The agent has not executed any browser harness, live edit helper
+or alternate driver; the existing denial remains respected.
+
+From `/Users/getumwanna/Documents/GEV`, run one command at a time:
+
+```sh
+source /Users/getumwanna/.nvm/nvm.sh
+nvm use 24.22.0
+QA_BASE_URL=http://localhost:4173 npm run qa:hub
+node .gev-logs/phase2a-m2/manual-article-hmr-check.mjs
+node .gev-logs/phase2a-m3/manual-case-hmr-check.mjs
+npm run test:track -- --url http://localhost:4173 --offline-imagery
+```
+
+For each helper, keep the globe and relevant route open:
+`/hub/#/library/knowledge/first-five-minutes`, then
+`/hub/#/library/cases/nepal-flood`. Remember the globe view first. Each must report
+**5/5**, **passed**, and **Inputs restored byte-for-byte: true**. Invalid edits
+must show an accessible Library-only error while Dashboard/Settings and unchanged
+globe view/controls remain usable. Recovery must happen through HMR without a
+refresh, automatic document reload, Vite overlay, unhandled browser error or server
+exit. Do not run another helper, QA or tracking while invalid fixtures are held.
+Any actual containment failure restores/stops; report the observation and receipt.
+
+Report QA **14/14**, both helper summaries/receipt paths, and tracking **109 passed,
+0 failed, 0 skipped**. Corroborate helper windows against the new server log.
+Earlier 6.4.3 receipts and unchanged article/case editorial, theme/narrow/keyboard
+and four CTA approvals carry forward. Broader M1 rendered checks require repeating
+only if a new failure or concern warrants it. No assertion is removed or weakened.
+After fresh gates pass, explicit final Phase 2a acceptance remains required. I1
+implementation requires its separate go-ahead.

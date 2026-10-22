@@ -1,22 +1,30 @@
 # Geospatial Intelligence Hub status
 
-Updated October21,2026,America/New_York.
+Updated October 21, 2026, America/New_York.
 
-**M3 committed; separate I1 plan committed; M4 native checks pass.**
-M3: dae36cf0de737116615fd9e5efc615be965cd81e. I1 plan only:
-a860327edc694fbcc313eb0791629fe88070a0b0. Latest user-owned M3 QA14/14,
-HMR5/5/restoration/no-reload evidence and all-six-case/four-CTA/manual approvals
-are retained. M4 clean install, Library/typecheck/boundaries/format/doctor/policy,
-8,298 unit/allocation passes (zero failures, one platform skip), both builds and
-production graph checks pass. Terrain cache, manifest/lock and unrelated duplicates
-are preserved. Evidence: .gev-logs/phase2a-m4/native-l6z71yrc/.
+**M3 and the separate I1 plan are committed. The approved Vite 6.4.5 repair and M4 native validation pass; final user browser checks and explicit Phase 2a acceptance remain pending.**
 
-The unchanged Vite6.4.3 lock has an unresolved npm audit finding. A review-only
-6.4.5 package/lock patch has zero other lock changes and a clean isolated audit;
-user approval is pending before application. Shipping still runs6.4.3 on normal-
-HMR localhost:4173 (verifiedPID65378). Final user QA/tracking and explicit Phase2a
-acceptance follow the dependency decision. No I1 runtime implementation;4174
-remains stopped with all logs/worktrees retained.
+M3: `dae36cf0de737116615fd9e5efc615be965cd81e`. I1 plan only:
+`a860327edc694fbcc313eb0791629fe88070a0b0`. All nine article and six case
+approvals, four CTA/manual approvals, and historical receipts remain retained.
+
+The user explicitly approved the reviewed two-file security patch. Shipping now
+pins Vite 6.4.5; all other 475 lock records are unchanged. Clean install and audit
+pass with zero known vulnerabilities. Library/typecheck/boundaries/format/doctor/
+policy, 8,298 unit/allocation passes (zero failures, one platform skip), both
+builds, and production graph checks pass. The terrain cache, article/case bytes,
+and unrelated duplicates are preserved. Evidence:
+`.gev-logs/phase2a-m4/vite645-kp6255jw/`.
+
+Normal-HMR root CLI is restored on `[::1]:4173`, verified Vite PID **84521**.
+Verify its identity before any later stop. Port 4174 stays stopped and all
+rehearsal logs/worktrees remain retained. User reruns are pending: QA **14/14**,
+article HMR **5/5**, case HMR **5/5** (both restored byte-for-byte), and tracking
+**109/0/0**. Exact commands and unchanged containment criteria are in
+`docs/custom/PHASE-2A-VALIDATION.md`.
+
+Phase 2a is not yet accepted. I1 runtime work and other Phase 2b work remain
+deferred until Phase 2a acceptance and the separate implementation go-ahead.
 
 ## Completed and verified
 

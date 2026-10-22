@@ -321,7 +321,7 @@ then unchanged M4 validation. The 47-path free-imagery plan remains a later
 runtime milestone, contingent on Phase2a acceptance and its separate go-ahead.
 
 
-### Phase 2a M4 native checkpoint; reviewed dependency proposal unapplied
+### Historical Phase 2a M4 native checkpoint; dependency proposal unapplied
 
 M3 committed dae36cf0de737116615fd9e5efc615be965cd81e and the I1 plan is separate
 a860327edc694fbcc313eb0791629fe88070a0b0. M4 clean install and all required native/
@@ -336,3 +336,26 @@ review; manifest/lock/installedshippingVite remain unchanged. This is not an
 upstream-pin adoption or I1 change. Preserve the existing source/doc pin, all
 historical evidence, and pending final Phase2a acceptance. The validation record
 contains exact receipts, security-source links, proposed diff and remaining gates.
+
+
+### Approved M4 security repair — Vite 6.4.5
+
+The user's explicit approval applies the exact reviewed patch, SHA-256
+`3bc4652ba92df8cd67a301476a5494261700cb5148827befa90b962a9af739bb`:
+
+- `package.json`: pin the existing Vite devDependency to 6.4.5 to address the
+  reviewed advisories and avoid the 6.4.4 follow-up regression.
+- `package-lock.json`: matching root specifier and Vite version/resolved URL/
+  integrity only. All other 475 lock records, roles, licenses and edges are
+  unchanged; no package is added or removed.
+
+No other original-upstream file or runtime feature changes in this repair.
+The upstream source/doc pin stays `064d51f7be2675f1c69e16068e9c49d1a60144d1`.
+Fresh clean install, zero-vulnerability audit, native/allocation/security/HMR
+checks, both unmodified builds and graph review pass. The globe entry is unchanged
+from M1 in raw/gzip/Brotli bytes; DEV Ajv is absent from production output.
+Preservation/scope proofs: `.gev-logs/phase2a-m4/vite645-kp6255jw/`. The normal-HMR
+server is restored on localhost:4173 (verified Vite PID 84521). Fresh user QA,
+tracking and article/case HMR checks precede final Phase 2a acceptance. All earlier
+receipts and editorial/manual approvals remain retained. I1 runtime work stays
+deferred; no new provider, credential, hosting or recorder is introduced.
