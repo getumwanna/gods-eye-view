@@ -319,3 +319,20 @@ new provider/dependency/codec/media acquisition is introduced; M2 articles remai
 unchanged. The user authorizes M3 commit, then a separate docs-only I1-plan commit,
 then unchanged M4 validation. The 47-path free-imagery plan remains a later
 runtime milestone, contingent on Phase2a acceptance and its separate go-ahead.
+
+
+### Phase 2a M4 native checkpoint; reviewed dependency proposal unapplied
+
+M3 committed dae36cf0de737116615fd9e5efc615be965cd81e and the I1 plan is separate
+a860327edc694fbcc313eb0791629fe88070a0b0. M4 clean install and all required native/
+allocation/build/graph checks pass with unchanged shipping dependencies. No new
+upstream edit is made in this checkpoint. Final Phase2a original-upstream
+intersection stays package.json, package-lock.json and the specifically approved
+src/tooling/viteBuild.test.mjs; other feature paths fit the approved inventory.
+
+Current npm audit flags the existing Vite6.4.3 dependency. A bounded6.4.5 candidate
+is prepared only in .gev-logs/phase2a-m4/native-l6z71yrc/vite645-review/ for user
+review; manifest/lock/installedshippingVite remain unchanged. This is not an
+upstream-pin adoption or I1 change. Preserve the existing source/doc pin, all
+historical evidence, and pending final Phase2a acceptance. The validation record
+contains exact receipts, security-source links, proposed diff and remaining gates.

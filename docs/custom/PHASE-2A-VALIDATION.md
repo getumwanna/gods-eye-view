@@ -1,6 +1,6 @@
 # Phase 2a validation
 
-Updated October 21, 2026, America/New_York. **M3 accepted and commit authorized; M4 final validation is next.** Latest user-owned QA passes 14/14 and case HMR passes 5/5 with exact restoration and matching no-reload server evidence. The user approves all six cases/references, themes, narrow/keyboard behavior and all four CTAs. M2 article approval remains retained. Earlier checkpoints below are historical; final Phase 2a acceptance is still required.
+Updated October 21, 2026, America/New_York. **M3 and the separate I1 plan are committed. M4 native validation passes; a Vite security-patch decision and final user checks/Phase 2a acceptance remain pending.** All article/case approvals and historical evidence remain retained. No imagery implementation or dependency upgrade has been applied.
 
 ## M1 final startup result — passed
 
@@ -500,3 +500,96 @@ production graph/final diff review, then obtains final user-run hub/tracking
 checks and explicit Phase 2a acceptance. The separately approved 47-path I1 plan
 is documentation only until Phase 2a closes and the user gives its implementation
 go-ahead. M3 acceptance does not accept the whole phase.
+
+
+## M4 native validation checkpoint — October 21, 2026
+
+M3 is committed as dae36cf0de737116615fd9e5efc615be965cd81e. The I1 plan is a
+separate docs-only commit a860327edc694fbcc313eb0791629fe88070a0b0. Its approved
+47-path scope and near-cap measurements remain future work; no I1 runtime
+implementation or credential setup occurred.
+
+M4 used Node24.22.0/npm11.19.1 with the existing manifest and lock unchanged.
+Only the verified root listener PID46160 was stopped before clean installation
+and tests. No content helper was active. The user-owned M3 receipts and exact
+restoration remain valid; the agent executed no browser harness or live helper.
+
+Evidence directory: .gev-logs/phase2a-m4/native-l6z71yrc/.
+
+| Gate | Result | Receipt |
+| --- | --- | --- |
+| Clean npm ci | Exit0, same manifest/lock | npm-ci.log |
+| Strict Library | Passed:32 layers/34values/38guides/149products/7docs/25sections/22articles-cases | library.log |
+| Hub typecheck | Passed | typecheck.log |
+| Import/package boundaries | Passed | boundaries.log |
+| Formatting | Passed;1,452 source files | format.log |
+| Doctor | Ready, supported Node/npm; optional provider credentials unconfigured | doctor.log |
+| Camera policy | 6/6 offline process scenarios; HK/Taiwan remain OFF | policy.log |
+| Full unit/allocation suite | 8,298 passed,0failed,1platformskip,0cancelled | unit-allocation.log; unit-summary.json |
+| Terrain cache preservation | Restored byte-for-byte; original/restored SHAe328984514db51bec9169286b48b82a20b3f67d27cfb3e4caf45833324c7da61 | terrain-cache-preservation.json |
+| Website build | Exit0,4.66s | build.log |
+| Panel build | Exit0,3.44s | build-panel.log |
+| Actual production graph/corpus review | Passed; no compiler modules; no Library corpus/Markdown/search in initial entries; no React/Tailwind/hub leakage into globe | bundle-review.json; corpus-search-measurements.json |
+| Final scope/lock review | Exactly3 original-upstream edits across Phase2a; all feature paths in approved64 inventory; other changed paths are reviewed plan/report docs; no existing locked version/role changed | review-result.json and customization ledger |
+| npm audit | Exit1; one vulnerable dependency node, lockedVite6.4.3; unresolved disposition below | audit.log |
+
+Both unmodified builds retain the existing large-chunk warning. The supplementary
+write:false measurement omits only the redundant Cesium asset-copy hook and does
+not substitute for either acceptance build. Initial globe bytes are unchanged
+from M1 in raw/gzip/Brotli. Initial hub delta remains +3,232/+959/+674 bytes.
+There are22 published Library records and241 indexed sections/products. Native
+Node timings (not browser/FPS measurements): load13.19ms, cold index76.97ms,
+queryP95 0.306ms.
+
+Standard root CLI normal HMR was restored at localhost:4173, PID65378, on
+[::1]:4173, with no HMR override. Native HTTP checks of globe/hub/main entries
+return200; these are serving checks, not rendered results. 4174 remains stopped.
+Startup/listener receipts: server.log, server-launch.json, shipping-listener.json.
+
+### Dependency audit finding and concrete review-only proposal
+
+The clean install exposed advisories for the unchanged Vite6.4.3 lock. npm audit
+groups five advisories into one vulnerable dependency node rated high. The
+Windows/WSL editor conditions do not match this macOS host, and the reviewed
+custom-HTML application pattern is absent. The non-Windows filesystem-path issue
+has additional import/system-path-collision preconditions; no exploit was run.
+Loopback/Host and provider Origin guards are preserved, but they are not claimed
+as blanket protection for all Vite filesystem/editor middleware.
+
+Official sources:
+[Windows escaping](https://github.com/vitejs/launch-editor/security/advisories/GHSA-698v-4r3x-3vcv),
+[editor flags](https://github.com/vitejs/launch-editor/security/advisories/GHSA-r825-w8mm-5pxw),
+[Windows existence check](https://github.com/vitejs/launch-editor/security/advisories/GHSA-587h-7wmj-h5pm),
+[custom HTML middleware](https://github.com/vitejs/vite/security/advisories/GHSA-9jrq-w75r-8gcw),
+[filesystem allow paths](https://github.com/vitejs/vite/security/advisories/GHSA-rq7h-c2jc-7f22).
+
+Propose Vite6.4.5, not6.4.4: the latter has a newly documented query/fs.deny
+regression, patched in6.4.5. That regression affects6.4.4, not the installed6.4.3.
+[Official follow-up advisory](https://github.com/vitejs/vite/security/advisories/GHSA-8g5g-mxqh-grgj),
+[official changelog](https://raw.githubusercontent.com/vitejs/vite/v6.4.5/packages/vite/CHANGELOG.md).
+
+Review-only candidate:
+.gev-logs/phase2a-m4/native-l6z71yrc/vite645-review/REVIEW.md and
+PROPOSED-VITE-6.4.5.patch. Only package.json's Vite specifier and the matching
+package-lock root/Vite version, URL and integrity change. All475 other lock
+records are unchanged; no package is added/removed or changes roles/engines/
+licenses/other dependency edges. Isolated lock resolution and audit exit0; the
+candidate audit reports zero known vulnerabilities at review time. Patch check
+passes; SHA3bc4652ba92df8cd67a301476a5494261700cb5148827befa90b962a9af739bb.
+
+The candidate is UNAPPLIED. Shipping manifest/lock/installedVite hashes remain
+unchanged. M4 was agreed as validation with unchanged dependencies; user approval
+has been requested for this separate bounded repair. If approved, apply only the
+reviewed package patch, clean-install and rerun affected Vite/security/HMR/
+containment/native/build/graph checks before final user browser checks. Do not
+run npm audit fix or broaden the upgrade. Preserve M3/editorial evidence.
+
+### Remaining M4 and final acceptance gates
+
+Resolve the dependency finding with the user, then obtain the final user-owned
+hub QA14/14 and complete normal-HMR tracking109/0/0 on4173. Give exact commands
+when the intended final dependency state is ready, to avoid an unnecessary
+intermediate browser rerun. Existing unchanged article/case/manual approvals
+carry forward; repeat affected rendered containment checks only if the dependency
+repair requires them. Final Phase2a acceptance remains explicit. Other Phase2b
+work and I1 implementation remain deferred.

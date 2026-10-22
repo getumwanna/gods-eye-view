@@ -2,15 +2,21 @@
 
 Updated October21,2026,America/New_York.
 
-**M3 accepted; commit authorized, followed by the separate I1 plan and M4.**
-The latest user QA receipt passes 14/14; case HMR passes 5/5 with exact restoration
-and matching normal-HMR server-log corroboration. The user approves all six cases
-and references, themes/narrow/keyboard behavior and all four CTAs. The acceptance
-snapshots are retained under .gev-logs/phase2a-m3/acceptance-2026-10-21-vzi0ewdx/.
-M3 scope has no new upstream edits/providers/dependencies and preserves all M2
-articles. Keep the I1 plan and unrelated duplicate files out of the M3 commit.
-M4 final validation and explicit Phase 2a acceptance remain outstanding. I1 runtime
-work still requires that closeout and a separate go-ahead; 4174 remains stopped.
+**M3 committed; separate I1 plan committed; M4 native checks pass.**
+M3: dae36cf0de737116615fd9e5efc615be965cd81e. I1 plan only:
+a860327edc694fbcc313eb0791629fe88070a0b0. Latest user-owned M3 QA14/14,
+HMR5/5/restoration/no-reload evidence and all-six-case/four-CTA/manual approvals
+are retained. M4 clean install, Library/typecheck/boundaries/format/doctor/policy,
+8,298 unit/allocation passes (zero failures, one platform skip), both builds and
+production graph checks pass. Terrain cache, manifest/lock and unrelated duplicates
+are preserved. Evidence: .gev-logs/phase2a-m4/native-l6z71yrc/.
+
+The unchanged Vite6.4.3 lock has an unresolved npm audit finding. A review-only
+6.4.5 package/lock patch has zero other lock changes and a clean isolated audit;
+user approval is pending before application. Shipping still runs6.4.3 on normal-
+HMR localhost:4173 (verifiedPID65378). Final user QA/tracking and explicit Phase2a
+acceptance follow the dependency decision. No I1 runtime implementation;4174
+remains stopped with all logs/worktrees retained.
 
 ## Completed and verified
 

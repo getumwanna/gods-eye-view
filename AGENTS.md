@@ -197,3 +197,28 @@ case approvals. Do not execute browser harnesses or re-run completed live helper
 I1's approved 47-path plan (including the QA amendment and near-cap measurements)
 does not authorize runtime work before Phase2a closes and the user gives the go.
 Verify the current listener before any M4 stop/restart; retain 4174 stopped/logs.
+
+
+## Current M4 native checkpoint and dependency-review hold — October 21
+
+M3 is committed dae36cf0de737116615fd9e5efc615be965cd81e after verified user
+QA14/14, caseHMR5/5/restoration/no-reload evidence and explicit manual/editorial
+approval. I1 plan is separate docs-only a860327edc694fbcc313eb0791629fe88070a0b0.
+
+M4 clean installation, Library/typecheck/boundaries/format/doctor/policy, full
+allocation suite8298/0/1, both production builds and actual graph review pass.
+Terrain cache restored exactly; current manifest/lock/unrelated duplicates stay
+unchanged. Logs: .gev-logs/phase2a-m4/native-l6z71yrc/. Normal root CLI is restored
+on loopback4173 PID65378; verify identity before any later stop.4174staysstopped.
+
+npm audit now reports advisories in unchanged lockedVite6.4.3. Concrete reviewed
+6.4.5 manifest/lock candidate lives only in the ignored vite645-review directory:
+475otherlockrecordsunchanged, isolatedauditclean, patchunapplied. User approval
+has been requested because M4 was validation with unchanged dependencies. Do not
+apply or run audit-fix without that decision.6.4.4 is unsuitable due a follow-up
+regression; official references and impact limits are in the validation record.
+
+After the intended dependency state is verified, give final user-owned QA14 and
+tracking109 commands; preserve the browser-denial boundary and all prior article/
+case approvals. Do not accept Phase2a before the user's explicit final acceptance.
+No I1 runtime/provider/credential implementation is authorized by this checkpoint.
