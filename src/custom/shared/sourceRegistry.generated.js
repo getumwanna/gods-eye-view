@@ -2,7 +2,7 @@
 // prettier-ignore
 export const SOURCE_REGISTRY_PROJECTION = {
   "upstreamRevision": "064d51f7be2675f1c69e16068e9c49d1a60144d1",
-  "inputDigest": "e61697670ea3ed57589e0de992a0556e9568efb2dcb25bc3b3711c872027906a",
+  "inputDigest": "0fc0a6587500a32682c6ce3d0c6765046f524d17247f24a214f979f59b251835",
   "sourceGuides": [
     {
       "id": "google-maps",
@@ -307,6 +307,14 @@ export const SOURCE_REGISTRY_PROJECTION = {
       "setupUrl": null,
       "docsHref": "https://github.com/bilawalsidhu/gods-eye-view/blob/main/DATA_SOURCES.md",
       "explanation": "This source supports an existing GEV capability. This Phase 1 guide links to upstream documentation and does not report current feed health. The full source directory, including coverage, cadence, attribution and terms, is planned for Phase 2."
+    },
+    {
+      "id": "cdse",
+      "name": "Copernicus Data Space / Sentinel Hub",
+      "setupKeyId": null,
+      "setupUrl": null,
+      "docsHref": "https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Overview/Authentication.html",
+      "explanation": "Custom I1 environment-only guide, not an upstream POWER UP entry. When prompted, create a free General-user account and server-side OAuth client; stop if a card/trial/paid plan is requested. Enter CDSE_CLIENT_ID and CDSE_CLIENT_SECRET locally in the gitignored .env, never in chat. This guide contains reference facts, not configuration presence or feed health."
     }
   ],
   "layers": [
@@ -449,7 +457,8 @@ export const SOURCE_REGISTRY_PROJECTION = {
       ],
       "sources": [
         "nasa-gibs",
-        "nasa-cmr"
+        "nasa-cmr",
+        "cdse"
       ],
       "requiredKeyId": null
     },

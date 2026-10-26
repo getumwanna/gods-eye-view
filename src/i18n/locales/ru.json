@@ -3004,5 +3004,19 @@
   "Gemini access was refused. Check the API key and model access.": "Доступ к Gemini запрещён. Проверьте ключ API и доступ к модели.",
   "Gemini Live is unavailable for the configured model.": "Gemini Live недоступен для выбранной модели.",
   "Token request is too large": "Запрос токена слишком велик",
-  "Use an empty JSON token request": "Используйте запрос токена с пустым объектом JSON"
+  "Use an empty JSON token request": "Используйте запрос токена с пустым объектом JSON",
+  "Sentinel-2 L2A": "Sentinel-2, уровень 2A",
+  "Sentinel-2 L2A via CDSE": "Sentinel-2 L2A через CDSE",
+  "SENTINEL-2 · 10 m": "SENTINEL-2 · 10 м",
+  "Sentinel-2 L2A via free CDSE account · 10 m": "Sentinel-2 L2A через бесплатную учётную запись CDSE · 10 м",
+  "Fit imagery resolution": "Подобрать масштаб по разрешению снимка",
+  "Restore view": "Восстановить вид",
+  "S2 max scene cloud": "Макс. облачность сцены S2",
+  "Sentinel-2 maximum scene cloud percent": "Максимальная облачность сцены Sentinel-2, %",
+  "Scene cloud is not cloud measured inside your box. 100 shows all, including unknown.": "Облачность сцены не измеряет облачность внутри рамки. 100 показывает все сцены, включая неизвестную облачность.",
+  "CDSE account usage": "Использование учётной записи CDSE",
+  "Static": "Статические данные",
+  "Refreshed": "Обновлено",
+  "Estimated reservation": "Расчётный резерв",
+  "Local usage read (last passive check)": "Данные локального учёта (последняя пассивная проверка)"
 }

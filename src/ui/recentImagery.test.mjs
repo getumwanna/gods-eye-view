@@ -219,7 +219,11 @@ function fakeDocument() {
 }
 
 // ---- the real layer, with fakes for everything it injects ------------------
-function fixture({ fetchImpl, controller = fakeController() } = {}) {
+function fixture({
+  fetchImpl,
+  creditedExport,
+  controller = fakeController(),
+} = {}) {
   const dom = fakeDocument();
   const renderer = fakeRenderer();
   const thumbnails = fakeThumbnails();
@@ -261,6 +265,7 @@ function fixture({ fetchImpl, controller = fakeController() } = {}) {
   const urls = { created: [], revoked: [] };
   const readout = createRecentImageryPanel({
     container: dom.body,
+    creditedExport,
     layer,
     viewer,
     tool,
@@ -383,13 +388,17 @@ test('the readout mounts in the rail body, hides while the layer is off and open
   assert.equal(g.collapse.clicked, 0);
 });
 
-test('the body is a fixed stack of seven blocks in a fixed order, each with a fixed height in the stylesheet', () => {
+test('the body preserves fixed NASA blocks and adds bounded imagery source controls', () => {
   const f = fixture();
   assert.deepEqual(
     f.root.children.map((node) => node.id || node.className),
     [
       'ri-actions',
       'ri-notice',
+      'ri-free-controls',
+      'ri-cdse-usage',
+      'ri-sentinel-fallback',
+      'ri-source-credit',
       'ri-strip',
       'ri-hint',
       'ri-selection',
@@ -1185,4 +1194,146 @@ test('destroy returns every listener, the divider and the panel state', async ()
   f.layer.setMode('ab');
   assert.equal(f.splits.length, 1, 'no renders after destroy');
   f.readout.destroy();
+});
+
+test('S2 usage preserves unknown counters and displays explicit fallback/provenance with source-specific years', async () => {
+  const f = fixture();
+  await f.ready();
+  const original = f.layer.getSnapshot.bind(f.layer);
+  f.layer.getSnapshot = () => ({
+    ...original(),
+    sources: { hls: true, viirs: true, s2: true },
+    usage: { usage: { requests: null, pu: null, status: 'paused' } },
+    fallbackNotice:
+      'Sentinel-2 unavailable: showing HLS 30 m, missing configuration',
+    imageryHud: {
+      slots: {
+        a: { loaded: true, product: 'S2', day: '2026-01-02' },
+        b: { loaded: true, product: 'S2', day: '2025-12-30' },
+      },
+    },
+  });
+  f.layer.setAlpha(0.61);
+  const usage = f.byId('ri-cdse-usage');
+  assert.match(usage.children[0].textContent, /unknown requests.*unknown PU/);
+  assert.doesNotMatch(usage.children[0].textContent, /0 requests|0 PU/);
+  assert.equal(
+    usage.children[1].href,
+    'https://shapps.dataspace.copernicus.eu/dashboard/',
+  );
+  assert.equal(f.byId('ri-max-cloud').disabled, false);
+  assert.match(f.byId('ri-sentinel-fallback').textContent, /showing HLS 30 m/);
+  assert.match(
+    f.byId('ri-source-credit').textContent,
+    /A:.*data 2026.*B:.*data 2025/,
+  );
+  f.layer.getSnapshot = () => ({
+    ...original(),
+    sources: { hls: true, viirs: true, s2: true },
+    usage: {
+      usage: { requests: 12, pu: 4.25, status: 'queued' },
+      usageReadAt: '2026-10-22T12:00:00.000Z',
+    },
+  });
+  f.layer.setAlpha(0.62);
+  assert.match(usage.children[0].textContent, /Refreshed · 12 requests/);
+  assert.match(
+    usage.children[0].textContent,
+    /Estimated reservation · 4.25 PU/,
+  );
+  assert.match(usage.children[0].textContent, /health: queued/);
+  assert.match(
+    usage.children[0].textContent,
+    /Local usage read \(last passive check\): 2026-10-22T12:00:00.000Z/,
+  );
+  f.readout.destroy();
+  f.layer.destroy();
+});
+
+test('S2 export A/B reuses its loaded native handle and releases it without any Worldview request', async () => {
+  const exports = [],
+    released = [];
+  const f = fixture({
+    creditedExport: async ({ snapshot, candidate }) => {
+      exports.push([snapshot.id, candidate.key]);
+      return new Blob(['credited image'], { type: 'image/png' });
+    },
+  });
+  const sentinel = {
+    id: 's2a',
+    key: `S2:2026-09-20:${'a'.repeat(64)}`,
+    product: 'S2',
+    source: 'cdse',
+    day: '2026-09-20',
+    cloudPercent: 0,
+    contributors: [],
+  };
+  f.catalog.searchS2 = async () => ({ candidates: [sentinel] });
+  f.layer.setSources({ s2: true });
+  await f.ready();
+  f.layer.getImageSnapshot = (slot) => ({
+    id: `native-${slot}`,
+    release: () => released.push(slot),
+  });
+  f.layer.setAssignment('a', sentinel.key);
+  assert.equal(await f.readout.exportImage('a'), true);
+  assert.deepEqual(exports, [['native-a', sentinel.key]]);
+  assert.deepEqual(released, ['a']);
+  assert.deepEqual(f.fetches, []);
+  f.layer.setMode('ab');
+  f.layer.setAssignment('b', sentinel.key);
+  assert.equal(await f.readout.exportImage('b'), true);
+  assert.deepEqual(exports[1], ['native-b', sentinel.key]);
+  assert.deepEqual(released, ['a', 'b']);
+  assert.deepEqual(f.fetches, []);
+  f.readout.destroy();
+  f.layer.destroy();
+});
+
+test('thumbnail-only S2 cards retain visible source/year attribution before any overlay assignment', async () => {
+  const f = fixture();
+  const candidates = ['2026-01-02', '2025-12-30'].map((day, index) => ({
+    id: `thumbnail-${index}`,
+    key: `S2:${day}:${String(index + 1).repeat(64)}`,
+    product: 'S2',
+    source: 'cdse',
+    day,
+    cloudPercent: 10,
+    contributors: [],
+  }));
+  f.catalog.searchS2 = async () => ({ candidates });
+  const originalGet = f.thumbnails.get.bind(f.thumbnails);
+  f.thumbnails.get = (key) =>
+    candidates.some((candidate) => candidate.key === key)
+      ? { status: 'present', objectUrl: `blob:synthetic-${key}` }
+      : originalGet(key);
+  f.layer.setSources({ s2: true });
+  await f.ready();
+  assert.equal(f.snap().pins.a.key, null);
+  assert.equal(f.snap().pins.b.key, null);
+  assert.equal(
+    f.byId('ri-source-credit').hidden,
+    true,
+    'no S2 overlay is loaded',
+  );
+  for (const candidate of candidates) {
+    const card = f.card(candidate.key),
+      credit = f.part(card, 'ri-thumb-credit');
+    assert.equal(credit.hidden, false);
+    assert.equal(
+      credit.textContent,
+      `Contains modified Copernicus Sentinel data ${candidate.day.slice(0, 4)} · CDSE`,
+    );
+    assert.equal(card.getAttribute('aria-describedby'), credit.id);
+    assert.equal(credit.getAttribute('title'), credit.textContent);
+    assert.ok(f.part(card, 'ri-thumb-img'));
+  }
+  const nasaCard = f.card(S18);
+  assert.equal(
+    f.part(nasaCard, 'ri-thumb-credit'),
+    null,
+    'NASA credits and card structure are unchanged',
+  );
+  f.readout.destroy();
+  f.layer.destroy();
 });

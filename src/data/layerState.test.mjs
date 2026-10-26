@@ -2858,3 +2858,31 @@ test('explicit provider switches reach durable state without adopting unrelated 
     coordinator.destroy();
   }
 });
+
+test('S2 acquisition pins and cloud controls round-trip without changing legacy default option shape', () => {
+  const state = createDefaultLayerState();
+  const legacy = { ...state.options['recent-imagery'] };
+  assert.equal(Object.hasOwn(legacy, 's2'), false);
+  assert.equal(Object.hasOwn(legacy, 'maxCloud'), false);
+  const identity = 'a'.repeat(64);
+  state.enabledLayerIds = ['recent-imagery'];
+  state.options['recent-imagery'] = {
+    ...legacy,
+    s2: true,
+    maxCloud: 25,
+    a: `S2:2026-10-01:${identity}`,
+  };
+  const params = new URLSearchParams({ v: '2' });
+  encodeLayerStateParams(params, state);
+  assert.match(params.get('lo'), /1\.a\.C20261001-/);
+  assert.equal(params.get('l'), '1');
+  assert.deepEqual(
+    decodeLayerStateParams(params).options['recent-imagery'],
+    state.options['recent-imagery'],
+  );
+  params.set('lo', `1.a.C20261001-${'b'.repeat(63)}_1.c.1_1.f.101`);
+  const invalid = decodeLayerStateParams(params).options['recent-imagery'];
+  assert.equal(invalid.a, null);
+  assert.equal(Object.hasOwn(invalid, 'maxCloud'), false);
+  assert.equal(invalid.s2, true);
+});

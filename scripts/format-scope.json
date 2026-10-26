@@ -1064,5 +1064,18 @@
   "src/tooling/changelogFragments.test.mjs",
   "src/data/gbfsProxyRateLimit.test.mjs",
   "src/data/routeSegment.test.mjs",
-  "src/terrainHeightsBounds.test.mjs"
+  "src/terrainHeightsBounds.test.mjs",
+  "server/custom/recent-imagery/plugin.js",
+  "server/custom/recent-imagery/cdse.js",
+  "server/custom/recent-imagery/catalog.js",
+  "server/custom/recent-imagery/cache.js",
+  "server/custom/recent-imagery/budget.js",
+  "src/custom/imagery/source.js",
+  "src/custom/imagery/viewport.js",
+  "src/custom/imagery/export.js",
+  "src/custom/imagery/provider.test.mjs",
+  "src/custom/imagery/source.test.mjs",
+  "src/custom/imagery/fit.test.mjs",
+  "src/custom/imagery/export.test.mjs",
+  "src/custom/imagery/hud.test.mjs"
 ]

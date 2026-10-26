@@ -80,7 +80,7 @@ test('real published corpus and all canonical source products are searchable wit
   assert.equal(
     index.documents.filter((document) => document.kind === 'source-product')
       .length,
-    149,
+    150,
   );
   const oldFetch = globalThis.fetch;
   try {

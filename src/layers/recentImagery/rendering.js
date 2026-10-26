@@ -72,6 +72,7 @@ export function createRecentImageryRenderer({
   cesium = Cesium,
   tileTemplate = gibsTemplate,
   credit = 'NASA GIBS',
+  imageSource = null,
   maxTileRequests = 6,
   requestRender = () => {},
   setTimeoutImpl = (fn, ms) => globalThis.setTimeout(fn, ms),
@@ -80,11 +81,35 @@ export function createRecentImageryRenderer({
   let host = NO_HOST;
   let destroyed = false;
   const admission = { limit: maxTileRequests, inFlight: 0 };
-  /** @type {Record<'a'|'b', null | { layer: object, collection: object, candidate: object, box: object, alpha: number, split: string }>} */
   const owned = { a: null, b: null };
+  const pending = { a: null, b: null };
+  const listeners = new Set();
+  const decodeQueue = [];
+  let activeDecodes = 0;
+  function pumpDecodes() {
+    while (activeDecodes < 2 && decodeQueue.length) {
+      const job = decodeQueue.shift();
+      if (destroyed || owned[job.slotId] !== job.record) {
+        job.resolve(undefined);
+        continue;
+      }
+      activeDecodes++;
+      Promise.resolve()
+        .then(job.request)
+        .then(job.resolve, job.reject)
+        .finally(() => {
+          activeDecodes--;
+          pumpDecodes();
+        });
+    }
+  }
+  function scheduleDecode(slotId, record, request) {
+    return new Promise((resolve, reject) => {
+      decodeQueue.push({ slotId, record, request, resolve, reject });
+      pumpDecodes();
+    });
+  }
 
-  // One timer for both slots: any number of upstream deferrals while it is
-  // armed share the same single retry frame.
   let retryTimer = null;
   const retry = {
     schedule() {
@@ -99,7 +124,11 @@ export function createRecentImageryRenderer({
       retryTimer = null;
     },
   };
-
+  const emit = (event) => {
+    for (const fn of listeners) fn(event);
+  };
+  const rectangle = (box) =>
+    cesium.Rectangle.fromDegrees(box.west, box.south, box.east, box.north);
   function createProvider(candidate, box) {
     const spec = PRODUCTS[candidate.product];
     const provider = new cesium.UrlTemplateImageryProvider({
@@ -108,68 +137,145 @@ export function createRecentImageryRenderer({
       minimumLevel: 0,
       maximumLevel: spec.maxLevel,
       tilingScheme: new cesium.WebMercatorTilingScheme(),
-      rectangle: cesium.Rectangle.fromDegrees(
-        box.west,
-        box.south,
-        box.east,
-        box.north,
-      ),
+      rectangle: rectangle(box),
       credit,
       hasAlphaChannel: spec.format === 'png',
     });
     return admitTileRequests(provider, admission, requestRender, retry);
   }
-
-  function removeOwned(slotId) {
+  function detach(record) {
+    for (const layer of record.layers || [record.layer]) {
+      try {
+        record.collection.remove(layer, true);
+      } catch {
+        /* host already gone */
+      }
+    }
+  }
+  function removeOwned(slotId, { cancel = true } = {}) {
+    if (cancel) {
+      pending[slotId]?.abort.abort();
+      pending[slotId] = null;
+    }
     const record = owned[slotId];
     if (!record) return false;
     owned[slotId] = null;
-    try {
-      record.collection.remove(record.layer, true);
-    } catch {
-      /* the collection is already gone */
-    }
+    detach(record);
+    record.snapshot?.release?.();
     return true;
   }
-
   function applyLook(record) {
-    record.layer.alpha = record.alpha;
-    record.layer.splitDirection =
-      cesium.SplitDirection?.[SPLIT_ENUM[record.split] || 'NONE'] ?? 0;
+    for (const layer of record.layers || [record.layer]) {
+      layer.alpha = record.alpha;
+      layer.splitDirection =
+        cesium.SplitDirection?.[SPLIT_ENUM[record.split] || 'NONE'] ?? 0;
+    }
   }
-
-  function mount(slotId, { candidate, box, alpha, split }) {
-    const layer = host.collection.addImageryProvider(
-      createProvider(candidate, box),
-    );
-    owned[slotId] = {
-      layer,
+  function mount(slotId, input) {
+    const record = {
+      ...input,
+      layers: [],
       collection: host.collection,
-      candidate,
-      box,
-      alpha,
-      split,
+      loaded: false,
+      decoded: new Set(),
+      failed: false,
     };
-    applyLook(owned[slotId]);
+    const { candidate, box, snapshot } = record;
+    const parts = snapshot ? snapshot.parts || [snapshot] : [null];
+    const observed = (provider, index) => {
+      if (typeof provider.requestImage !== 'function') return provider;
+      const request = provider.requestImage.bind(provider);
+      const success = (image) => {
+        if (image && owned[slotId] === record && !record.failed && !destroyed) {
+          record.decoded.add(index);
+          if (!record.loaded && record.decoded.size === parts.length) {
+            record.loaded = true;
+            emit({ type: 'loaded', slotId, candidate });
+          }
+        }
+        return image;
+      };
+      const failure = (error) => {
+        if (
+          candidate.product === 'S2' &&
+          owned[slotId] === record &&
+          !record.failed &&
+          !destroyed
+        ) {
+          record.failed = true;
+          removeOwned(slotId);
+          emit({ type: 'error', slotId, candidate, error, stage: 'decode' });
+        }
+        throw error;
+      };
+      let singleRequest = null;
+      provider.requestImage = (...args) => {
+        if (candidate.product === 'S2') {
+          if (!singleRequest)
+            singleRequest = scheduleDecode(slotId, record, () =>
+              request(...args),
+            ).then(success, failure);
+          return singleRequest;
+        }
+        let result;
+        try {
+          result = request(...args);
+        } catch (error) {
+          return failure(error);
+        }
+        if (result === undefined) return undefined;
+        const observedResult = result?.then
+          ? Promise.resolve(result).then(success, failure)
+          : success(result);
+        return observedResult;
+      };
+      return provider;
+    };
+    try {
+      for (const [index, part] of parts.entries()) {
+        const provider = snapshot
+          ? new cesium.SingleTileImageryProvider({
+              url: part.url,
+              tileWidth: part.width,
+              tileHeight: part.height,
+              rectangle: rectangle(part.bounds || part.metadata?.box || box),
+              credit:
+                snapshot.metadata?.credit ||
+                snapshot.metadata?.attribution ||
+                `Contains modified Copernicus Sentinel data ${candidate.day.slice(0, 4)} · Sentinel Hub/CDSE`,
+            })
+          : createProvider(candidate, box);
+        record.layers.push(
+          host.collection.addImageryProvider(observed(provider, index)),
+        );
+      }
+    } catch (error) {
+      detach(record);
+      throw error;
+    }
+    record.layer = record.layers[0];
+    owned[slotId] = record;
+    applyLook(record);
+    if (snapshot) {
+      // Prime local PNGs independently of Cesium's culling. Otherwise an
+      // offscreen assignment could wait forever for the fit that reveals it.
+      const lease = snapshot.retain?.();
+      const decodes = record.layers.map((layer) => {
+        const provider = layer.imageryProvider || layer.provider;
+        return provider.requestImage(0, 0, 0);
+      });
+      Promise.allSettled(decodes).finally(() => lease?.release?.());
+    }
   }
-
   return {
-    /**
-     * Drape a candidate into a slot. The same candidate on the same host only
-     * updates its look; anything else replaces the slot's layer.
-     * @param {'a'|'b'} slotId
-     * @param {object} candidate
-     * @param {object} box Degrees box.
-     * @param {{ alpha?: number, splitDirection?: 'left'|'right'|'none' }} [look]
-     * @returns {boolean} Whether a layer is now draped for the slot.
-     */
     showSlot(
       slotId,
       candidate,
       box,
       { alpha = 1, splitDirection = 'none' } = {},
     ) {
-      if (destroyed || !candidate?.key || !box) return false;
+      if (destroyed || !SLOT_IDS.includes(slotId) || !candidate?.key || !box)
+        return false;
       if (!host.collection) {
         removeOwned(slotId);
         return false;
@@ -189,22 +295,71 @@ export function createRecentImageryRenderer({
         }
         return true;
       }
+      const task = pending[slotId];
+      if (
+        task &&
+        task.candidate.key === candidate.key &&
+        boxKey(task.box) === boxKey(box)
+      ) {
+        Object.assign(task.look, look);
+        return true;
+      }
       removeOwned(slotId);
-      mount(slotId, { candidate, box, ...look });
-      requestRender('recent-imagery-show');
+      if (candidate.product !== 'S2') {
+        mount(slotId, { candidate, box: { ...box }, ...look });
+        requestRender('recent-imagery-show');
+        return true;
+      }
+      const abort = new AbortController();
+      const load = { candidate, box: { ...box }, look, abort };
+      pending[slotId] = load;
+      Promise.resolve()
+        .then(() => {
+          if (!imageSource?.getImage)
+            throw new Error('Sentinel-2 setup unavailable');
+          return imageSource.getImage(candidate, load.box, {
+            signal: abort.signal,
+          });
+        })
+        .then((snapshot) => {
+          if (
+            destroyed ||
+            abort.signal.aborted ||
+            pending[slotId] !== load ||
+            !host.collection
+          ) {
+            if (pending[slotId] === load) pending[slotId] = null;
+            snapshot?.release?.();
+            return;
+          }
+          pending[slotId] = null;
+          try {
+            mount(slotId, { candidate, box: load.box, snapshot, ...load.look });
+          } catch (error) {
+            snapshot?.release?.();
+            throw error;
+          }
+          requestRender('recent-imagery-show');
+          emit({ type: 'pending', slotId, candidate });
+        })
+        .catch((error) => {
+          if (
+            abort.signal.aborted ||
+            destroyed ||
+            (pending[slotId] && pending[slotId] !== load)
+          )
+            return;
+          pending[slotId] = null;
+          emit({ type: 'error', slotId, candidate, error });
+        });
       return true;
     },
-
-    /** @param {'a'|'b'} slotId */
     hideSlot(slotId) {
-      if (removeOwned(slotId)) requestRender('recent-imagery-hide');
+      const waiting = Boolean(pending[slotId]);
+      if (removeOwned(slotId) || waiting) requestRender('recent-imagery-hide');
     },
-
-    /**
-     * @param {'a'|'b'} slotId
-     * @param {number} alpha 0–1
-     */
     setAlpha(slotId, alpha) {
+      if (pending[slotId]) pending[slotId].look.alpha = clampAlpha(alpha);
       const record = owned[slotId];
       const next = clampAlpha(alpha);
       if (!record || record.alpha === next) return;
@@ -212,26 +367,38 @@ export function createRecentImageryRenderer({
       applyLook(record);
       requestRender('recent-imagery-alpha');
     },
-
-    /**
-     * Move every owned layer to a new host. Layers are rebuilt there, never
-     * re-parented, so the old collection is left as it was found.
-     * @param {{ collection: object | null, kind: string }} nextHost
-     */
     rebind(nextHost) {
       host = nextHost || NO_HOST;
       let changed = false;
+      if (!host.collection)
+        for (const id of SLOT_IDS) {
+          pending[id]?.abort.abort();
+          pending[id] = null;
+        }
       for (const slotId of SLOT_IDS) {
         const record = owned[slotId];
         if (!record || record.collection === host.collection) continue;
-        removeOwned(slotId);
+        owned[slotId] = null;
+        detach(record);
         changed = true;
-        if (host.collection && !destroyed) mount(slotId, record);
+        if (host.collection && !destroyed) {
+          try {
+            mount(slotId, record);
+          } catch (error) {
+            record.snapshot?.release?.();
+            queueMicrotask(() =>
+              emit({
+                type: 'error',
+                slotId,
+                candidate: record.candidate,
+                error,
+              }),
+            );
+          }
+        } else record.snapshot?.release?.();
       }
       if (changed) requestRender('recent-imagery-rebind');
     },
-
-    /** What is draped right now, per slot. */
     getOwned() {
       const out = {};
       for (const slotId of SLOT_IDS) {
@@ -247,21 +414,49 @@ export function createRecentImageryRenderer({
       }
       return out;
     },
-
-    /** Number of layers this renderer owns (never above two). */
+    getDisplayState() {
+      return Object.fromEntries(
+        SLOT_IDS.map((slotId) => {
+          const record = owned[slotId];
+          const task = pending[slotId];
+          return [
+            slotId,
+            record
+              ? {
+                  candidate: record.candidate,
+                  box: record.box,
+                  loaded: record.loaded,
+                  nativeResolutionM:
+                    PRODUCTS[record.candidate.product]?.resolutionM,
+                  metadata: record.snapshot?.metadata,
+                }
+              : task
+                ? { candidate: task.candidate, box: task.box, loaded: false }
+                : null,
+          ];
+        }),
+      );
+    },
+    getSnapshot(slotId) {
+      return owned[slotId]?.loaded
+        ? owned[slotId].snapshot?.retain?.() || null
+        : null;
+    },
+    subscribe(listener) {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
     ownedCount() {
       return SLOT_IDS.filter((slotId) => owned[slotId]).length;
     },
-
-    /** Remove everything and refuse further work. */
     destroy() {
       if (destroyed) return;
       destroyed = true;
       retry.cancel();
-      let changed = false;
-      for (const slotId of SLOT_IDS) changed = removeOwned(slotId) || changed;
+      for (const slotId of SLOT_IDS) removeOwned(slotId);
+      listeners.clear();
+      pumpDecodes();
       host = NO_HOST;
-      if (changed) requestRender('recent-imagery-destroy');
     },
   };
 }

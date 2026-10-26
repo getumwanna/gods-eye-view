@@ -1074,6 +1074,7 @@
       "src/layers/recentImagery/model.js",
       "src/layers/recentImagery/catalog.js",
       "src/layers/recentImagery/rendering.js",
+      "src/custom/imagery/source.js",
       "src/layers/recentImagery/thumbnails.js",
       "src/maps/imageryHost.js",
       "src/i18n/index.js",
@@ -2500,7 +2501,10 @@
       "src/voice/providerCapabilities.js",
       "src/voice/geminiSession.js",
       "src/voice/geminiAudio.js",
-      "src/voice/geminiCaptureWorklet.js"
+      "src/voice/geminiCaptureWorklet.js",
+      "src/custom/imagery/viewport.js",
+      "src/custom/imagery/source.js",
+      "src/custom/imagery/export.js"
     ],
     "external": [
       "hls.js",
@@ -3067,7 +3071,9 @@
       "src/layers/airQuality/source.js",
       "src/ui/statusText.js",
       "src/ui/layerNames.js",
-      "src/layers/streetLevel/providers/mapillary/policy.js"
+      "src/layers/streetLevel/providers/mapillary/policy.js",
+      "src/custom/imagery/viewport.js",
+      "src/custom/imagery/source.js"
     ],
     "external": [
       "hls.js",

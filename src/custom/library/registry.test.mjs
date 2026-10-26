@@ -97,7 +97,7 @@ test('authoritative registry covers existing layer/setup/guide identities withou
     result.projection.layers.map((layer) => layer.id).sort(),
     [...REGISTERED_LAYER_IDS, 'local-adsb'].sort(),
   );
-  assert.equal(result.stats.guides, 38);
+  assert.equal(result.stats.guides, 39);
   assert.equal(result.stats.layers, 32);
   assert.equal(result.stats.sections, 25);
   assert.equal(result.stats.documents, 7);

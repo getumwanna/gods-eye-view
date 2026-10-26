@@ -1,3 +1,4 @@
+import { createFreeRecentImagerySource } from '../custom/imagery/source.js';
 import { createDirectionsSource } from '../layers/directions/source.js';
 import { createRecentImagerySource } from '../layers/recentImagery/source.js';
 import { createOpenFreeMapSource } from '../sources/openFreeMap.js';
@@ -31,7 +32,9 @@ export function createStandaloneLayerSources(overrides = {}) {
   const defaults = {
     ...createReferenceSources(),
     directions: createDirectionsSource(),
-    'recent-imagery': createRecentImagerySource(),
+    'recent-imagery': createFreeRecentImagerySource({
+      nasaSource: createRecentImagerySource(),
+    }),
     flights: createFlightSource(),
     military: createMilitarySource(),
     vessels: createVesselSource({

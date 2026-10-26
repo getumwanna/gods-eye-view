@@ -1,15 +1,80 @@
 # Phase 2b – I1: Free Recent Imagery
 
+## Adopted PU safety calibration — October 25, 2026
+
+The user reported CDSE monthly limits of 10,000 requests and 10,000 PU, reset
+November 1. GEV retains **8,000 requests AND 8,000 PU**, plus its existing
+120 requests / 120 PU per minute scheduler limits. No provider calls were
+authorized for this reconciliation.
+
+Matched October 23 usage is 80 requests / 81.95134765625 local PU versus the
+dashboard's 80 / 97. The previous 81-request receipt included October 22's
+failed 1 request / 0.01 PU reservation. The 18.3629% excess cannot be explained
+by ordinary daily-total rounding. Historical remaining-quota headers were not
+retained; the precise charging cause remains unresolved. CDSE's documented
+0.005 PU Process minimum and excluded dataMask band do not explain it.
+
+The user authorized a conservative correction: **multiply model PU by 1.25**
+before dispatch, including retries/unknown outcomes, monthly admission and
+rolling-minute pacing. This is an empirical safety allowance, not a verified
+provider formula or an account-wide guarantee. A larger numeric spending header
+tops up the reservation; a smaller or missing one never refunds it. Warm cache
+reuse remains zero. Version 2 stores the factor; locked legacy migration scales
+the current month and events once without resetting request/OAuth counts,
+changing cached imagery or rewriting historical receipts. Passive status reads
+project legacy values without writing storage.
+
+The following replaces earlier capacity allowances. It scales the retained
+three-date measurements; there was no new acquisition, changed box or reduced
+resolution. Each session includes Catalog, visible previews and native grids.
+
+| Case | Cold requests / calibrated PU | Cold sessions/month | With one measured scroll: requests / calibrated PU | Sessions/month with scroll |
+| --- | ---: | ---: | ---: | ---: |
+| Typical 1,000 × 800 | 8 / 11.7081 | 683 | 10 / 11.8338 | 676 |
+| Heavy 2,040 × 2,040 | 7 / 59.7790 | 133 | 10 / 60.0134 | 133 |
+| Oversized 2,500 × 800, clipped chunks | 35 / 28.7228 | 228 | 38 / 28.7979 | 210 |
+
+Capacity is `floor(min(8000 / requests, 8000 / calibrated PU))`; extra cards,
+retries and other clients reduce usable capacity. The migration preserved the
+current ledger's 98 requests / 7 OAuth attempts and scaled 115.7956 PU to
+144.7445. There is no matching local interval for the user's 86/108 export;
+failed/unknown reservations are retained, and 11 of the 12 excess local requests
+remain unclassified beyond the known October 22 failure. Do not replace local
+counts with that export. Full evidence and qualifications:
+`.gev-logs/phase2b-i1/quota-reconciliation-zqgSfz/REPORT.md` and
+`docs/custom/FREE-IMAGERY-VALIDATION.md`. The 50-path scope is unchanged; final
+visual review/explicit I1 acceptance and other Phase 2b boundaries remain.
+
+[CDSE PU accounting](https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Overview/ProcessingUnit.html)
+
 Decision record and file-level plan, October 21, 2026.
 
-**Current authorization checkpoint — October 21, 2026:** Phase 2a M3/M4 and final
+**Historical authorization checkpoint — October 21, 2026:** Phase 2a M3/M4 and final
 Phase 2a acceptance are complete. This I1 plan remains approved as documentation
 only; implementation is **deferred until the user's separate explicit go-ahead**.
 The 47-path inventory, quota/request model, scope and acceptance gates are unchanged.
 No account, credentials, runtime code, dependencies or upstream edits are authorized
 by recording Phase 2a acceptance. Other Phase 2b work stays deferred.
 
-## Authorization and sequence
+## Implementation go-ahead and count amendment — October 22, 2026
+
+The user explicitly approved I1 implementation under the original 47-path plan,
+free data only, with all other Phase 2b work deferred. Phase 2a is accepted. No
+paid provider, trial/card requirement, dependency, NAIP or Earth Search addition
+is approved. The user reports the account verified and credentials saved locally;
+passive local configuration presence is verified, not provider authentication.
+
+The reviewed inventory is 150 products / 39 guides. The user explicitly approved
+adding only `src/custom/library/registry.test.mjs`,
+`src/custom/library/rendering.test.mjs` and `src/custom/library/search.test.mjs`:
+**47→50 paths**, with the **23 original-upstream paths unchanged**. Only the
+reviewed exact-count changes are applied: two guide counts 38→39 and one product
+count 149→150. No assertion or acceptance gate is weakened. The complete Node 24
+unit/allocation runner now passes **8,377 / 0 failed / 1 Windows-only skip**.
+Earlier failures remain retained. User QA, CDSE authentication/rendering and
+measurements, and final I1 acceptance remain pending.
+
+## Historical authorization and sequence
 
 The user approved this plan and its QA-file amendment, expressly authorizing
 documentation updates now. Implementation still requires both Phase 2a closeout
@@ -198,7 +263,7 @@ images are about 32 MiB decoded, or 64 MiB with one GPU copy, before intermediat
 Budget decoded/GPU/transient allocations, serialize heavy replacement/export
 work when needed and dispose obsolete resources/object URLs. Queue/refuse work
 that cannot fit the memory policy; do not silently lower the source sampling.
-No extra dependency or file beyond the approved 47-path inventory is expected.
+No extra dependency or file beyond the approved 50-path inventory is expected.
 
 ## Revised session-capacity estimate, before implementation
 
@@ -253,6 +318,37 @@ calls, PU, cache hits, queue/backoff behavior and memory peaks; do not reduce
 resolution or change the box to hide its cost. Reconcile dashboard usage where
 possible without logging secrets. Revise capacity from evidence, never weaken
 the ceilings.
+
+## Historical native fixture measurements — October 22, 2026
+
+These are the original uncalibrated results. The October 25 safety calibration
+above supersedes their reservation and session-capacity allowances.
+
+The initial transport-fixture implementation measures the following cold
+sessions. These are deterministic mocked CDSE responses and conservative local
+reservations, **not authenticated provider consumption, actual scene coverage,
+or rendered memory/GPU measurements**. The original estimates above remain as
+planning history. Aspect-preserving previews use fewer pixels than the original
+128-square estimate. The unchanged conservative allowance remains about 660
+cold sessions/month; other clients and retries reduce available capacity.
+
+| Fixture scenario | Native output per date | Unique dates | Provider requests | Reserved PU | Theoretical sessions under both local ceilings |
+| --- | --- | ---: | ---: | ---: | ---: |
+| Typical, three visible previews | 1,000 × 800 | 2 | 6 | 6.2644 | 1,277 |
+| Typical, three visible previews | 1,000 × 800 | 3 | 7 | 9.3162 | 858 |
+| Near-cap heavy box, three visible previews | 2,040 × 2,040 | 2 | 6 | 31.9480 | 250 |
+| Near-cap heavy box, three visible previews | 2,040 × 2,040 | 3 | 7 | 47.8232 | 167 |
+| Oversized fixed box, clipped 512-pixel chunks | 2,500 × 800 | 2 | 24 | 15.3288 | 333 |
+| Exact warm repeat of each fixture | Unchanged | Unchanged | 0 additional | 0 additional | No additional imagery charge |
+
+OAuth acquisition is one separate network call in these fixtures. Full PNGs are
+reused for A/B and export. The server and browser use independent bounded
+working-memory admission; the browser shares its 128 MiB estimate across native
+images, visible previews and export buffers. Near-cap A/B/export may explicitly
+refuse admission rather than reduce resolution. Real-session measurements,
+provider dashboard reconciliation where available, and user rendering/export
+checks remain acceptance gates. Evidence:
+`.gev-logs/phase2b-i1/implementation-fioktvbe/provider-tests.log`.
 
 ## Bounded local cache and terms
 
@@ -327,13 +423,13 @@ not evade limits with multiple accounts. Recheck these terms when I1 starts.
   Contains modified Copernicus Sentinel data [capture year].
   Add Sentinel Hub/CDSE service provenance; preserve separate years for A/B.
 
-## Expected file inventory
+## Approved file inventory — 50 paths
 
-These 47 paths reproduce the approved expected scope, including this plan and the
-explicitly approved QA amendment. They are an I1-specific future allowlist, not
-permission to use Phase 2a's upstream allowance for imagery or to start I1 now.
-No package manifest/lockfile change is planned.
-Any additional original-upstream repair requires an explicit amendment.
+The approved inventory is exactly 50 paths: the original 47-path plan plus the
+three narrowly approved project-owned test files. The original-upstream
+allowance remains23. No package manifest/lockfile change is planned. Any further
+scope expansion requires an explicit amendment. Implementation is authorized;
+final I1 acceptance remains separate.
 
 ### Original-upstream edits: 23
 
@@ -363,7 +459,7 @@ src/i18n/locales/es.json
 src/i18n/locales/ru.json
 ~~~
 
-### Existing project-owned edits: nine
+### Existing project-owned edits: 12
 
 ~~~text
 AGENTS.md
@@ -374,6 +470,9 @@ build/libraryValidation.js
 content/sources.json
 src/custom/shared/sourceRegistry.generated.js
 src/custom/library/content.test.mjs
+src/custom/library/registry.test.mjs
+src/custom/library/rendering.test.mjs
+src/custom/library/search.test.mjs
 scripts/qa-custom-hub.mjs
 ~~~
 

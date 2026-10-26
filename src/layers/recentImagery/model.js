@@ -23,7 +23,7 @@ const WVS_ENDPOINT = 'https://wvs.earthdata.nasa.gov/api/v1/snapshot';
 const KM_PER_DEG_LAT = 111.32;
 const QUANTUM = 100000;
 const DAY_MS = 86_400_000;
-const PRODUCT_ORDER = ['S30', 'L30', 'VIIRS'];
+const PRODUCT_ORDER = ['S2', 'S30', 'L30', 'VIIRS'];
 const MONTHS = 'Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec'.split(' ');
 
 /**
@@ -32,6 +32,14 @@ const MONTHS = 'Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec'.split(' ');
  * `source` is the on/off group the row chips toggle.
  */
 export const PRODUCTS = Object.freeze({
+  S2: Object.freeze({
+    label: 'Sentinel-2 L2A', // i18n-ignore: product code
+    name: msg('Sentinel-2 L2A'),
+    source: 's2',
+    sensor: msg('Sentinel-2 L2A via CDSE'),
+    resolutionM: 10,
+    format: 'png',
+  }),
   S30: Object.freeze({
     label: 'HLS S30', // i18n-ignore: product code
     name: msg('Sentinel-2'),
@@ -306,8 +314,16 @@ export function candidateKey(product, day) {
 
 /** Split a candidate key; null when the product is unknown or the day invalid. */
 export function parseCandidateKey(key) {
-  const match = /^(S30|L30|VIIRS):(\d{4}-\d{2}-\d{2})$/.exec(String(key));
-  if (!match || !isValidDay(match[2])) return null;
+  const match =
+    /^(S30|L30|VIIRS|S2):(\d{4}-\d{2}-\d{2})(?::([a-f0-9]{64}))?$/.exec(
+      String(key),
+    );
+  if (
+    !match ||
+    !isValidDay(match[2]) ||
+    (match[1] === 'S2') !== Boolean(match[3])
+  )
+    return null;
   return { product: match[1], day: match[2] };
 }
 
@@ -579,7 +595,8 @@ export function formatCandidateReadout(candidate, now = new Date(), words) {
  */
 export function gibsTemplate(product, day) {
   const spec = PRODUCTS[product];
-  if (!spec) throw new TypeError(`Unknown imagery product: ${product}`);
+  if (!spec || !spec.gibsLayer)
+    throw new TypeError(`Unknown NASA imagery product: ${product}`);
   return `https://gibs-{s}.earthdata.nasa.gov/wmts/epsg3857/best/${spec.gibsLayer}/default/${day}/GoogleMapsCompatible_Level${spec.maxLevel}/{z}/{y}/{x}.${spec.format}`;
 }
 
@@ -599,7 +616,8 @@ export function wvsSnapshotUrl({
 }) {
   const spec = PRODUCTS[product];
   const normalized = normalizeBox(box);
-  if (!spec) throw new TypeError(`Unknown imagery product: ${product}`);
+  if (!spec || !spec.gibsLayer)
+    throw new TypeError(`Unknown NASA imagery product: ${product}`);
   if (!normalized) throw new TypeError('A finite box is required');
   const bbox = [
     normalized.south,

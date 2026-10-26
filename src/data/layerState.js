@@ -260,8 +260,18 @@ function boundedIntegerOption(key, token, defaultValue, { min, max }) {
  * The calendar is checked both ways, and "today" is never consulted, so a
  * link decodes the same whenever it is opened.
  */
-const IMAGERY_LETTERS = Object.freeze({ S30: 'S', L30: 'L', VIIRS: 'V' });
-const IMAGERY_PRODUCTS = Object.freeze({ S: 'S30', L: 'L30', V: 'VIIRS' });
+const IMAGERY_LETTERS = Object.freeze({
+  S30: 'S',
+  L30: 'L',
+  VIIRS: 'V',
+  S2: 'C',
+});
+const IMAGERY_PRODUCTS = Object.freeze({
+  S: 'S30',
+  L: 'L30',
+  V: 'VIIRS',
+  C: 'S2',
+});
 
 function imageryKey(product, year, month, day) {
   const time = Date.UTC(Number(year), Number(month) - 1, Number(day));
@@ -279,22 +289,30 @@ function imageryPinOption(key, token) {
     token,
     defaultValue: null,
     normalize: (value) => {
-      const match = /^(S30|L30|VIIRS):(\d{4})-(\d{2})-(\d{2})$/.exec(
-        typeof value === 'string' ? value.trim() : '',
-      );
-      return match ? imageryKey(match[1], match[2], match[3], match[4]) : null;
+      const match =
+        /^(S30|L30|VIIRS|S2):(\d{4})-(\d{2})-(\d{2})(?::([a-f0-9]{64}))?$/.exec(
+          typeof value === 'string' ? value.trim() : '',
+        );
+      if (!match || (match[1] === 'S2') !== Boolean(match[5])) return null;
+      const base = imageryKey(match[1], match[2], match[3], match[4]);
+      return base && (match[5] ? `${base}:${match[5]}` : base);
     },
     encode: (value) => {
-      const [product, day] = value.split(':');
-      return `${IMAGERY_LETTERS[product]}${day.replaceAll('-', '')}`;
+      const [product, day, identity] = value.split(':');
+      return `${IMAGERY_LETTERS[product]}${day.replaceAll('-', '')}${identity ? `-${identity}` : ''}`;
     },
     decode: (value) => {
-      const match = /^([SLV])(\d{4})(\d{2})(\d{2})$/.exec(
+      const match = /^([SLVC])(\d{4})(\d{2})(\d{2})(?:-([a-f0-9]{64}))?$/.exec(
         typeof value === 'string' ? value : '',
       );
-      return match
-        ? imageryKey(IMAGERY_PRODUCTS[match[1]], match[2], match[3], match[4])
-        : null;
+      if (!match || (match[1] === 'C') !== Boolean(match[5])) return null;
+      const base = imageryKey(
+        IMAGERY_PRODUCTS[match[1]],
+        match[2],
+        match[3],
+        match[4],
+      );
+      return base && (match[5] ? `${base}:${match[5]}` : base);
     },
   });
 }
@@ -428,6 +446,11 @@ const OPTION_GROUPS = Object.freeze({
       boundedIntegerOption('split', 'p', 50, { min: 0, max: 100 }),
     ),
     booleanOption('viirs', 'v', false),
+    Object.freeze({ ...booleanOption('s2', 'c', false), sparseDefault: true }),
+    Object.freeze({
+      ...boundedIntegerOption('maxCloud', 'f', 100, { min: 0, max: 100 }),
+      sparseDefault: true,
+    }),
   ]),
   'street-level': Object.freeze([
     // Preserve the published Mapillary token; custom switches use stable IDs.
@@ -806,7 +829,9 @@ export function optionSpecs(ownerId) {
 
 function defaultsForOwner(ownerId) {
   return Object.fromEntries(
-    optionSpecs(ownerId).map((spec) => [spec.key, spec.defaultValue]),
+    optionSpecs(ownerId)
+      .filter((spec) => !spec.sparseDefault)
+      .map((spec) => [spec.key, spec.defaultValue]),
   );
 }
 
@@ -817,7 +842,9 @@ function normalizeOwnerOptions(ownerId, candidate = {}) {
     const value = Object.hasOwn(input, spec.key)
       ? spec.normalize(input[spec.key])
       : null;
-    normalized[spec.key] = value === null ? spec.defaultValue : value;
+    const resolved = value === null ? spec.defaultValue : value;
+    if (spec.sparseDefault && resolved === spec.defaultValue) continue;
+    normalized[spec.key] = resolved;
   }
   return normalized;
 }
@@ -987,6 +1014,8 @@ export function encodeLayerStateParams(params, state) {
       // Omit against what an ABSENT token means to a DECODER, not against the
       // current default — those are the same thing for every option whose
       // default never moved, and deliberately different for one whose did.
+      if (spec.sparseDefault && !Object.hasOwn(ownerOptions, spec.key))
+        continue;
       if (ownerOptions[spec.key] === absentTokenValue(spec)) continue;
       encodedOptions.push(
         `${ownerEntry.token}.${spec.token}.${spec.encode(ownerOptions[spec.key])}`,

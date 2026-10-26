@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
+  PRODUCTS,
   boxFromPin,
   boxFromRectangle,
   boxSideKm,
@@ -436,4 +437,32 @@ test('thumbnails load the focused card, then the visible cards outward, then the
   assert.deepEqual(thumbnailOrder(19, 17, 19, 20), [19, 18, 17, 16, 15]);
   assert.deepEqual(thumbnailOrder(50, 7, 3, 10), [7, 6, 5, 4, 3, 8, 2, 9, 1]);
   assert.deepEqual(thumbnailOrder(0, 0, 0, 0), []);
+});
+
+test('native S2 is distinct from HLS and requires an exact acquisition identity', () => {
+  const identity = 'a'.repeat(64);
+  assert.equal(PRODUCTS.S2.resolutionM, 10);
+  assert.equal(PRODUCTS.S30.resolutionM, 30);
+  assert.deepEqual(parseCandidateKey(`S2:2026-10-01:${identity}`), {
+    product: 'S2',
+    day: '2026-10-01',
+  });
+  for (const key of [
+    'S2:2026-10-01',
+    `S2:2026-02-30:${identity}`,
+    `S30:2026-10-01:${identity}`,
+  ])
+    assert.equal(parseCandidateKey(key), null);
+  assert.throws(() => gibsTemplate('S2', '2026-10-01'), /NASA/);
+  assert.throws(
+    () =>
+      wvsSnapshotUrl({
+        product: 'S2',
+        day: '2026-10-01',
+        box: BOX,
+        width: 128,
+        height: 128,
+      }),
+    /NASA/,
+  );
 });

@@ -802,3 +802,93 @@ test('case validation rejects missing bodies, unsafe URLs, invalid classificatio
       );
     });
 });
+
+test('I1 admits only the reviewed environment-only CDSE capability and custom-plan evidence', async (t) => {
+  const f = await fixture(t);
+  const result = await validateLibrary({
+    root: f.root,
+    checkProjection: false,
+  });
+  assert.equal(result.ok, true, JSON.stringify(result.errors));
+  const capability = result.registry.capabilities.find(
+    (value) => value.id === 'cdse',
+  );
+  assert.equal(capability.setupKeyId, null);
+  assert.equal(capability.visibility, 'environment-only');
+  assert.deepEqual(capability.environmentNames, [
+    'CDSE_CLIENT_ID',
+    'CDSE_CLIENT_SECRET',
+  ]);
+  const guide = result.registry.guideGroups.find(
+    (value) => value.id === 'cdse',
+  );
+  assert.equal(guide.setupKeyId, null);
+  assert.equal(guide.setupUrl, null);
+  assert.deepEqual(guide.sourceProductRefs, ['cdse/s2-l2a']);
+  const product = result.registry.sources.find((value) => value.id === 'cdse')
+    .products[0];
+  assert.deepEqual(product.access.requiredCapabilityRefs, ['cdse']);
+  assert.equal(product.evidence[0].path, 'docs/custom/FREE-IMAGERY-PLAN.md');
+  assert.equal(
+    product.evidence[0].revision,
+    'a860327edc694fbcc313eb0791629fe88070a0b0',
+  );
+  assert.notEqual(
+    product.evidence[0].revision,
+    result.registry.upstreamRevision,
+  );
+  assert.equal(result.stats.products, 150);
+  assert.equal(result.stats.guides, 39);
+});
+
+test('I1 cannot widen environment names, POWER UP identities or frozen upstream provenance', async (t) => {
+  const cases = [
+    [
+      'extra environment variable',
+      (f) =>
+        f.registry.capabilities
+          .find((value) => value.id === 'cdse')
+          .environmentNames.push('CDSE_TEST_EXTRA'),
+      'IDENTITY_MISMATCH',
+    ],
+    [
+      'invented POWER UP identity',
+      (f) => {
+        const guide = f.registry.guideGroups.find(
+          (value) => value.id === 'cdse',
+        );
+        guide.setupKeyId = 'cdse';
+        guide.setupUrl = '/?setup=1';
+      },
+      'UNKNOWN_REFERENCE',
+    ],
+    [
+      'custom facts attributed to upstream',
+      (f) => {
+        f.registry.sources.find(
+          (value) => value.id === 'cdse',
+        ).products[0].evidence[0].revision = f.registry.upstreamRevision;
+      },
+      'PIN_MISMATCH',
+    ],
+    [
+      'custom-plan revision used for another path',
+      (f) => {
+        f.registry.sources.find(
+          (value) => value.id === 'cdse',
+        ).products[0].evidence[0].path = 'src/custom/shared/layerMetadata.js';
+      },
+      'PIN_MISMATCH',
+    ],
+  ];
+  for (const [name, mutate, code] of cases)
+    await t.test(name, async (child) => {
+      const f = await fixture(child);
+      mutate(f);
+      await f.saveRegistry();
+      rejected(
+        await validateLibrary({ root: f.root, checkProjection: false }),
+        code,
+      );
+    });
+});

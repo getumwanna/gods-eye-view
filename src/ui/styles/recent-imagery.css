@@ -535,3 +535,54 @@ body.gev-imagery-box .cesium-widget canvas {
     max-height: 48vh;
   }
 }
+
+/* Source and camera controls wrap within the existing rail at narrow widths. */
+.ri-free-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.ri-cloud-filter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+}
+.ri-cloud-filter input {
+  width: 50px;
+  color: inherit;
+  background: transparent;
+  border: 1px solid #38bdf866;
+  border-radius: 3px;
+  padding: 3px;
+}
+.ri-usage,
+.ri-fallback,
+.ri-source-credit {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  font-size: 10px;
+  line-height: 1.5;
+}
+.ri-fallback {
+  color: #fbbf24;
+}
+
+/* Keep a source/year notice with every displayed S2 preview, even without a pin. */
+.recent-imagery-readout .ri-thumb-credit {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  padding: 1px 2px;
+  background: rgba(5, 12, 18, 0.94);
+  color: #ffffff;
+  font-size: 7px;
+  line-height: 8px;
+  letter-spacing: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  pointer-events: none;
+}

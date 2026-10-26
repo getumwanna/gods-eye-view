@@ -1,3 +1,7 @@
+import {
+  createCreditedImageryExport,
+  releaseCreditedImageryExport,
+} from '../custom/imagery/export.js';
 /**
  * Recent Imagery readout for the right rail (`#recent-imagery-panel`). The
  * body is a fixed stack in which no block changes height and no control
@@ -113,7 +117,7 @@ const appearedDocuments = new WeakSet();
 
 const sensorLine = (product) =>
   PRODUCTS[product]
-    ? `${t(PRODUCTS[product].name)} · ${displayMetres(PRODUCTS[product].resolutionM)}`
+    ? `${product === 'S2' ? 'CDSE · ' : ''}${t(PRODUCTS[product].name)} · ${displayMetres(PRODUCTS[product].resolutionM)}${product === 'S2' ? ` · ${t('Static')}` : ''}`
     : product || '';
 const utcTime = (iso) => (hhmm(iso) ? `${hhmm(iso)}Z` : '');
 const longerSideKm = (size) =>
@@ -208,6 +212,7 @@ export function createRecentImageryPanel({
   fetchImpl = globalThis.fetch?.bind(globalThis),
   createObjectUrl = (blob) => URL.createObjectURL(blob),
   revokeObjectUrl = (url) => URL.revokeObjectURL(url),
+  creditedExport = createCreditedImageryExport,
   requestRender = () => viewer?.scene?.requestRender?.(),
 } = {}) {
   const document = container?.ownerDocument;
@@ -267,6 +272,69 @@ export function createRecentImageryPanel({
   zoomIn.id = 'ri-zoom-in';
   zoomIn.type = 'button';
   zoomIn.title = t('Fly in until the view fits the 1,000 km limit');
+
+  const freeControls = el('div', 'ri-block ri-free-controls', root);
+  freeControls.id = 'ri-free-controls';
+  const fit = el(
+    'button',
+    'data-toggle-chip',
+    freeControls,
+    t('Fit imagery resolution'),
+  );
+  fit.id = 'ri-fit-resolution';
+  fit.type = 'button';
+  const restore = el(
+    'button',
+    'data-toggle-chip',
+    freeControls,
+    t('Restore view'),
+  );
+  restore.id = 'ri-restore-view';
+  restore.type = 'button';
+  const cloudLabel = el(
+    'label',
+    'ri-cloud-filter',
+    freeControls,
+    t('S2 max scene cloud'),
+  );
+  const cloudFilter = el('input', '', cloudLabel);
+  Object.assign(cloudFilter, {
+    id: 'ri-max-cloud',
+    type: 'number',
+    min: '0',
+    max: '100',
+    step: '1',
+    value: '100',
+  });
+  cloudFilter.setAttribute(
+    'aria-label',
+    t('Sentinel-2 maximum scene cloud percent'),
+  );
+  cloudLabel.title = t(
+    'Scene cloud is not cloud measured inside your box. 100 shows all, including unknown.',
+  );
+  const usageLine = el('div', 'ri-block ri-usage', root);
+  usageLine.id = 'ri-cdse-usage';
+  usageLine.setAttribute('role', 'status');
+  const usageText = el('span', '', usageLine);
+  const usageDashboard = el('a', '', usageLine, t('CDSE account usage'));
+  usageDashboard.href = 'https://shapps.dataspace.copernicus.eu/dashboard/';
+  usageDashboard.target = '_blank';
+  usageDashboard.rel = 'noopener noreferrer';
+  const fallbackLine = el('div', 'ri-block ri-fallback', root);
+  fallbackLine.id = 'ri-sentinel-fallback';
+  fallbackLine.setAttribute('role', 'status');
+  fallbackLine.setAttribute('aria-live', 'polite');
+  const creditsLine = el('div', 'ri-block ri-source-credit', root);
+  creditsLine.id = 'ri-source-credit';
+  layer.setImageryViewportReader?.(() => ({
+    canvasRect: viewer?.scene?.canvas?.getBoundingClientRect?.(),
+    panelRects: [...(document.querySelectorAll?.('[data-panel-id]') || [])]
+      .filter(
+        (node) => !node.hidden && node.getBoundingClientRect?.().width > 0,
+      )
+      .map((node) => node.getBoundingClientRect()),
+  }));
 
   const strip = el('div', 'ri-block ri-strip', root);
   strip.id = 'ri-strip';
@@ -358,6 +426,18 @@ export function createRecentImageryPanel({
 
   container.appendChild(root);
 
+  listen(fit, 'click', () => layer.fitImageryResolution?.());
+  listen(restore, 'click', () => {
+    layer.restoreImageryView?.();
+    render();
+  });
+  listen(cloudFilter, 'change', () => {
+    layer.setMaxCloud?.(
+      String(cloudFilter.value).trim() === '' ? 100 : Number(cloudFilter.value),
+    );
+    renderControls();
+  });
+
   // ---- state ------------------------------------------------------------
   const cards = new Map();
   let stripKeys = '';
@@ -366,6 +446,7 @@ export function createRecentImageryPanel({
   let splitSignature = '';
   let exportError = null;
   const exporting = new Set();
+  const exportAborts = new Map();
   let destroyed = false;
 
   /**
@@ -463,6 +544,10 @@ export function createRecentImageryPanel({
     entry.placeholder = el('span', 'ri-thumb-text', entry.thumb);
     entry.flag = el('span', 'ri-card-flag', entry.thumb);
     entry.start = el('span', 'ri-card-start', entry.thumb, t('START HERE'));
+    if (candidate.product === 'S2') {
+      entry.credit = el('span', 'ri-thumb-credit', entry.thumb);
+      entry.credit.hidden = true;
+    }
     entry.date = el('div', 'ri-card-date', card);
     entry.sensor = el('div', 'ri-card-sensor', card);
     entry.cloud = el('div', 'ri-card-cloud', card);
@@ -494,6 +579,18 @@ export function createRecentImageryPanel({
     const status = candidate.thumbnail?.status || 'unknown';
     const objectUrl = candidate.thumbnail?.objectUrl || null;
     const shown = status === 'present' && Boolean(objectUrl);
+    if (entry.credit) {
+      const year = /^\d{4}-\d{2}-\d{2}$/.test(candidate.day)
+        ? candidate.day.slice(0, 4)
+        : '';
+      // i18n-ignore: required Copernicus attribution and service provenance
+      const credit = `Contains modified Copernicus Sentinel data ${year} · CDSE`;
+      set(entry.credit, 'textContent', credit);
+      set(entry.credit, 'id', `ri-thumb-credit-${index}`);
+      set(entry.credit, 'hidden', !shown);
+      attribute(entry.credit, 'title', credit);
+      attribute(card, 'aria-describedby', shown ? entry.credit.id : '');
+    }
     if (shown && !entry.image) {
       entry.image = el('img', 'ri-thumb-img');
       entry.image.alt = '';
@@ -531,7 +628,11 @@ export function createRecentImageryPanel({
             msg('Newest day with imagery for this box'),
         ),
       );
-    set(entry.date, 'textContent', day);
+    set(
+      entry.date,
+      'textContent',
+      candidate.product === 'S2' ? `${t('Refreshed')} · ${day}` : day,
+    );
     set(entry.sensor, 'textContent', sensorLine(candidate.product));
     set(entry.cloud, 'textContent', cloudText(candidate));
     const empty = status === 'empty';
@@ -604,7 +705,9 @@ export function createRecentImageryPanel({
             ? t('Searching')
             : snapshot.hiddenCount
               ? t('Every day is empty here')
-              : !snapshot.sources.hls && !snapshot.sources.viirs
+              : !snapshot.sources.hls &&
+                  !snapshot.sources.viirs &&
+                  !snapshot.sources.s2
                 ? t('Sources off')
                 : t('No imagery'),
     );
@@ -733,6 +836,51 @@ export function createRecentImageryPanel({
   }
 
   function renderControls() {
+    set(fit, 'disabled', !snapshot.fitAvailable);
+    set(restore, 'disabled', !snapshot.restoreAvailable);
+    set(cloudFilter, 'disabled', !snapshot.sources.s2);
+    set(cloudFilter, 'value', String(snapshot.maxCloud ?? 100));
+    set(fallbackLine, 'textContent', snapshot.fallbackNotice || '');
+    set(fallbackLine, 'hidden', !snapshot.fallbackNotice);
+    const usage = snapshot.usage?.usage || snapshot.usage;
+    const requests =
+      usage?.requests?.reserved ?? usage?.requests?.used ?? usage?.requests;
+    const pu =
+      usage?.pu?.reserved ??
+      usage?.pu?.used ??
+      usage?.processingUnits?.reserved ??
+      usage?.processingUnits ??
+      usage?.pu;
+    const printable = (value) =>
+      typeof value === 'number' && Number.isFinite(value)
+        ? Number(value).toLocaleString(undefined, { maximumFractionDigits: 2 })
+        : 'unknown';
+    const readTime = Date.parse(snapshot.usage?.usageReadAt);
+    const usageRead = Number.isFinite(readTime)
+      ? new Date(readTime).toISOString()
+      : t('unknown');
+    const requestKind =
+      typeof requests === 'number' && Number.isFinite(requests)
+        ? `${t('Refreshed')} · `
+        : '';
+    const puKind =
+      typeof pu === 'number' && Number.isFinite(pu)
+        ? `${t('Estimated reservation')} · `
+        : '';
+    set(usageLine, 'hidden', !snapshot.sources.s2);
+    set(
+      usageText,
+      'textContent',
+      `GEV measured/reserved usage (CDSE local ledger): ${requestKind}${printable(requests)} requests / 8,000 · ${puKind}${printable(pu)} PU / 8,000${usage?.resetsAt ? ` · reset ${new Date(usage.resetsAt).toISOString().slice(0, 10)} UTC` : ''}${usage?.status ? ` · health: ${usage.status}` : snapshot.usage?.status ? ` · health: ${snapshot.usage.status}` : ''}. ${t('Local usage read (last passive check)')}: ${usageRead}. Other account clients are not included.${Number(requests) >= 6400 || Number(pu) >= 6400 ? ' Warning: approaching the local free-tier ceiling.' : ''} `,
+    );
+    const sourceCredits = Object.entries(snapshot.imageryHud?.slots || {})
+      .filter(([, image]) => image.loaded && image.product === 'S2')
+      .map(
+        ([slot, image]) =>
+          `${slot.toUpperCase()}: Sentinel-2 L2A · ${image.day} · Contains modified Copernicus Sentinel data ${image.day?.slice(0, 4)} · Sentinel Hub/CDSE`,
+      );
+    set(creditsLine, 'textContent', sourceCredits.join(' | '));
+    set(creditsLine, 'hidden', !sourceCredits.length);
     const anything = Boolean(snapshot.shown.a || snapshot.shown.b);
     set(opacity, 'disabled', !anything);
     const alphaValue = String(Math.round(snapshot.alpha * 100));
@@ -974,6 +1122,9 @@ export function createRecentImageryPanel({
     const candidate = exportTarget(slotId);
     if (!candidate || !snapshot.box || exporting.has(slotId)) return false;
     exporting.add(slotId);
+    const controller = new AbortController();
+    exportAborts.set(slotId, controller);
+    let creditedBlob = null;
     exportError = null;
     preserveScroll(renderControls);
     // The snapshot is plate carrée: keep the box's degree aspect, with the
@@ -990,17 +1141,34 @@ export function createRecentImageryPanel({
       Math.round(size * Math.min(1, spanLat / spanLon)),
     );
     try {
-      const response = await fetchImpl(
-        wvsSnapshotUrl({
-          product: candidate.product,
-          day: candidate.day,
-          box: snapshot.box,
-          width,
-          height,
-        }),
-      );
-      if (!response?.ok) throw new Error(`HTTP ${response?.status ?? 'error'}`);
-      const blob = await response.blob();
+      let blob;
+      if (candidate.product === 'S2') {
+        const loaded = layer.getImageSnapshot?.(slotId);
+        if (!loaded) throw new Error('Sentinel-2 image is still loading');
+        try {
+          blob = await creditedExport({
+            snapshot: loaded,
+            candidate,
+            signal: controller.signal,
+          });
+          creditedBlob = blob;
+        } finally {
+          loaded.release?.();
+        }
+      } else {
+        const response = await fetchImpl(
+          wvsSnapshotUrl({
+            product: candidate.product,
+            day: candidate.day,
+            box: snapshot.box,
+            width,
+            height,
+          }),
+        );
+        if (!response?.ok)
+          throw new Error(`HTTP ${response?.status ?? 'error'}`);
+        blob = await response.blob();
+      }
       if (destroyed) return false;
       const href = createObjectUrl(blob);
       const anchor = document.createElement('a');
@@ -1022,6 +1190,8 @@ export function createRecentImageryPanel({
         });
       return false;
     } finally {
+      if (creditedBlob) releaseCreditedImageryExport(creditedBlob);
+      exportAborts.delete(slotId);
       exporting.delete(slotId);
       if (!destroyed)
         preserveScroll(() => {
@@ -1184,8 +1354,11 @@ export function createRecentImageryPanel({
     root,
     exportImage,
     destroy() {
+      layer.setImageryViewportReader?.(null);
       if (destroyed) return;
       destroyed = true;
+      for (const controller of exportAborts.values()) controller.abort();
+      exportAborts.clear();
       unsubscribe();
       layer.setToolHandler?.(null);
       split?.destroy();

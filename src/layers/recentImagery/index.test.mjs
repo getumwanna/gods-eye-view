@@ -931,6 +931,7 @@ test('the data-panel row carries only the two source chips', async () => {
     [
       ['hls', 'MORE DETAIL · 30 m', true, { hls: false }],
       ['viirs', 'DAILY OVERVIEW · 250 m', false, { viirs: true }],
+      ['s2', 'SENTINEL-2 · 10 m', false, { s2: true }],
     ],
   );
   f.layer.setParams(chips[1].params);
@@ -1384,4 +1385,353 @@ test('with SELECT BOX armed, Escape clears the preview first and the next Escape
   assert.deepEqual(cancels, ['escape']);
   assert.equal(f.snap().toolActive, false);
   await tool.destroy();
+});
+
+function i1Fixture({ failS2 = false } = {}) {
+  const sentinel = {
+    key: `S2:2026-10-01:${'a'.repeat(64)}`,
+    product: 'S2',
+    id: 'scene-a',
+    day: '2026-10-01',
+    source: 'cdse',
+    cloudPercent: 12,
+    acquisitionTime: '2026-10-01T10:00:00Z',
+    contributors: [
+      {
+        id: 'CDSE-product-a',
+        acquisitionTime: '2026-10-01T10:00:00Z',
+        cloudPercent: 12,
+      },
+    ],
+  };
+  const unknown = {
+    ...sentinel,
+    key: `S2:2026-09-30:${'b'.repeat(64)}`,
+    id: 'scene-b',
+    day: '2026-09-30',
+    cloudPercent: null,
+  };
+  const nasa = candidate('S30', '2026-09-18', 12);
+  const renderer = fakeRenderer(),
+    thumbnails = fakeThumbnails(),
+    fits = [],
+    searches = [];
+  const listeners = new Set();
+  renderer.subscribe = (fn) => {
+    listeners.add(fn);
+    return () => listeners.delete(fn);
+  };
+  const viewport = {
+    fit(images, options) {
+      fits.push({ images, options });
+      return true;
+    },
+    restore: () => true,
+    canRestore: () => fits.length > 0,
+    reset() {},
+  };
+  const layer = createRecentImageryLayer({
+    renderer,
+    thumbnails,
+    host: () => ({ collection: {}, kind: 'globe' }),
+    viewportFactory: () => viewport,
+    usageSource: {
+      getState: () => ({
+        error: { reason: 'CDSE credentials are not configured locally' },
+      }),
+    },
+    catalog: {
+      searchHls: async (query) => {
+        searches.push(query);
+        return { candidates: [nasa] };
+      },
+      searchS2: async () => {
+        if (failS2)
+          throw typeof failS2 === 'object'
+            ? failS2
+            : Object.assign(new Error('do not leak this body'), {
+                code: 'missing_configuration',
+              });
+        return { candidates: [sentinel, unknown] };
+      },
+    },
+  });
+  layer.init({});
+  layer.setSources({ s2: true });
+  layer.enable();
+  layer.setBox(BOX);
+  return {
+    layer,
+    sentinel,
+    unknown,
+    nasa,
+    renderer,
+    thumbnails,
+    fits,
+    searches,
+    error(slotId = 'a') {
+      for (const fn of listeners)
+        fn({
+          type: 'error',
+          slotId,
+          candidate: sentinel,
+          error: Object.assign(new Error('private raw provider message'), {
+            code: 'missing_configuration',
+          }),
+        });
+    },
+  };
+}
+
+test('S2 thumbnails are visible-only; automatic/hover preview never loads full-resolution S2', async () => {
+  const f = i1Fixture();
+  await settle();
+  assert.ok(!f.thumbnails.requested.includes(f.sentinel.key));
+  const index = f.layer
+    .getSnapshot()
+    .candidates.findIndex((c) => c.key === f.sentinel.key);
+  f.layer.setVisibleRange(index, index);
+  assert.ok(f.thumbnails.requested.includes(f.sentinel.key));
+  assert.ok(!f.thumbnails.requested.includes(f.unknown.key));
+  f.layer.preview(f.sentinel.key);
+  assert.ok(
+    !Object.values(f.renderer.getOwned()).some(
+      (record) => record?.key === f.sentinel.key,
+    ),
+  );
+  f.layer.setAssignment('a', f.sentinel.key);
+  assert.equal(f.renderer.getOwned().a.key, f.sentinel.key);
+  f.layer.destroy();
+});
+
+test('fit is one-shot for explicit image and completed A/B, preserves box/search descriptors, and HUD follows draped sources', async () => {
+  const f = i1Fixture();
+  await settle();
+  f.thumbnails.probe(f.nasa.key, 'present');
+  const box = JSON.stringify(f.layer.getSnapshot().box),
+    query = JSON.stringify(f.searches[0].box);
+  f.layer.setAssignment('a', f.sentinel.key);
+  assert.equal(f.fits.length, 1);
+  assert.equal(f.layer.getImageryHudState().slots.a.nativeResolutionM, 10);
+  f.layer.setMode('ab');
+  f.layer.setAssignment('b', f.nasa.key);
+  assert.equal(f.fits.length, 2);
+  assert.deepEqual(
+    f.fits[1].images
+      .map((image) => image.nativeResolutionM)
+      .sort((a, b) => a - b),
+    [10, 30],
+  );
+  f.layer.swapSides();
+  f.layer.setMode('image');
+  f.layer.setMode('ab');
+  assert.equal(f.fits.length, 2);
+  assert.equal(f.layer.fitImageryResolution(), true);
+  assert.equal(f.layer.restoreImageryView(), true);
+  assert.equal(f.fits.length, 3);
+  assert.equal(JSON.stringify(f.layer.getSnapshot().box), box);
+  assert.equal(JSON.stringify(f.searches[0].box), query);
+  assert.equal(f.searches.length, 1);
+  f.layer.disable();
+  assert.equal(f.layer.getImageryHudState(), null);
+  f.layer.destroy();
+});
+
+test('restored S2 assignments never auto-fit and maximum cloud treats unknown separately from zero', async () => {
+  const f = i1Fixture();
+  await settle();
+  f.layer.setParams({ a: f.sentinel.key, s2: true });
+  assert.equal(f.fits.length, 0);
+  f.layer.setMaxCloud(20);
+  await settle();
+  assert.ok(
+    f.layer.getSnapshot().candidates.some((c) => c.key === f.sentinel.key),
+  );
+  assert.ok(
+    !f.layer.getSnapshot().candidates.some((c) => c.key === f.unknown.key),
+  );
+  f.layer.setMaxCloud(100);
+  await settle();
+  assert.ok(
+    f.layer.getSnapshot().candidates.some((c) => c.key === f.unknown.key),
+  );
+  f.layer.destroy();
+});
+
+test('S2 errors visibly identify a real HLS fallback without leaking provider bodies or moving the camera', async () => {
+  const f = i1Fixture();
+  await settle();
+  f.thumbnails.probe(f.nasa.key, 'present');
+  f.layer.setAssignment('a', f.sentinel.key);
+  const fits = f.fits.length;
+  f.error();
+  assert.equal(f.renderer.getOwned().a.key, f.nasa.key);
+  assert.match(
+    f.layer.getSnapshot().fallbackNotice,
+    /^Sentinel-2 unavailable: showing HLS 30 m, CDSE credentials/,
+  );
+  assert.doesNotMatch(f.layer.getSnapshot().fallbackNotice, /private|raw|body/);
+  assert.equal(f.layer.getImageryHudState().slots.a.product, 'S30');
+  assert.equal(f.fits.length, fits);
+  f.layer.destroy();
+});
+
+test('S2 row params start their catalog and complete legacy restores turn S2 back off without new legacy fields', async () => {
+  const f = fixture();
+  await f.ready();
+  let sentinelSearches = 0;
+  f.catalog.searchS2 = async () => {
+    sentinelSearches++;
+    return { candidates: [] };
+  };
+  f.layer.setParams({ s2: true });
+  f.catalog.resolveLast();
+  await settle();
+  assert.equal(sentinelSearches, 1);
+  assert.equal(f.snap().sources.s2, true);
+  const legacy = { ...f.layer.getParams() };
+  delete legacy.s2;
+  delete legacy.maxCloud;
+  f.layer.setParams(legacy);
+  f.catalog.resolveLast();
+  await settle();
+  assert.equal(f.snap().sources.s2, false);
+  assert.equal(Object.hasOwn(f.layer.getParams(), 's2'), false);
+  assert.equal(sentinelSearches, 1);
+  f.layer.destroy();
+});
+
+test('S2 catalog fallback maps the caught error rather than an unrelated global acquisition state', async () => {
+  const f = i1Fixture({
+    failS2: Object.assign(new Error('private quota response body'), {
+      code: 'provider_quota',
+    }),
+  });
+  await settle();
+  f.thumbnails.probe(f.nasa.key, 'present');
+  assert.match(
+    f.layer.getSnapshot().fallbackNotice,
+    /provider free-tier quota was reached/,
+  );
+  assert.doesNotMatch(
+    f.layer.getSnapshot().fallbackNotice,
+    /credentials|private|response body/,
+  );
+  f.layer.destroy();
+});
+
+test('concurrent S2 A/B keeps A monthly-ceiling reason after B succeeds and clears global health', async () => {
+  const { createRecentImageryRenderer } = await import('./rendering.js');
+  const nasa = candidate('S30', '2026-09-18', 12);
+  const scenes = ['a', 'b'].map((id, index) => ({
+    id,
+    key: `S2:2026-10-0${index + 1}:${id.repeat(64)}`,
+    product: 'S2',
+    source: 'cdse',
+    day: `2026-10-0${index + 1}`,
+    cloudPercent: 5,
+    contributors: [],
+  }));
+  const requests = new Map(),
+    images = [];
+  let globalHealth = {
+    status: 'unavailable',
+    error: { code: 'monthly_ceiling' },
+  };
+  const imageSource = {
+    getImage(scene) {
+      return new Promise((resolve, reject) =>
+        requests.set(scene.id, { resolve, reject }),
+      );
+    },
+  };
+  class Provider {
+    constructor(options) {
+      this.options = options;
+    }
+    requestImage() {
+      return Promise.resolve({ decoded: true });
+    }
+  }
+  const renderer = createRecentImageryRenderer({
+    imageSource,
+    cesium: {
+      UrlTemplateImageryProvider: Provider,
+      SingleTileImageryProvider: Provider,
+      WebMercatorTilingScheme: class {},
+      Rectangle: {
+        fromDegrees: (west, south, east, north) => ({
+          west,
+          south,
+          east,
+          north,
+        }),
+      },
+      SplitDirection: { NONE: 0, LEFT: -1, RIGHT: 1 },
+    },
+  });
+  const collection = {
+    addImageryProvider(provider) {
+      const image = { provider };
+      images.push(image);
+      return image;
+    },
+    remove(image) {
+      const index = images.indexOf(image);
+      if (index >= 0) images.splice(index, 1);
+    },
+  };
+  const thumbnails = fakeThumbnails();
+  const layer = createRecentImageryLayer({
+    renderer,
+    thumbnails,
+    usageSource: { getState: () => globalHealth },
+    host: () => ({ collection, kind: 'globe' }),
+    catalog: {
+      searchHls: async () => ({ candidates: [nasa] }),
+      searchS2: async () => ({ candidates: scenes }),
+    },
+  });
+  layer.init({});
+  layer.setSources({ s2: true });
+  layer.enable();
+  layer.setBox(BOX);
+  await settle();
+  thumbnails.probe(nasa.key, 'present');
+  layer.setMode('ab');
+  layer.setAssignment('a', scenes[0].key);
+  layer.setAssignment('b', scenes[1].key);
+  await settle();
+  assert.equal(requests.size, 2, 'both slots acquired concurrently');
+  globalHealth = { status: 'ready', error: null };
+  requests
+    .get('b')
+    .resolve({ url: 'blob:synthetic-b', width: 10, height: 10, release() {} });
+  await settle();
+  assert.equal(layer.getImageryHudState().slots.b.loaded, true);
+  assert.equal(layer.getImageryHudState().slots.a.loaded, false);
+  requests.get('a').reject(
+    Object.assign(new Error('private server response body'), {
+      code: 'monthly_ceiling',
+    }),
+  );
+  await settle();
+  const fallback = images.find((image) =>
+    image.provider.options.url?.startsWith('https://gibs-'),
+  );
+  assert.ok(fallback);
+  await fallback.provider.requestImage(0, 0, 0);
+  assert.match(
+    layer.getSnapshot().fallbackNotice,
+    /^Sentinel-2 unavailable: showing HLS 30 m, the local monthly safety ceiling was reached$/,
+  );
+  assert.doesNotMatch(
+    layer.getSnapshot().fallbackNotice,
+    /private|server response|credentials/,
+  );
+  assert.equal(layer.getImageryHudState().slots.b.product, 'S2');
+  assert.equal(layer.getSnapshot().pins.b.key, scenes[1].key);
+  assert.equal(globalHealth.error, null);
+  assert.deepEqual(layer.getSnapshot().box, BOX);
+  layer.destroy();
 });

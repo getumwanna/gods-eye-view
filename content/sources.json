@@ -86,6 +86,16 @@
       "environmentNames": ["ONTARIO_511_API_KEY"],
       "visibility": "environment-only",
       "notes": "Conditional Ontario camera-pack credential. No supported POWER UP field exists at this pin; keyless loss accepted, no key configured."
+    },
+    {
+      "id": "cdse",
+      "setupKeyId": null,
+      "environmentNames": [
+        "CDSE_CLIENT_ID",
+        "CDSE_CLIENT_SECRET"
+      ],
+      "visibility": "environment-only",
+      "notes": "Custom I1 optional provider. User enters server-side OAuth credentials in the gitignored local .env. No POWER UP field is added; never put credentials in chat, URLs or browser configuration."
     }
   ],
   "sources": [
@@ -9356,6 +9366,84 @@
           ]
         }
       ]
+    },
+    {
+      "id": "cdse",
+      "name": "Copernicus Data Space / Sentinel Hub",
+      "homepage": "https://dataspace.copernicus.eu/",
+      "docsUrl": "https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Overview.html",
+      "products": [
+        {
+          "id": "s2-l2a",
+          "name": "Sentinel-2 L2A · native 10 m",
+          "description": "Custom I1 optional dated B04/B03/B02 RGB alongside HLS, retaining exact acquisition identity, sensing time and scene cloud metadata. Geographic reprojection does not preserve the native UTM pixel grid.",
+          "access": {
+            "tier": "key-required",
+            "requiredCapabilityRefs": [
+              "cdse"
+            ],
+            "optionalCapabilityRefs": [],
+            "notes": "Free General-user account and server-side OAuth client. Environment-only CDSE_CLIENT_ID/CDSE_CLIENT_SECRET; no card, trial, paid plan, automatic upgrade or POWER UP field."
+          },
+          "coverage": {
+            "geography": "Sentinel-2 land/coastal coverage where an exact acquisition intersects the selected box within the last 30 UTC days.",
+            "gaps": "Clouds, partial footprints, processing availability and account limits can prevent usable coverage. Scene cloud percent is not the cloud fraction of the selected box; unknown differs from zero."
+          },
+          "publisherCadence": {
+            "value": null,
+            "unit": null,
+            "notes": "Acquisition and processing availability vary; no clear-image or latency guarantee."
+          },
+          "applicationRefresh": {
+            "value": null,
+            "unit": null,
+            "notes": "Explicit source/box selection only; no polling or recording."
+          },
+          "cacheTtl": {
+            "value": 14,
+            "unit": "days",
+            "notes": "Processed imagery expires after 14 days with earlier LRU eviction under 2 GiB; catalog 15 minutes, confirmed no-coverage 5 minutes. Cache eviction never resets the quota ledger."
+          },
+          "cost": {
+            "category": "free",
+            "notes": "Reviewed General-user limits: 10,000 requests / 10,000 PU monthly and 300 requests / 300 PU per minute. GEV local ceilings: 8,000 requests / 8,000 PU monthly with 120 / 120 per minute pacing. Local usage excludes other clients. No paid escalation.",
+            "reviewedDate": "2026-10-22"
+          },
+          "terms": {
+            "status": "officially-reviewed",
+            "license": "Copernicus Sentinel Data Legal Notice; CDSE service terms and fair-use/rate limits.",
+            "urls": [
+              "https://dataspace.copernicus.eu/terms-and-conditions",
+              "https://sentinels.copernicus.eu/documents/247904/690755/Sentinel_Data_Legal_Notice",
+              "https://documentation.dataspace.copernicus.eu/Quotas.html",
+              "https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Overview/RateLimiting.html"
+            ],
+            "restrictions": [
+              "Use free General-user access only; stop if signup requests a card, trial or paid account.",
+              "Preserve source/capture-year attribution on displayed imagery and inside every export. No unrelated portal/commercial content is admitted.",
+              "Bounded on-demand local caching only; respect service limits, without multiple-account evasion. No recording or hosting is authorized."
+            ]
+          },
+          "attribution": [
+            "Contains modified Copernicus Sentinel data [capture year].",
+            "Processed with Sentinel Hub / Copernicus Data Space Ecosystem; retain actual acquisition dates and separate A/B years."
+          ],
+          "shipping": {
+            "state": "conditional",
+            "notes": "Custom I1 capability under implementation, separate from frozen upstream. Optional user-local credentials and final rendered/usage acceptance remain required. Library does not read key presence or feed health."
+          },
+          "evidence": [
+            {
+              "path": "docs/custom/FREE-IMAGERY-PLAN.md",
+              "section": "## Selected free access route",
+              "revision": "a860327edc694fbcc313eb0791629fe88070a0b0",
+              "reviewedDate": "2026-10-22",
+              "url": null,
+              "status": "officially-reviewed"
+            }
+          ]
+        }
+      ]
     }
   ],
   "bindings": [
@@ -9573,10 +9661,20 @@
       "valueId": "imagery",
       "label": "Dated satellite imagery",
       "kind": "Refreshed",
-      "sourceProductRefs": ["nasa-gibs/dated-imagery", "nasa-cmr/hls-catalog"],
+      "sourceProductRefs": [
+        "nasa-gibs/dated-imagery",
+        "nasa-cmr/hls-catalog",
+        "cdse/s2-l2a"
+      ],
       "requiredCapabilityRefs": [],
-      "optionalCapabilityRefs": [],
-      "guideRefs": ["nasa-gibs", "nasa-cmr"],
+      "optionalCapabilityRefs": [
+        "cdse"
+      ],
+      "guideRefs": [
+        "nasa-gibs",
+        "nasa-cmr",
+        "cdse"
+      ],
       "requiredKeyId": null
     },
     {
@@ -10328,6 +10426,17 @@
       "docsHref": "https://github.com/bilawalsidhu/gods-eye-view/blob/main/DATA_SOURCES.md",
       "explanation": "This source supports an existing GEV capability. This Phase 1 guide links to upstream documentation and does not report current feed health. The full source directory, including coverage, cadence, attribution and terms, is planned for Phase 2.",
       "sourceProductRefs": ["gev-context/military-awareness"]
+    },
+    {
+      "id": "cdse",
+      "name": "Copernicus Data Space / Sentinel Hub",
+      "setupKeyId": null,
+      "setupUrl": null,
+      "docsHref": "https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Overview/Authentication.html",
+      "explanation": "Custom I1 environment-only guide, not an upstream POWER UP entry. When prompted, create a free General-user account and server-side OAuth client; stop if a card/trial/paid plan is requested. Enter CDSE_CLIENT_ID and CDSE_CLIENT_SECRET locally in the gitignored .env, never in chat. This guide contains reference facts, not configuration presence or feed health.",
+      "sourceProductRefs": [
+        "cdse/s2-l2a"
+      ]
     }
   ]
 }

@@ -459,7 +459,20 @@ try {
     (await listOf(
       '[data-layer-id="recent-imagery"] .data-toggle-chip',
       'chipId',
-    )) === 'hls,viirs',
+    )) === 'hls,viirs,s2',
+  );
+  check(
+    'S2 starts off and exposes a cloud filter, local usage disclosure, and fit/restore controls',
+    await page.evaluate(() => {
+      const snapshot = window.__riQa.snap();
+      return (
+        snapshot.sources.s2 === false &&
+        Boolean(document.getElementById('ri-fit-resolution')) &&
+        Boolean(document.getElementById('ri-restore-view')) &&
+        document.getElementById('ri-max-cloud')?.disabled === true &&
+        document.getElementById('ri-cdse-usage')?.hidden === true
+      );
+    }),
   );
   const actionIds = await listOf(
     `${PANEL} .ri-actions-row [data-action-id]`,
@@ -474,7 +487,7 @@ try {
   check(
     'the body is the fixed stack: actions, notice, strip, hint, selection, controls, details',
     blocks ===
-      'ri-actions,ri-notice,ri-strip,ri-hint,ri-selection,ri-controls,ri-details',
+      'ri-actions,ri-notice,ri-free-controls,ri-cdse-usage,ri-sentinel-fallback,ri-source-credit,ri-strip,ri-hint,ri-selection,ri-controls,ri-details',
     blocks,
   );
   let current = await state();
@@ -599,6 +612,42 @@ try {
   await checkLayout('preview');
   await shot('02-preview');
   await panelShot('02-preview-panel');
+
+  const nativeImageryFit = await page.evaluate(() => {
+    const layer = window.__riQa.layer(),
+      viewer = window.__godsEyeView.viewer;
+    const before = JSON.stringify(layer.getSnapshot().box);
+    const beforeHeight = viewer.camera.positionCartographic.height;
+    const state = layer.getImageryHudState();
+    const native =
+      state &&
+      Object.values(state.slots).some(
+        (slot) => slot.loaded && slot.nativeResolutionM === 30,
+      );
+    document.getElementById('ri-fit-resolution').click();
+    const fitHeight = viewer.camera.positionCartographic.height;
+    const expected =
+      (30 * viewer.scene.canvas.clientHeight) /
+      (2 * Math.tan(viewer.camera.frustum.fovy / 2));
+    const after = JSON.stringify(layer.getSnapshot().box);
+    document.getElementById('ri-restore-view').click();
+    return {
+      native,
+      sameBox: before === after,
+      fitHeight,
+      expected,
+      restored:
+        Math.abs(viewer.camera.positionCartographic.height - beforeHeight) < 1,
+    };
+  });
+  check(
+    'HLS fit uses native 30 m CSS-pixel resolution, preserves the box, and restores the prior view',
+    nativeImageryFit.native &&
+      nativeImageryFit.sameBox &&
+      nativeImageryFit.restored &&
+      Math.abs(nativeImageryFit.fitHeight - nativeImageryFit.expected) < 1,
+    JSON.stringify(nativeImageryFit),
+  );
 
   // ── arrow keys: the preview follows the focus ───────────────────────────
   await until(() => {

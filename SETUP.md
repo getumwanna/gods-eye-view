@@ -215,3 +215,68 @@ Use the supported Node version and run `npm run check:library` after editing `co
 Only manifest-published original Markdown and explicitly admitted upstream sections appear in the Knowledge Center or search. Keep original author/title/date/source links for external summaries and write original prose; never import/index external article bodies or media. Upstream excerpts must preserve their license notice and selected-section/hash admissions. Unknown publication dates stay null; review dates describe editorial review rather than live feed freshness. Route slugs are limited to 64 characters.
 
 After an intentional reviewed content/schema/manifest change, run `node scripts/check-custom-library.mjs --write-projection`, then `npm run check:library`. This updates the explicit validated projection digest; it does not fetch data or configure keys. Both production builds enforce validation. Normal dev keeps invalid content confined to Library; changing/removing an article must not reload the globe, stop the server or raise a global overlay. Search uses published local text in memory, with bounded URL queries and no provider request, query telemetry or persistent search history.
+
+
+## Free Sentinel-2 L2A imagery (Phase 2b – I1)
+
+I1 adds optional native 10 m Sentinel-2 L2A RGB alongside the existing NASA HLS
+30 m and VIIRS sources. It uses only the Copernicus Data Space Ecosystem (CDSE)
+General-user free tier. Create an account/client **when notified that local setup
+is ready**; stop if signup requires a card, trial, subscription or paid plan.
+
+1. Register or sign in through the [official CDSE portal](https://dataspace.copernicus.eu/).
+2. In the [Sentinel Hub dashboard](https://shapps.dataspace.copernicus.eu/), open
+   **User Settings → OAuth clients → Create**. Create a server-side client, with
+   a sensible expiry. Leave the SPA/frontend option off. The
+   [official authentication guide](https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Overview/Authentication.html)
+   describes the current form. Copy the secret once into your local secure storage;
+   it cannot be recovered from the dashboard after the creation popup closes.
+3. Open this checkout's gitignored `.env` in a local editor and set the two names
+   below. Enter your actual values **only in that local file**, never in chat,
+   a VITE-prefixed variable, command history, URL, export or committed file.
+   No CDSE POWER UP fields are added in I1.
+
+   ```dotenv
+   CDSE_CLIENT_ID=your-local-client-id
+   CDSE_CLIENT_SECRET=your-local-client-secret
+   ```
+
+4. Save, keep the file private (owner read/write), and restart the standard local
+   server. Never use `dev-fresh.sh` for a deliberate keyless run. For hosted,
+   multi-user or automated recording use, stop for a separate terms/security review.
+5. Select Sentinel-2 in Recent Imagery. Missing configuration or provider/quota
+   failure must show a reason and an explicit HLS 30 m fallback notice; HLS must
+   be labeled as actually loaded only when it succeeds. Missing S2 credentials
+   must leave the globe and existing NASA sources usable.
+
+Keep the account on its free General-user limits. Published limits are
+10,000 requests and 10,000 PU per month, plus 300 requests / 300 PU per minute;
+verify the limits/reset shown for your account. GEV's stricter safety ceilings are
+8,000 requests **and** 8,000 PU per provider month, with 120 requests / 120 reserved
+PU per minute pacing and bounded queue/backoff. The visible counter represents
+**GEV measured/reserved usage**, not account-wide remaining quota. Other CDSE
+clients, including Copernicus Browser, can consume the same allowance. Check the
+[official quotas](https://documentation.dataspace.copernicus.eu/Quotas.html) and
+account dashboard; no paid escalation or quota-evasion route is provided.
+
+Processed-image caching is on demand, at most 2 GiB / 20,000 entries and 14 days,
+with earlier LRU eviction; catalog responses expire after 15 minutes. The quota
+ledger is separate and never evicted/reset to recover from a quota error. Bad or
+uncertain usage state must pause acquisition rather than invent a fresh allowance.
+The normal 10 m image is one bounded PNG per acquisition/date up to 2,048 pixels
+per side; larger boxes use clipped 512-pixel pieces without reducing resolution
+or expanding the selected box. Fit/Restore changes only the camera.
+
+Scene cloud percentage is distinct from selected-box cloud cover, and unknown
+cloud is not zero. The HUD must describe the loaded image's native resolution
+instead of placing camera-derived submeter GSD beside coarse imagery. Source,
+sensing date and capture year remain attached to each A/B image and are embedded
+inside exported PNGs: **Contains modified Copernicus Sentinel data [capture year]**,
+with Sentinel Hub / CDSE processing provenance. HLS/NASA credits remain intact.
+
+Read and accept the [CDSE service terms](https://dataspace.copernicus.eu/terms-and-conditions)
+and [Sentinel legal notice](https://sentinels.copernicus.eu/documents/247904/690755/Sentinel_Data_Legal_Notice).
+The Sentinel open-data notice covers Sentinel imagery, not unrelated portal or
+commercial content. [Service guidance recommends caching repeated requests](https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Overview/RateLimiting.html#caching).
+This bounded local cache/export workflow does not authorize new recording,
+redistribution of unrelated content, hosting or additional sources.

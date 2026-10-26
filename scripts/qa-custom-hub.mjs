@@ -333,7 +333,7 @@ try {
       await page.waitForFunction(() =>
         document
           .querySelector('.gih-directory-count')
-          ?.textContent.includes('149 of 149'),
+          ?.textContent.includes('150 of 150'),
       );
       assert.equal(
         await page.$eval('main', (main) =>

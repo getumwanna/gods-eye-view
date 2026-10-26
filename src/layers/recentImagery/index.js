@@ -1,3 +1,4 @@
+import { sentinelFallbackReason } from '../../custom/imagery/source.js';
 /**
  * Recent Imagery layer: pick a box, list the last 30 days of HLS (Sentinel-2 /
  * Landsat) and VIIRS imagery that touch it, and drape the days the operator
@@ -28,6 +29,7 @@ import {
   parseCandidateKey,
   quantizeBox,
   rankLatest,
+  mergeCandidates,
   utcDay,
   validateBox,
   viewTooLargeMessage,
@@ -108,6 +110,8 @@ export function createRecentImageryLayer({
   catalog = { searchHls },
   renderer,
   thumbnails,
+  usageSource = null,
+  viewportFactory = null,
   host = resolveImageryHost,
   now = () => new Date(),
   days = CATALOG_DAYS,
@@ -135,10 +139,17 @@ export function createRecentImageryLayer({
   let _searchAbort = null;
   let _lastUpdate = null;
 
-  const _sources = { hls: true, viirs: false };
+  const _sources = { hls: true, viirs: false, s2: false };
+  let _maxCloud = 100;
+  let _fallbackReason = null;
+  let _viewport = null;
+  let _readViewport = null;
+  let _autoFitWanted = null;
+  const _autoFitDone = { image: false, ab: false };
   let _showUnavailable = false;
   let _focusKey = null;
   let _visible = { first: 0, last: 5 };
+  let _s2VisibleReported = false;
 
   let _mode = 'image';
   const _assigned = { a: null, b: null };
@@ -187,6 +198,32 @@ export function createRecentImageryLayer({
   let _unsubscribeThumbnails = null;
   let _unsubscribeMap = null;
   const _listeners = new Set();
+  const _unsubscribeRenderer = renderer.subscribe?.((event) => {
+    if (_destroyed || !_enabled) return;
+    if (event.type === 'error' && event.candidate?.product === 'S2') {
+      if (_assigned[event.slotId] !== event.candidate.key) return;
+      _fallbackReason =
+        event.stage === 'decode'
+          ? 'the image could not be decoded'
+          : sentinelFallbackReason(event.error);
+      _autoFitWanted = null;
+      _sources.hls = true;
+      const fallback = rank(
+        _candidates.filter(
+          (c) =>
+            (c.product === 'S30' || c.product === 'L30') &&
+            c.key !== _assigned[OTHER_SLOT[event.slotId]],
+        ),
+      ).candidate;
+      _assigned[event.slotId] = fallback?.key || null;
+      publish(['a', 'b']);
+      syncRender();
+      requestThumbnails();
+    }
+    maybeAutoFit();
+    notify();
+  });
+  const _unsubscribeUsage = usageSource?.subscribe?.(() => notify());
 
   const candidateFor = (key) =>
     (key && _candidates.find((candidate) => candidate.key === key)) || null;
@@ -205,9 +242,19 @@ export function createRecentImageryLayer({
     availability: availability(candidate),
   });
   const drapable = (candidate) =>
-    sourceOn(candidate) && availability(candidate) === 'present';
+    sourceOn(candidate) &&
+    (candidate.product === 'S2'
+      ? availability(candidate) !== 'empty'
+      : availability(candidate) === 'present');
 
-  const sourcedCandidates = () => _candidates.filter(sourceOn);
+  const sourcedCandidates = () =>
+    _candidates.filter(
+      (candidate) =>
+        sourceOn(candidate) &&
+        (candidate.product !== 'S2' ||
+          _maxCloud === 100 ||
+          (candidate.cloud && candidate.cloud.max <= _maxCloud)),
+    );
   /** Source-on candidates, minus confirmed-empty days unless asked for. */
   const stripList = () =>
     _showUnavailable
@@ -241,7 +288,11 @@ export function createRecentImageryLayer({
     if (_mode === 'ab') out.b = live(_assigned.b);
     const slot = previewSlot();
     const preview =
-      slot && !activeSlotOf(_previewKey) ? live(_previewKey) : null;
+      slot &&
+      !activeSlotOf(_previewKey) &&
+      candidateFor(_previewKey)?.product !== 'S2'
+        ? live(_previewKey)
+        : null;
     if (preview) {
       out[slot] = preview;
       out.preview = slot;
@@ -283,7 +334,12 @@ export function createRecentImageryLayer({
   }
 
   const rank = (list) =>
-    rankLatest(list.map(withAvailability), { truncated: _truncated });
+    rankLatest(
+      list
+        .filter((candidate) => candidate.product !== 'S2')
+        .map(withAvailability),
+      { truncated: _truncated },
+    );
 
   /** Focus the START HERE day and preview it when the mode's slot is empty. */
   function autoPreview() {
@@ -554,6 +610,7 @@ export function createRecentImageryLayer({
         renderer.hideSlot(slotId);
       }
     }
+    maybeAutoFit();
     if (!comparison) return;
     if (shown.a || shown.b) acquireComparison();
     else if (_lease || _comparisonReady || _comparisonError)
@@ -568,14 +625,38 @@ export function createRecentImageryLayer({
   function requestThumbnails() {
     if (!_enabled || !_box) return;
     const list = stripList();
+    const visibleCandidates = _s2VisibleReported
+      ? list.slice(_visible.first, _visible.last + 1)
+      : [];
+    thumbnails.setVisibleCandidates?.(visibleCandidates);
     if (!list.length) return;
     reconcileFocus();
-    thumbnails.requestOrdered(list, _box, {
-      focusIndex: Math.max(0, focusIndexIn(list)),
-      firstVisible: _visible.first,
-      lastVisible: _visible.last,
+    const nasa = list.filter((candidate) => candidate.product !== 'S2');
+    const focused = list[Math.max(0, focusIndexIn(list))];
+    thumbnails.requestOrdered(nasa, _box, {
+      focusIndex: Math.max(
+        0,
+        nasa.findIndex((candidate) => candidate.key === focused?.key),
+      ),
+      firstVisible: Math.max(
+        0,
+        nasa.findIndex(
+          (candidate) => candidate.key === list[_visible.first]?.key,
+        ),
+      ),
+      lastVisible: Math.max(
+        0,
+        nasa.findIndex(
+          (candidate) => candidate.key === list[_visible.last]?.key,
+        ),
+      ),
       extra: 2,
     });
+    for (const candidate of _s2VisibleReported
+      ? list.slice(_visible.first, _visible.last + 1)
+      : []) {
+      if (candidate.product === 'S2') thumbnails.request(candidate, _box, 0);
+    }
     for (const key of new Set([
       _assigned.a,
       _assigned.b,
@@ -583,7 +664,8 @@ export function createRecentImageryLayer({
       _followKey,
     ])) {
       const candidate = candidateFor(key);
-      if (sourceOn(candidate)) thumbnails.request(candidate, _box, 0);
+      if (sourceOn(candidate) && candidate.product !== 'S2')
+        thumbnails.request(candidate, _box, 0);
     }
   }
 
@@ -609,14 +691,57 @@ export function createRecentImageryLayer({
     _catalogError = null;
     notify();
     try {
-      const result = await catalog.searchHls({
-        box: _box,
-        days,
-        now: now(),
-        signal: abort.signal,
-      });
+      const query = { box: _box, days, now: now(), signal: abort.signal };
+      const nasaResult = catalog.searchHls(query);
+      const sentinelResult = _sources.s2
+        ? Promise.resolve()
+            .then(() => {
+              if (!catalog.searchS2)
+                throw Object.assign(new Error('missing configuration'), {
+                  code: 'missing_configuration',
+                });
+              return catalog.searchS2({ ...query, maxCloud: _maxCloud });
+            })
+            .then(
+              (value) => ({ value }),
+              (error) => ({ error }),
+            )
+        : null;
+      const [result, sentinel] = await Promise.all([
+        nasaResult,
+        sentinelResult,
+      ]);
       if (abort.signal.aborted) return;
-      _candidates = result?.candidates || [];
+      _candidates = mergeCandidates([
+        result?.candidates || [],
+        (sentinel?.value?.candidates || []).map((candidate) => ({
+          ...candidate,
+          cloud: Number.isFinite(candidate.cloudPercent)
+            ? { min: candidate.cloudPercent, max: candidate.cloudPercent }
+            : null,
+          granules: (candidate.contributors || []).map((scene) => ({
+            id: scene.id,
+            cloud: scene.cloudPercent,
+            timeStart: scene.acquisitionTime,
+          })),
+          availability: 'unknown',
+          coverage: 'unknown',
+          timeRange: candidate.acquisitionTime
+            ? {
+                start: candidate.acquisitionTime,
+                end: candidate.acquisitionTime,
+              }
+            : null,
+        })),
+      ]);
+      if (_sources.s2) {
+        _fallbackReason = sentinel?.error
+          ? sentinelFallbackReason(sentinel.error)
+          : !sentinel?.value?.candidates?.length
+            ? 'no coverage for this box and filter'
+            : null;
+        if (_fallbackReason) _sources.hls = true;
+      }
       _truncated = Boolean(result?.truncated);
       _catalogErrors = result?.errors || [];
       _lastUpdate = Date.now();
@@ -706,6 +831,7 @@ export function createRecentImageryLayer({
     _boxError = null;
     _refusalTarget = null;
     _notice = null;
+    _fallbackReason = null;
     if (
       boxSignature(result.box) === boxSignature(_box) &&
       (_searching || _candidates.length)
@@ -717,6 +843,11 @@ export function createRecentImageryLayer({
     _followKey = null;
     _previewKey = null;
     _box = result.box;
+    _s2VisibleReported = false;
+    _autoFitDone.image = false;
+    _autoFitDone.ab = false;
+    _autoFitWanted = null;
+    _viewport?.reset?.();
     thumbnails.clear();
     resetCatalog();
     _focusKey = null;
@@ -768,6 +899,89 @@ export function createRecentImageryLayer({
     return out;
   }
 
+  function displayState() {
+    if (renderer.getDisplayState) return renderer.getDisplayState();
+    const records = renderer.getOwned?.() || {};
+    return Object.fromEntries(
+      SLOT_IDS.map((id) => [
+        id,
+        records[id]
+          ? {
+              candidate: candidateFor(records[id].key),
+              box: _box,
+              loaded: true,
+            }
+          : null,
+      ]),
+    );
+  }
+  const fitReady = (record) =>
+    Boolean(
+      record &&
+      (record.loaded ||
+        (record.candidate?.product !== 'S2' &&
+          availability(record.candidate) === 'present')),
+    );
+  function fitCandidates() {
+    return Object.values(displayState())
+      .filter(
+        (record) =>
+          fitReady(record) &&
+          ['S2', 'S30', 'L30'].includes(record.candidate?.product),
+      )
+      .map((record) => ({
+        ...record.candidate,
+        box: record.box,
+        nativeResolutionM: PRODUCTS[record.candidate.product].resolutionM,
+      }));
+  }
+  function fitLoaded(auto) {
+    const images = fitCandidates();
+    if (!images.length) return false;
+    return (
+      _viewport?.fit?.(images, {
+        auto,
+        assignmentKey: auto ? _autoFitWanted : undefined,
+      }) || false
+    );
+  }
+  function maybeAutoFit() {
+    if (!_autoFitWanted || _applyingParams || _autoFitDone[_autoFitWanted])
+      return;
+    const state = displayState();
+    const ids = _autoFitWanted === 'ab' ? ['a', 'b'] : ['a'];
+    if (
+      !ids.every(
+        (id) =>
+          _assigned[id] &&
+          fitReady(state[id]) &&
+          state[id].candidate.key === _assigned[id],
+      )
+    )
+      return;
+    if (
+      ids.some(
+        (id) => !['S2', 'S30', 'L30'].includes(state[id].candidate.product),
+      )
+    ) {
+      _autoFitWanted = null;
+      return;
+    }
+    const kind = _autoFitWanted;
+    if (fitLoaded(true)) _autoFitDone[kind] = true;
+    _autoFitWanted = null;
+  }
+  function fallbackNotice() {
+    if (!_sources.s2 || !_fallbackReason) return null;
+    const loaded = Object.values(displayState()).some(
+      (record) =>
+        record?.loaded && ['S30', 'L30'].includes(record.candidate?.product),
+    );
+    return loaded
+      ? `Sentinel-2 unavailable: showing HLS 30 m, ${_fallbackReason}`
+      : `Sentinel-2 unavailable: ${_fallbackReason}. HLS 30 m is not loaded.`;
+  }
+
   function imageSnapshot(key) {
     const parsed = parseCandidateKey(key);
     const sourceOff = Boolean(parsed) && !_sources[sourceOf(parsed.product)];
@@ -784,7 +998,7 @@ export function createRecentImageryLayer({
 
   function applySources(next) {
     let changed = false;
-    for (const id of ['hls', 'viirs']) {
+    for (const id of ['hls', 'viirs', 's2']) {
       if (next?.[id] == null || Boolean(next[id]) === _sources[id]) continue;
       _sources[id] = Boolean(next[id]);
       changed = true;
@@ -799,18 +1013,28 @@ export function createRecentImageryLayer({
     id: 'recent-imagery',
     name: 'Recent Imagery',
     icon: '🛰',
-    source: 'NASA GIBS · HLS + VIIRS',
+    source: 'NASA GIBS · HLS + VIIRS · Copernicus Sentinel-2',
     updateInterval: 0,
 
     init(viewer) {
       _viewer = viewer || null;
+      _viewport = viewportFactory?.({
+        viewer: _viewer,
+        readViewport: () => _readViewport?.(),
+      });
       return true;
     },
 
     enable(viewer) {
       if (_destroyed) return false;
       if (viewer) _viewer = viewer;
+      if (!_viewport)
+        _viewport = viewportFactory?.({
+          viewer: _viewer,
+          readViewport: () => _readViewport?.(),
+        });
       _enabled = true;
+      if (_sources.s2) usageSource?.resumeUsage?.();
       _comparisonError = null;
       _unsubscribeThumbnails?.();
       _unsubscribeThumbnails = thumbnails.subscribe(() => {
@@ -845,6 +1069,7 @@ export function createRecentImageryLayer({
     },
 
     disable() {
+      usageSource?.pauseUsage?.();
       cancelSearch();
       clearPending();
       _followKey = null;
@@ -873,6 +1098,10 @@ export function createRecentImageryLayer({
       clearSplitTimer();
       _unsubscribeMap?.();
       _unsubscribeMap = null;
+      _unsubscribeRenderer?.();
+      _unsubscribeUsage?.();
+      usageSource?.pauseUsage?.();
+      _viewport?.destroy?.();
       renderer.destroy();
       thumbnails.destroy();
       _listeners.clear();
@@ -1027,9 +1256,11 @@ export function createRecentImageryLayer({
 
     /** The strip reports which cards are on screen. */
     setVisibleRange(first, last) {
+      const firstReport = !_s2VisibleReported;
+      _s2VisibleReported = true;
       const lo = Math.max(0, Math.trunc(Number(first)) || 0);
       const hi = Math.max(lo, Math.trunc(Number(last)) || lo);
-      if (lo === _visible.first && hi === _visible.last) return;
+      if (lo === _visible.first && hi === _visible.last && !firstReport) return;
       _visible = { first: lo, last: hi };
       requestThumbnails();
     },
@@ -1106,6 +1337,8 @@ export function createRecentImageryLayer({
       if (next && _assigned[OTHER_SLOT[slot]] === next)
         _assigned[OTHER_SLOT[slot]] = null;
       _assigned[slot] = next;
+      if (next && !_applyingParams)
+        _autoFitWanted = _mode === 'ab' ? 'ab' : 'image';
       // The preview belonged to the old pins; the next focus move brings it back.
       clearPending();
       _followKey = null;
@@ -1141,6 +1374,8 @@ export function createRecentImageryLayer({
       const next = modeFrom(mode);
       if (!next || next === _mode) return false;
       _mode = next;
+      if (_mode === 'ab' && _assigned.a && _assigned.b && !_applyingParams)
+        _autoFitWanted = 'ab';
       clearPending();
       _followKey = null;
       if (_enabled) syncRender();
@@ -1156,7 +1391,13 @@ export function createRecentImageryLayer({
      * @returns {boolean} Whether anything changed.
      */
     setSources(next) {
+      const changedS2 = next?.s2 != null && Boolean(next.s2) !== _sources.s2;
       if (!applySources(next)) return false;
+      if (changedS2) {
+        if (_sources.s2 && _enabled) usageSource?.resumeUsage?.();
+        else usageSource?.pauseUsage?.();
+      }
+      if (changedS2 && _enabled && _box) void runSearch();
       if (_enabled) {
         syncRender();
         requestThumbnails();
@@ -1165,6 +1406,60 @@ export function createRecentImageryLayer({
       return true;
     },
 
+    setMaxCloud(value) {
+      const number = Number(value);
+      if (
+        !Number.isInteger(number) ||
+        number < 0 ||
+        number > 100 ||
+        number === _maxCloud
+      )
+        return false;
+      _maxCloud = number;
+      publish(['maxCloud']);
+      if (_enabled && _sources.s2 && _box) void runSearch();
+      notify();
+      return true;
+    },
+    setImageryViewportReader(reader) {
+      _readViewport = typeof reader === 'function' ? reader : null;
+    },
+    fitImageryResolution() {
+      const result = fitLoaded(false);
+      notify();
+      return result;
+    },
+    restoreImageryView() {
+      const result = _viewport?.restore?.() || false;
+      notify();
+      return result;
+    },
+    getImageSnapshot(slotId) {
+      return renderer.getSnapshot?.(slotId) || null;
+    },
+    getImageryHudState() {
+      if (!_enabled) return null;
+      const state = displayState();
+      const entries = SLOT_IDS.filter((id) => state[id]);
+      if (!entries.length) return null;
+      return {
+        active: true,
+        pending: entries.some((id) => !state[id].loaded),
+        slots: Object.fromEntries(
+          entries.map((id) => [
+            id,
+            {
+              product: state[id].candidate.product,
+              nativeResolutionM:
+                PRODUCTS[state[id].candidate.product]?.resolutionM,
+              day: state[id].candidate.day,
+              metadata: state[id].metadata,
+              loaded: state[id].loaded,
+            },
+          ]),
+        ),
+      };
+    },
     /** Show or hide confirmed-empty days in the strip. */
     setShowUnavailable(value) {
       if (Boolean(value) === _showUnavailable) return;
@@ -1222,6 +1517,10 @@ export function createRecentImageryLayer({
       _toolHandler?.();
       thumbnails.clear();
       _box = null;
+      _autoFitDone.image = false;
+      _autoFitDone.ab = false;
+      _autoFitWanted = null;
+      _viewport?.reset?.();
       _boxError = null;
       _refusalTarget = null;
       resetCatalog();
@@ -1277,6 +1576,12 @@ export function createRecentImageryLayer({
         zoomToFit: Boolean(_boxError && _refusalTarget),
         searching: _searching,
         sources: { ..._sources },
+        maxCloud: _maxCloud,
+        usage: usageSource?.getState?.() || null,
+        fitAvailable: fitCandidates().length > 0,
+        restoreAvailable: Boolean(_viewport?.canRestore?.()),
+        imageryHud: layer.getImageryHudState(),
+        fallbackNotice: fallbackNotice(),
         showUnavailable: _showUnavailable,
         hiddenCount: _showUnavailable
           ? 0
@@ -1353,6 +1658,13 @@ export function createRecentImageryLayer({
             ),
             params: { viirs: !_sources.viirs },
           },
+          {
+            id: 's2',
+            label: t('SENTINEL-2 · 10 m'),
+            active: _sources.s2,
+            title: t('Sentinel-2 L2A via free CDSE account · 10 m'),
+            params: { s2: !_sources.s2 },
+          },
         ],
       };
     },
@@ -1371,8 +1683,30 @@ export function createRecentImageryLayer({
     setParams(params) {
       if (!params || typeof params !== 'object') return false;
       _applyingParams = true;
+      _autoFitWanted = null;
       try {
-        let changed = applySources(params);
+        const previousS2 = _sources.s2,
+          previousCloud = _maxCloud,
+          searchBefore = _searchAbort;
+        const completeState = [
+          ...BOX_EDGES,
+          'a',
+          'b',
+          'mode',
+          'split',
+          'viirs',
+        ].every((key) => Object.hasOwn(params, key));
+        let changed = applySources(
+          completeState ? { ...params, s2: params.s2 ?? false } : params,
+        );
+        if (completeState && params.maxCloud == null) _maxCloud = 100;
+        if (
+          params.maxCloud != null &&
+          Number.isInteger(Number(params.maxCloud)) &&
+          Number(params.maxCloud) >= 0 &&
+          Number(params.maxCloud) <= 100
+        )
+          _maxCloud = Number(params.maxCloud);
         if (BOX_EDGES.every((edge) => params[edge] != null)) {
           const box = dequantizeBox(params);
           if (box) applyBox(box);
@@ -1405,6 +1739,18 @@ export function createRecentImageryLayer({
           if (pinned && candidateFor(pinned)) _focusKey = pinned;
           changed = true;
         }
+        if (previousS2 !== _sources.s2) {
+          if (_sources.s2 && _enabled) usageSource?.resumeUsage?.();
+          else usageSource?.pauseUsage?.();
+        }
+        if (
+          _enabled &&
+          _box &&
+          searchBefore === _searchAbort &&
+          (previousS2 !== _sources.s2 ||
+            (_sources.s2 && previousCloud !== _maxCloud))
+        )
+          void runSearch();
         if (changed && _enabled) {
           syncRender();
           requestThumbnails();
@@ -1428,6 +1774,8 @@ export function createRecentImageryLayer({
         mode: MODES.indexOf(_mode),
         split: Math.round(_split * 100),
         viirs: _sources.viirs,
+        ...(_sources.s2 ? { s2: true } : {}),
+        ...(_maxCloud !== 100 ? { maxCloud: _maxCloud } : {}),
       };
     },
 

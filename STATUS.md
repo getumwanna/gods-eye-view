@@ -1,34 +1,82 @@
 # Geospatial Intelligence Hub status
 
-Updated October 21, 2026, America/New_York.
+Updated October 26, 2026, America/New_York.
 
-**Phase 2a is accepted.** The user explicitly accepted the completed phase after
-QA **14/14**, article HMR **5/5**, case HMR **5/5**, both restored byte-for-byte,
-and tracking **109 passed / 0 failed / 0 skipped**. The QA/HMR receipts match;
-restoration hashes and the Vite 6.4.5 no-reload server log are corroborated.
-Tracking is the latest explicit user report, not an agent-run harness result.
+**Publication authorized:** the user requests committing and pushing the current
+project changes to the fork's `main`, including the in-progress I1 implementation
+and conservative PU calibration. This supersedes the prior commit hold while
+leaving I1's unresolved visual checks and explicit acceptance pending. Keep
+editor settings in a separate commit and duplicate backups local; logs, caches,
+exports, builds and credentials remain excluded. No additional runtime repair,
+provider call or server restart is part of this publication. Other Phase 2b
+stays deferred; the tested runtime and upstream pin remain unchanged.
 
-M1–M4 are complete. All nine article and six case editorial approvals, four CTA
-and manual UI approvals, and historical receipts remain retained. Shipping code
-is `27ccdce77c55d78201518e46664dd1b26ab989b7`, including the approved Vite 6.4.5
-repair. Earlier clean-install/native/allocation/build/graph checks remain passed:
-8,298 unit/allocation passes, zero failures, one platform skip; audit zero known
-vulnerabilities. Source/doc pin remains
-`064d51f7be2675f1c69e16068e9c49d1a60144d1`.
+**Current accounting checkpoint:** the user's CDSE export confirms 10,000
+requests / 10,000 PU monthly, resetting November 1 (86/108 at its cutoff).
+October 23 matches 80 requests after removing October 22's failed 1/0.01
+reservation from the saved 81-request month total. Dashboard 97 PU versus local
+81.9513 is an 18.3629% excess; provider headers were not retained, so exact cause
+is unresolved. The authorized **1.25 PU safety calibration** now protects
+monthly/minute admission and pacing; local ceilings remain 8,000/8,000.
+An idempotent locked migration preserves all 98 current requests, 7 OAuth
+attempts and cached files, raising conservative PU from 115.7956 to 144.7445.
+There is no matching local receipt for the export cutoff; local counters also
+retain failed/unknown reservations. Of the 12-request month difference, one is
+the known October 22 failure and 11 remain unclassified. No counts were reset,
+and no provider request or credential/token read/log occurred. Monthly capacity is
+**683 / 133 / 228** typical/heavy/oversized, or **676 / 133 / 210** with one
+scroll. Node 24 validation: **8,388 pass / 0 fail / 1 skip**, 50 focused checks,
+all nine checks and both builds; terrain restored byte-for-byte. Evidence:
+`.gev-logs/phase2b-i1/quota-reconciliation-zqgSfz/REPORT.md`.
+**4173 is paused** to prevent enabled tabs acquiring during HMR/restart; 4174
+remains stopped. The earlier PID/usage/capacity checkpoint below is historical.
+Dashboard quota/reset confirmation is complete; visual issues, final visual
+sign-off and explicit I1 acceptance remain pending. No staging/commit; other
+Phase 2b, scope, dependencies, historical logs and unrelated files stay preserved.
 
-Final acceptance evidence:
-`.gev-logs/phase2a-m4/acceptance-2026-10-21-y_gk33fn/` and
-`docs/custom/PHASE-2A-VALIDATION.md`. Earlier pending/conditional entries below
-are historical checkpoints superseded by this acceptance. No historical failed,
-inconclusive or interrupted receipt is removed or promoted to a pass; the waived
-Phase 0 baselines remain waived.
+**Phase 2a is accepted. Phase 2b – I1 implementation is now explicitly approved
+and in progress; all other Phase 2b work remains deferred.** I1 uses free CDSE
+General-user access only. No card, paid trial/provider, account creation by the
+agent, credential handling in chat, new dependency, recorder or hosting is approved.
 
-**Phase 2b – I1 remains deferred until the user's separate explicit go-ahead.**
-Its 47-path plan is approved; runtime/dependency/upstream implementation is not
-authorized by Phase 2a acceptance. Other Phase 2b work also stays deferred. Port
-4174 stays stopped with all rehearsal logs/worktrees retained. No server restart,
-credential setup, new provider, hosting or recorder is part of this docs-only
-closeout. Both unrelated untracked duplicate files remain untouched.
+Branch: `codex/phase-2b-i1-free-imagery`, from accepted closeout `a1fcf806`.
+The approved 50-path inventory covers native 10 m S2 alongside HLS, bounded shared quota/cache
+ownership, cloud metadata, explicit HLS fallback, camera-only fit/restore, loaded
+source-resolution HUD and credited A/B exports. NAIP and Earth Search stay deferred.
+
+The new directory inventory is150 products and39 guides. The user approved the
+three-test47→50 amendment; only the reviewed exact-count changes are applied.
+All assertions stay strict; the23-path upstream allowance is unchanged. Full
+Node 24 gated validation passes **8,377 / 0 failed / 1 Windows-only skip**,
+including both allocation groups; terrain restoration and formatting pass.
+Evidence: `.gev-logs/phase2b-i1/approved-count-amendment-i5p_9ii3/`.
+
+Current evidence and remaining gates: `docs/custom/FREE-IMAGERY-VALIDATION.md`.
+The user lifted the browser-denial rule; agent browser automation on local 4173
+is authorized going forward. The bounded I1 run used **62 requests / 80.6086
+reserved PU**, below its whole-run 300/300 cap. Report: `.gev-logs/phase2b-i1/agent-live-cucuukcq/REPORT.md`.
+
+Data, native grids, dated/attributed exports, HUD, camera controls, zero-usage
+loaded controls/exports, mixed-source coarse fit/metadata, filtering, sampled
+visible thumbnails, keyboard focus and overflow checks pass. All three warm
+repeats add zero requests/PU. Cold three-date usage is typical 8/9.3664, heavy
+7/47.8232, oversized 35/22.9783; including one measured scroll gives theoretical
+monthly capacities 800 /166 /210 under both local 8000 ceilings.
+
+**Visual failure remains:** automated globe pixels are blank on both rendering
+backends. Narrow screenshots also contain a voice-selector/Details overlap.
+Cause is unresolved; no product fix was attempted. Native metadata and valid
+exported PNGs do not close that visual gate. Dashboard confirmation and final
+user visual sign-off/explicit acceptance remain pending. Original inconclusive
+harness attempts and corrected confirmations are retained with their provenance.
+
+No product source or dependency changed; native 8381/0/1 and both builds remain
+recorded at the frozen endpoint-repair revision. Automated browsers are closed;
+normal-HMR 4173 PID 39317 is retained, 4174 stopped. No credentials/tokens were
+read/logged, no explicit cache/ledger clear, no staging or commit. Preserve all
+six duplicates and unrelated editor/index changes. The browser authorization is
+persistent; any product repair needs approval. Other Phase 2b stays deferred.
+Earlier entries below remain historical.
 
 ## Completed and verified
 

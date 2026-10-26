@@ -2,6 +2,299 @@
 
 ## Scope and authorization
 
+## Current publication authorization — October 26, 2026
+
+The user explicitly requests committing and pushing all current project changes
+to their fork's `main`. This authorizes publishing the in-progress I1 work and
+its PU calibration before final acceptance; it does **not** pass the unresolved
+visual checks or accept I1. Other Phase 2b remains deferred. Keep that distinction
+in the commit and publication record. The prior uncommitted/commit-hold statements
+below describe historical checkpoints and do not block this explicit request.
+
+Publish I1 separately from the seven existing, non-secret `.idea/` project
+configuration files covered by the request for all changes. Those editor files
+are outside the I1 runtime inventory and must not be mixed into its commit.
+Preserve the six unrelated duplicate backups locally, and keep credentials,
+logs, cached imagery, exports and builds out of commits. Use a fast-forward of
+`main` and a normal push; no upstream pin change, force push, product repair,
+provider request, cache/ledger reset or server restart is authorized here.
+The 50-path I1 scope and pending final visual sign-off remain unchanged.
+
+## Current I1 PU reconciliation — October 25, 2026
+
+The user supplied CDSE dashboard statistics: October 23 **80 requests / 97 PU**
+(rows 72/97 and 8/0), October 25 **6/11** (their browser check; rows 3/11 and
+3/0), month to date **86/108** of **10,000/10,000**, reset November 1. Account
+quota/reset confirmation is complete; final visual review and explicit I1
+acceptance remain pending. The user authorized an accounting calibration if
+needed, with no extra provider requests and unchanged local 8,000/8,000 ceilings.
+
+October 23's matched local total is **80 / 81.95134765625**: the prior 81-request
+month receipt included October 22's failed 1 request / 0.01 PU reservation.
+Provider PU exceeds that model by **18.3629%**. Ordinary aggregate display
+rounding does not explain the gap. Exact cause is unresolved: remaining-quota
+headers were never retained, and the spending header was read but not persisted.
+Do not invent historical header values or claim a confirmed OAuth/minimum/sample
+cost. CDSE documents a 0.005 PU Process minimum and excludes dataMask from band
+charges.
+
+The authorized repair applies an empirical **1.25 PU safety factor** before
+monthly and rolling-minute admission/pacing. Reported spending above that
+reservation still tops it up; smaller/absent spending never refunds it. Warm
+cache reuse stays zero. Ledger version 2 records the factor; locked legacy
+migration scales existing PU/events once, preserving request/OAuth counts,
+history, cache and timestamps. Passive reads never migrate/write storage.
+The migrated month ledger is **98 requests / 144.7444976806641 conservative PU /
+7 OAuth attempts**. There is no matching local interval for the 86/108 export.
+Local counters retain failed/unknown reservations too: the 12-request month
+difference includes the known October 22 failure; the other 11 are unclassified.
+Do not overwrite counts with dashboard totals or attribute the entire delta to
+the reported six calls.
+
+Evidence: `.gev-logs/phase2b-i1/quota-reconciliation-zqgSfz/REPORT.md`, matched
+calculation, before/after ledger and idempotent migration receipts. No real
+provider/OAuth call, credential/token read/log, cache clear, staging or commit.
+Only four existing project-owned runtime/test paths changed; the 50-path scope,
+23-path upstream allowance and dependencies are unchanged. Node 24 gates pass
+**8,388 / 0 / 1**, 50 focused checks and all nine checks including both builds;
+terrain restores byte-for-byte. Full-month three-date capacity is
+**683 / 133 / 228** typical/heavy/oversized, or **676 / 133 / 210** with one
+measured scroll. These are calibrated projections of retained measurements.
+
+Verified standard normal-HMR shipping PID 39317 was stopped before editing to
+prevent open S2 tabs acquiring during a reload. **4173 is currently stopped**;
+4174 stays stopped. The zero-provider-request instruction applies to this
+reconciliation: do not restart into enabled S2 tabs and trigger acquisition.
+Preserve all earlier logs, six duplicates and unrelated editor/index changes.
+The blank-globe/voice-overlap visual issues remain unresolved and outside this
+accounting repair; all other Phase 2b remains deferred.
+
+## Current I1 implementation authorization — October 22, 2026
+
+The user explicitly approved I1 implementation under `docs/custom/FREE-IMAGERY-PLAN.md`:
+free CDSE/Sentinel-2 only, no paid providers/trials/cards or new dependencies.
+Phase 2a is accepted. Earlier I1-deferred checkpoints describe historical state;
+do not ask for the same implementation go-ahead again. Other Phase 2b work stays
+deferred. User creates the free CDSE account/OAuth client when local setup is
+ready and enters credentials locally; never ask for secrets in chat or read/log
+credential values. No POWER UP support is added.
+
+The current I1 allowlist is exactly **50 paths**, including the unchanged 23
+original-upstream paths listed in the plan. The user approved the reviewed
+three-test amendment: `src/custom/library/registry.test.mjs`,
+`src/custom/library/rendering.test.mjs` and `src/custom/library/search.test.mjs`.
+Only the reviewed exact counts changed: two guide counts 38→39 and one product
+count 149→150. The full gated Node 24 suite now passes. Do not ask for this
+amendment again.
+No additional upstream file or dependency is proposed. Keep normal HMR, Library
+containment, full tests/builds, fixed-host/same-origin guards and user-run browser
+gates. Preserve six unrelated untracked duplicate files and all historical logs.
+Stop for final I1 rendered/measurement review and explicit acceptance; this go-ahead
+does not accept the completed implementation in advance.
+
+## Current I1 automated verification results; visual stop — October 23, 2026
+
+The user-authorized agent run is complete. Evidence: `.gev-logs/phase2b-i1/agent-live-cucuukcq/REPORT.md`
+and its `summary.json`, checkpoints, screenshots and six visually inspected PNG
+exports. Whole-run use is **62 CDSE ledger requests / 80.608583984375 reserved
+PU**, below both 300 limits. The single shared baseline was 19 requests /
+1.352763671875 PU; final ledger is 81 / 81.96134765625, with no active work.
+No observed provider retry or quota-guard cancellation. No credential/token read
+or log, no cache/ledger clear, no changed box or reduced source resolution, no
+product/dependency edit, staging or commit. Agent browser sessions/processes are
+closed; normal-HMR shipping PID 39317 is retained and 4174 stays stopped.
+
+PASS: real S2 A/B data at the requested dates/native grids; HUD/source/year
+credits and all six dated PNGs; camera-only fit/restore, SWAP and zero-usage loaded
+exports/controls; mixed-source 30 m camera fit and source/date metadata; cloud
+15→8→15, sampled visible-only thumbnails, keyboard activation/focus and no
+horizontal overflow; exact warm repeats add zero requests/PU. Cold three-date
+capacity: typical 8/9.3664453125, heavy 7/47.823232421875, oversized
+35/22.97826171875. With one measured scroll, theoretical sessions/month under
+both local 8000 ceilings are 800 / 166 / 210 respectively.
+
+FAIL/REVIEW: actual globe pixels remain blank in both Metal and SwiftShader
+headless sessions despite loaded data and valid exports. Cause is unclassified;
+do not label this a confirmed CDSE outage or product defect. Narrow screenshots
+also show a voice-provider selector overlapping Details; keyboard/overflow checks
+pass, visual overlap needs review. Do not convert metadata success into a visual
+rendering pass. Typical first two-date/warm harness attempts are inconclusive
+(overlapped action / selected-chip toggle); preserve them and the corrected
+zero-quota sequential warm confirmation. Physical GPU/early process peaks and
+live unknown-cloud branch were not observed. Account dashboard/reset confirmation
+and final user visual sign-off/explicit I1 acceptance remain pending.
+
+The browser authorization below persists and supersedes historical denials.
+No product repair is authorized by this verification run; stop for user direction
+and approval before applying a proposed fix. All other Phase 2b work is deferred;
+keep the 50-path scope, all prior logs, six duplicates and unrelated editor/index
+changes intact. Full details and attribution/capacity qualifications are in the
+report and validation record.
+
+## Current browser authorization and bounded agent I1 run — October 23, 2026
+
+The user explicitly lifts the historical project browser-denial rule. The agent
+is now authorized to automate a browser, including headless Chromium/Puppeteer/
+Playwright, against localhost4173 and to start/restart the standard server with
+Node24.22.0 and `HOST=localhost PORT=4173 npm run dev -- --strictPort` as needed.
+This supersedes earlier agent-browser prohibitions and user-only rendered gates.
+The user authorizes real free-CDSE calls for the remaining rendering/UI checks
+and typical/heavy/oversized capacity runs, with a **whole-run cap of300 requests
+AND300 PU measured against a fresh ledger baseline**. Stop before exceeding
+either cap. Never read/print/log credentials or tokens; they remain server-side.
+Do not repeatedly burn quota on a failing step (at most one repeat); record
+failures and continue independent checks. No product-code fix during this run
+without asking the user. Keep all screenshots, PNG exports, receipts and logs in
+ignored `.gev-logs/phase2b-i1/`, outside app assets and commits. No cache/ledger
+clear, changed boxes or reduced resolution. Actual coverage limits stay incomplete.
+The user still owns CDSE dashboard quota/reset confirmation and final visual
+sign-off/explicit I1 acceptance. Other Phase2b remains deferred; preserve scope,
+duplicates, editor metadata/index and all earlier logs. The requested final
+report includes per-check outcomes, measured capacity vs estimates, revised
+sessions/month and evidence links.
+
+## Historical I1 basic CDSE success; rendering/capacity pending — October 23, 2026
+
+The user explicitly reports the repaired retry now shows CDSE10m cards and SHOW
+renders a full image. Record Catalog access/basic Process authentication and
+rendering as user-observed passes; do not request the completed authentication
+probe again. Safe auth-before07:32:31.272Z and auth-image07:34:12.701Z receipts
+match month2026-10 and add16 requests /1.270263671875 reserved PU /0 OAuth attempts.
+Their baseline already had3 requests and cached entries; this is not a cold
+one-SHOW cost or provider billing. End totals19 requests /1.352763671875 PU /
+2 OAuth attempts. Evidence: `.gev-logs/phase2b-i1/auth-success-kmul_h70/`.
+
+The remaining user-operated gates are actual date/cloud/native metadata,
+one-time auto-fit, manual fit/restore, same/mixed-source A/B, HUD and credits
+including both exports, cloud/visible-card/narrow/keyboard checks, fixed typical/
+heavy/oversized capacity measurements and dashboard reconciliation. The guide in
+`docs/custom/FREE-IMAGERY-VALIDATION.md` gives exact links and passive stage
+commands; added cards/single checkpoints are observation only, not acquisitions.
+No runtime change, provider/browser call, credential read, restart, staging or
+commit was made for this receipt recording. Native8381/0/1 and both builds remain
+recorded at the endpoint-repair revision. Keep the50-path scope, final I1
+acceptance stop, other2b deferred,4174 stopped and all logs/duplicates/editor
+metadata preserved. If an unexpected error occurs, S2 OFF and report first.
+
+## Historical I1 endpoint repair; bounded user retry pending — October 22, 2026
+
+The user's first real small-box S2 attempt failed with a generic unavailable
+notice. Passive usage confirms one OAuth attempt and one request / 0.01 reserved
+PU; no cached imagery. Code ordering suggests the token response was accepted
+before Catalog dispatch, but the historical HTTP status was not saved. Do not
+claim an observed 404, working Catalog/image, or broken credentials.
+
+After the user confirmed S2 OFF in all tabs, the approved custom CDSE transport
+was corrected to the currently documented `/catalog/v1/search` and `/process/v1`
+paths, with Catalog GeoJSON negotiation. Safe fixed-stage/integer-status
+fallback diagnostics and independent endpoint/redaction tests are installed.
+All changes fit the existing 50 paths; no dependency or new original-upstream
+file, quota/cache/security relaxation, staging or commit. Final native gate is
+8381/0/1 including allocation groups; both builds and all nine native check
+commands pass. Prior failures remain retained. Evidence:
+`.gev-logs/phase2b-i1/endpoint-repair-1b675_r5/`.
+
+Verified normal-HMR root listener is now PID 39317 on `[::1]:4173`; 4174 stays
+stopped. Passive status remains configured true, requests1 / PU0.01 / OAuth1,
+no queued/active/retrying work. The failed request reservation is preserved.
+The agent has not read credentials or made OAuth/Catalog/Process calls. User
+retry instructions are in `docs/custom/FREE-IMAGERY-VALIDATION.md`; if the retry
+fails, S2 goes OFF and capacity checks stop. Preserve all prior approvals,
+regressions, receipts, six duplicate files and unrelated editor metadata/index.
+I1 final rendered/measurement review and explicit acceptance remain pending.
+
+## Historical I1 regressions passed; bounded CDSE checks next — October 22, 2026
+
+The user reports hub14/14, Recent Imagery passed and tracking109/0/0, with S2off.
+Hub matches the latest receipt17:21:24.451Z (SHA2561820c7af03ad81d4333e60f2e0d53dc87733b04944844b645d25c5e1bb8e8fc8).
+Recent Imagery/tracking and source-off retain explicit user-report provenance;
+no fresh terminal artifacts are saved for them. Do not infer failure or ask to
+repeat completed regressions solely because no artifact is retained. Evidence:
+`.gev-logs/phase2b-i1/user-regression-M2StTp/`. Native gate remains8377/0/1.
+
+The user now asks for a walkthrough of CDSE authentication/rendering/capacity.
+Provide bounded user-operated steps and exact fixed-box fixtures, never read or
+log credentials or call a browser driver. The account/client is user-configured;
+passive configured true is not provider authentication. First real acquisition,
+scene coverage/rendering, fit/HUD/export credits and actual capacity still need
+observations. User may now enable S2 for these free-only controlled checks; the
+agent has not enabled it or made provider calls. Any ignored checkpoint tools
+are passive native API verification only, not new runtime paths or a recorder.
+Stop for final I1 evidence review/acceptance. Keep the50-path scope, other2b
+work deferred, 4174 stopped, all duplicates/receipts and browser denial intact.
+The agent has not staged or committed I1. On resumption the old listener had exited and both ports were free; standard Node 24 normal-HMR CLI was restored as PID 92468 on `[::1]:4173`. Its passive status remains configured true / ready with unknown usage and no queued/active/retrying work. No provider call or credential read occurred. See `.gev-logs/phase2b-i1/walkthrough-server-5bfvib18/verified.json` and the detailed user walkthrough in `docs/custom/FREE-IMAGERY-VALIDATION.md`. Seven unrelated `.idea/` files (five already staged) were observed after the pause and left untouched; do not mix them into I1.
+
+## Historical I1 gated validation passed — before user regression results
+
+The user approved the three-test47→50 amendment and requested only reviewed
+count changes, a full gated rerun and QA commands, keeping S2 off until pass.
+The exact patch is applied and independently reviewed. The complete calibrated
+Node 24 runner exits 0: **8,377 passed, 0 failed, 1 Windows-only skip**, including
+ordinary 8,362, focus 1 and world-overlay 14 allocation tests. Terrain restores
+byte-for-byte and formatting passes. Evidence:
+`.gev-logs/phase2b-i1/approved-count-amendment-i5p_9ii3/`. Runtime/config sources
+and package files match the already-passing I1 builds; this amendment adds no
+runtime repair or dependency. Earlier failures remain retained.
+
+Root normal-HMR PID 32310 remains `[::1]:4173` in this checkout;4174 stays stopped.
+Passive status reports configured true, with no queued/active/retrying work.
+No credential contents read, OAuth/catalog/Process request, S2 enable action or
+agent browser execution. Presence is not authentication or coverage proof.
+User QA commands are in `docs/custom/FREE-IMAGERY-VALIDATION.md`: hub, expanded
+NASA imagery and synthetic offline-imagery tracking, sequentially on 4173 with
+S2 off. NASA-unavailable SKIP is not a pass. Actual CDSE authentication/rendering/
+measurement and final I1 acceptance remain; other Phase 2b stays deferred.
+Nothing staged/committed. Preserve all six unrelated duplicates and browser
+denial. Earlier pending-amendment paragraphs are historical, not blockers.
+
+## Historical I1 native verification stop — before the count amendment
+
+I1 implementation is in place in 45 of the approved 47 paths, on
+`codex/phase-2b-i1-free-imagery` from `a1fcf806`. No dependency/package changes,
+additional upstream file, staging or commit. Both builds, strict Library checks,
+doctor, typecheck, format, i18n, boundaries, camera policy and native I1 feature
+tests pass. The ordinary full run is 8,359 pass / 3 fail / 1 Windows-only skip:
+only the unchanged exact guide/product counts in the three pending amendment
+files fail. Separate calibrated allocation groups pass 1/1 and 14/14; do not
+misrepresent this as a passing complete `npm test`. After explicit approval of
+the three-file count amendment, apply only the reviewed patch, update the
+inventory to 50 (23 upstream paths unchanged), and rerun the full gated suite
+before committing or user QA. No reply is not approval.
+
+The root server was verified and restarted to load finalized provider closures:
+PID 55188 on `[::1]:4173`, standard Node 24 CLI, normal HMR without overrides.
+The passive usage endpoint reports setup required, configured false and null
+unknown usage. No real provider request or OAuth call has been made. The user
+has been told local setup is ready and can now create the free General-user
+account/server-side OAuth client, entering both CDSE env values only locally.
+Never read/log/request actual credentials. After their ready reply, verify and
+restart the correct listener to load their local env before bounded live
+verification. Final real-source measurements and rendered/user-run gates remain
+pending under the existing browser-denial boundary. Keep 4174 stopped, retain
+all logs/receipts and the six unrelated duplicates, and defer other Phase 2b.
+See `docs/custom/FREE-IMAGERY-VALIDATION.md` for complete results and evidence.
+
+## Historical I1 credential-presence checkpoint — before the gated rerun
+
+The user reports CDSE account verification and OAuth credentials saved locally,
+with Sentinel-2 still off, and explicitly authorized only verified4173 restart
+and passive configuration status. The old PID55188 had exited; both ports were
+free, so no process was killed. Fresh standard Node24 normal-HMR CLI is PID32310
+on `[::1]:4173`;4174 remains stopped. Safe native receipt:
+`.gev-logs/phase2b-i1/local-configuration-bufCRD/receipt.json`.
+Passive status is configured true / ready, queued/active/retrying zero, with
+unknown month/request/PU/OAuth totals still null and ledger unchanged. The agent
+read only local-env metadata/ignore status, never credential file contents or
+values. No OAuth/catalog/Process request, browser action, test repair, staging or
+commit occurred. Presence is not successful authentication or provider-tier/
+coverage verification. Do not start acquisition or user QA on the strength of
+this operational check: the three-test47→50 amendment and full gated unit rerun
+remain pending, as do live measurements and final rendered I1 acceptance. Earlier
+PID55188/configured-false paragraphs are historical runtime checkpoints. Other
+Phase2b work remains deferred; preserve all logs, duplicates and browser denial.
+
+## Historical Phase 2a acceptance checkpoint
+
 **Phase 2a is accepted.** The user explicitly accepted it after final Vite 6.4.5
 QA 14/14, article HMR 5/5, case HMR 5/5, both restored byte-for-byte, and tracking
 109/0/0. Receipts, restoration hashes and the server log agree; tracking is the

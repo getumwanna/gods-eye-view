@@ -1,5 +1,48 @@
 # Geospatial Intelligence Hub customization ledger
 
+## Publication authorization — October 26, 2026
+
+The user requests committing all current project changes and pushing them to
+the fork's `main`. Publication includes the approved I1 implementation and PU
+calibration; it does not imply final I1 acceptance or resolve the recorded blank
+globe/narrow voice-selector visual checks. The existing runtime validation,
+50-path I1 inventory, original-upstream pin and dependency versions remain
+unchanged. No new source/provider acquisition or server restart is required.
+
+The seven pre-existing `.idea/` project configuration files are to be committed
+separately from I1, in accordance with the request for all project changes.
+Six duplicate backup files remain local and preserved. Credentials, logs, cached
+imagery, exports and generated builds remain excluded. The publication receipt
+under ignored `.gev-logs/phase2b-i1/` records the actual commit/remote identities;
+earlier uncommitted checkpoints below remain historical evidence.
+
+## I1 PU accounting repair — October 25, 2026
+
+The user authorized a conservative reservation calibration after supplying CDSE
+dashboard statistics, with no extra provider requests. The matched October 23
+interval is 80 requests / 81.9513 local PU versus 80 / 97 provider PU; the prior
+81-request month receipt included October 22's failed 1/0.01 reservation.
+Provider headers were not retained; exact charging cause remains unresolved.
+
+Only these existing project-owned runtime/test files change in this repair:
+`server/custom/recent-imagery/budget.js` (1.25 PU factor before monthly/minute
+admission, locked idempotent version 2 migration and header top-ups),
+`server/custom/recent-imagery/plugin.js` (read-only legacy/version 2 accounting
+projection), `server/custom/recent-imagery/cdse.js` (missing spending header stays
+unknown), and `src/custom/imagery/provider.test.mjs` (strict calibration,
+migration, pacing/ceiling, response-header and cache-reuse regressions).
+The 50-path inventory, 23 upstream allowances, dependencies and local 8,000/8,000
+ceilings are unchanged. Documentation records the confirmed account quota/reset,
+new projections, evidence limitations and paused server. No visual repair,
+provider acquisition, credential/token read/log, staging or commit occurred.
+
+Node 24 gated suite: 8,388 pass / 0 fail / 1 Windows-only skip; 50 focused
+checks and all nine checks including both builds pass; terrain restores exactly.
+The live ledger migrates once from 98/115.7956 to 98/144.7445, preserving cached
+files and all request/OAuth counts. Before/after receipts and the report are
+under `.gev-logs/phase2b-i1/quota-reconciliation-zqgSfz/`. Historical measurements
+are not rewritten. I1 final visual review/explicit acceptance remain pending.
+
 ## Provenance
 
 - Request: Geospatial Intelligence Hub, v2, October 19, 2026.
@@ -378,3 +421,95 @@ remains `064d51f7be2675f1c69e16068e9c49d1a60144d1`. Existing native/build/audit
 results and all earlier failed/interrupted/inconclusive receipts remain retained.
 I1 stays planning-only until a separate explicit implementation go-ahead; other
 Phase 2b work stays deferred. No redundant test suite is run for docs-only edits.
+
+
+## Phase 2b – I1 implementation ledger — October 22, 2026
+
+The user explicitly approved the 47-path Free Recent Imagery plan after Phase
+2a acceptance. Work is isolated on `codex/phase-2b-i1-free-imagery` from
+`a1fcf80686903a9a1c2c5c2235e1ba4c19c61a5a`. Other Phase 2b work, NAIP, Earth
+Search, paid imagery, recorder and hosting remain deferred. No dependency or
+package manifest/lockfile change is included. The original source/doc pin is
+unchanged. All prior receipts and six unrelated duplicate files are retained.
+
+Actual original-upstream files edited at this checkpoint (21 of the 23
+approved I1 paths; unused paths do not need an edit):
+
+~~~text
+server/providers/local.js
+src/standalone/layerSources.js
+src/app/layers/recentImagery.js
+src/layers/recentImagery/model.js
+src/layers/recentImagery/index.js
+src/layers/recentImagery/rendering.js
+src/ui/recentImagery.js
+src/ui/styles/recent-imagery.css
+src/hud.js
+src/data/layerState.js
+src/layers/recentImagery/model.test.mjs
+src/layers/recentImagery/index.test.mjs
+src/layers/recentImagery/rendering.test.mjs
+src/layers/recentImagery/source.test.mjs
+src/ui/recentImagery.test.mjs
+src/data/layerState.test.mjs
+scripts/qa-recent-imagery.mjs
+scripts/package-boundaries.json
+scripts/format-scope.json
+src/i18n/locales/es.json
+src/i18n/locales/ru.json
+~~~
+
+The provider list adds a fixed-host CDSE plugin before the existing final key
+setup plugin, preserving the original relative order and unmodified standalone
+configuration assertions. New server ownership stays under
+`server/custom/recent-imagery/`: local-only OAuth, exact scene identity, quota
+reservations, paced/backoff queue, bounded persistent data cache and passive
+usage endpoint. No credential is requested in chat or bundled into the client.
+
+Existing source/model/layer/render/UI/HUD/share paths add default-off native
+10 m S2 alongside the unchanged NASA defaults, source-specific cloud metadata,
+visible-only reduced previews, decode-confirmed A/B assignments, visible HLS
+fallback, camera-only native-resolution fit/restore, loaded-source HUD and local
+credited exports. Existing NASA and full-state share regressions remain intact.
+The approved test, QA, locale, formatting and ownership paths cover those
+changes. Custom source/viewport/export code shares bounded client memory and
+keeps provider credentials outside the browser graph.
+
+Project-owned registry validation adds exactly one source/product and one
+environment-only CDSE guide (150 products, 39 guides), with custom plan
+provenance distinct from frozen upstream facts. Existing 149 product records,
+38 guides, 12 capability records and admitted upstream document/section hashes
+are preserved. The generated projection is refreshed. Exact QA counts remain
+exact. The user subsequently approved the three project-owned Library test count
+updates (47→50 paths). Only registry/rendering guide counts 38→39 and the search
+product count 149→150 changed, with all exact assertions intact. The complete
+Node 24 unit/allocation suite passes8,377/0 with one Windows-only skip; terrain
+restoration and formatting pass. The upstream allowance stays23 and actual
+upstream changes stay21. No runtime/config/dependency source changed, so the
+prior I1 production-build results still apply. Exact applied patch, independent
+review and earlier failures are retained under
+`.gev-logs/phase2b-i1/approved-count-amendment-i5p_9ii3/`.
+
+Implementation is not final I1 acceptance. Full results, retained first
+failures, native fixture measurements and remaining real-source/user-rendered
+gates are recorded in `docs/custom/FREE-IMAGERY-VALIDATION.md`. The agent does
+not execute a browser harness or bypass the existing browser denial.
+
+
+### I1 CDSE endpoint repair after the first user attempt — October 22, 2026
+
+The first user small-box S2 attempt failed; its one request / 0.01 reserved PU
+and one OAuth attempt remain accounted for. Corrected the already-approved
+custom CDSE transport to the current documented Catalog/Process paths and Catalog
+GeoJSON negotiation. Middleware and browser transport expose only a fixed stage
+and integer HTTP status for safe troubleshooting; raw provider bodies and
+credentials are excluded. Independent endpoint/redaction tests close the shared
+constant fixture blind spot. No additional original-upstream path, dependency,
+quota/cache policy or security guard changed. User confirmed S2 OFF before edits.
+
+Final native gate passes8381/0/1, both builds and all native checks pass. A fresh
+normal-HMR 4173 server preserves usage; user real-source retry and final I1
+acceptance remain pending. No agent provider/browser call, credential read,
+staging or commit. Full evidence, retained failed runs and exact repair paths:
+`docs/custom/FREE-IMAGERY-VALIDATION.md` and
+`.gev-logs/phase2b-i1/endpoint-repair-1b675_r5/`.

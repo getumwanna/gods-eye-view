@@ -391,7 +391,7 @@ test('real admitted corpus validates inside the caught lazy Library loader witho
     new Set(catalog.registry.bindings.map((binding) => binding.layerId)).size,
     32,
   );
-  assert.equal(catalog.registry.guideGroups.length, 38);
+  assert.equal(catalog.registry.guideGroups.length, 39);
   assert.equal(catalog.manifest.upstreamDocuments.length, 7);
   assert.equal(
     catalog.manifest.items.filter((item) => item.kind !== 'case-study').length,

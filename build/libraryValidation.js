@@ -344,6 +344,7 @@ const PUBLIC_GUIDE_IDS = [
   'cctv',
   'nasa-gibs',
   'nasa-cmr',
+  'cdse',
   'kartaview',
   'panoramax',
   'telegeography',
@@ -395,6 +396,13 @@ const EXPECTED_GUIDES = new Set([
   ...PUBLIC_GUIDE_IDS,
 ]);
 const APPROVED_CUSTOM_REVISION = 'fd136b60ce9421bd8636692232766a5f7d2226e3';
+// Custom I1 facts cite the approved plan, never the immutable upstream source pin.
+const I1_PLAN_PATH = 'docs/custom/FREE-IMAGERY-PLAN.md';
+const I1_PLAN_REVISION = 'a860327edc694fbcc313eb0791629fe88070a0b0';
+const ENVIRONMENT_ONLY_CAPABILITIES = new Map([
+  ['ontario-511', ['ONTARIO_511_API_KEY']],
+  ['cdse', ['CDSE_CLIENT_ID', 'CDSE_CLIENT_SECRET']],
+]);
 const MAX_FILE_BYTES = 2 * 1024 * 1024;
 const MAX_CORPUS_BYTES = 32 * 1024 * 1024;
 const MAX_ERRORS = 40;
@@ -729,8 +737,7 @@ export async function validateLibrary({
     for (const capability of registry.capabilities) {
       const key = SETUP_KEYS.get(capability.setupKeyId);
       const expected =
-        key?.envVars ||
-        (capability.id === 'ontario-511' ? ['ONTARIO_511_API_KEY'] : null);
+        key?.envVars || ENVIRONMENT_ONLY_CAPABILITIES.get(capability.id);
       if (
         !expected ||
         !same([...capability.environmentNames].sort(), [...expected].sort())
@@ -782,12 +789,17 @@ export async function validateLibrary({
         for (const evidence of product.evidence) {
           if (evidence.url !== null) link(evidence.url, INPUT_FILES[0]);
           if (
-            ![FROZEN_UPSTREAM_REVISION, APPROVED_CUSTOM_REVISION].includes(
-              evidence.revision,
-            )
+            ![
+              FROZEN_UPSTREAM_REVISION,
+              APPROVED_CUSTOM_REVISION,
+              I1_PLAN_REVISION,
+            ].includes(evidence.revision)
           )
             add('PIN_MISMATCH', INPUT_FILES[0]);
           const allowedEvidencePath =
+            (evidence.path === I1_PLAN_PATH &&
+              source.id === 'cdse' &&
+              product.id === 's2-l2a') ||
             /^(?:(?:src|server)\/[A-Za-z0-9_/-]+\.(?:js|mjs|json)|build\/customProviderPolicy\.js|README\.md|DATA_SOURCES\.md|SECURITY\.md|TESTING\.md|THIRD_PARTY_NOTICES\.md|CONTRIBUTING\.md|docs\/CURRENT-STATE\.md|public\/events\/bhote-koshi-2026\/README\.md)$/.test(
               evidence.path,
             );
@@ -800,9 +812,11 @@ export async function validateLibrary({
             evidence.path === 'build/customProviderPolicy.js';
           if (
             evidence.revision !==
-            (isCustomEvidence
-              ? APPROVED_CUSTOM_REVISION
-              : FROZEN_UPSTREAM_REVISION)
+            (evidence.path === I1_PLAN_PATH
+              ? I1_PLAN_REVISION
+              : isCustomEvidence
+                ? APPROVED_CUSTOM_REVISION
+                : FROZEN_UPSTREAM_REVISION)
           )
             add('PIN_MISMATCH', INPUT_FILES[0]);
           const local = await read(evidence.path, INPUT_FILES[0]);

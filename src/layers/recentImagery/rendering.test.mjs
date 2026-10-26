@@ -227,3 +227,329 @@ test('replacement imagery uses source-owned tile URLs and credit and tears down 
   assert.equal(globe.layers.length, 0);
   assert.equal(layer.destroyed, true);
 });
+
+test('S2 keeps exact per-slot identity/credits and releases stale asynchronous images', async () => {
+  const calls = [],
+    releases = [],
+    events = [];
+  const cesium = {
+    ...fakeCesium(),
+    SingleTileImageryProvider: class {
+      constructor(options) {
+        this.options = options;
+      }
+      requestImage() {
+        return new Promise((resolve) => {
+          this.finish = resolve;
+        });
+      }
+    },
+  };
+  const renderer = createRecentImageryRenderer({
+    cesium,
+    imageSource: {
+      getImage(candidate, box, { signal }) {
+        return new Promise((resolve, reject) =>
+          calls.push({ candidate, box, signal, resolve, reject }),
+        );
+      },
+    },
+  });
+  const globe = fakeCollection();
+  renderer.rebind({ collection: globe, kind: 'globe' });
+  renderer.subscribe((event) => events.push(event));
+  const a = {
+    key: `S2:2026-10-01:${'a'.repeat(64)}`,
+    product: 'S2',
+    day: '2026-10-01',
+  };
+  const b = {
+    key: `S2:2026-09-30:${'b'.repeat(64)}`,
+    product: 'S2',
+    day: '2026-09-30',
+  };
+  const snapshot = (id) => ({
+    url: `blob:${id}`,
+    width: 1000,
+    height: 800,
+    metadata: {
+      box: BOX,
+      credit: `Contains modified Copernicus Sentinel data 2026 · ${id}`,
+    },
+    release: () => releases.push(id),
+  });
+  renderer.showSlot('a', a, BOX);
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.equal(renderer.getDisplayState().a.loaded, false);
+  renderer.showSlot('a', b, BOX);
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.equal(calls[0].signal.aborted, true);
+  calls[0].resolve(snapshot('obsolete'));
+  calls[1].resolve(snapshot('current'));
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.deepEqual(releases, ['obsolete']);
+  assert.equal(renderer.getOwned().a.key, b.key);
+  assert.equal(globe.layers.length, 1);
+  assert.equal(globe.layers[0].provider.options.tileWidth, 1000);
+  assert.match(globe.layers[0].provider.options.credit, /2026 · current/);
+  assert.equal(
+    renderer.getDisplayState().a.loaded,
+    false,
+    'metadata alone is not decoded imagery',
+  );
+  const decoded = globe.layers[0].provider.requestImage();
+  globe.layers[0].provider.finish({ decoded: true });
+  await decoded;
+  assert.equal(renderer.getDisplayState().a.loaded, true);
+  assert.equal(events.filter((event) => event.type === 'loaded').length, 1);
+  const next = fakeCollection();
+  renderer.rebind({ collection: next, kind: 'globe' });
+  assert.equal(globe.layers.length, 0);
+  assert.equal(next.layers.length, 1);
+  assert.deepEqual(
+    releases,
+    ['obsolete'],
+    'host rebind retains the native snapshot',
+  );
+  renderer.destroy();
+  assert.deepEqual(releases, ['obsolete', 'current']);
+});
+
+test('oversized S2 chunks retain fixed clipped bounds and share one logical A/B slot', async () => {
+  const cesium = {
+    ...fakeCesium(),
+    SingleTileImageryProvider: class {
+      constructor(options) {
+        this.options = options;
+      }
+      requestImage() {
+        return Promise.resolve({ decoded: true });
+      }
+    },
+  };
+  let released = 0;
+  const right = { ...BOX, west: (BOX.west + BOX.east) / 2 };
+  const left = { ...BOX, east: right.west };
+  const renderer = createRecentImageryRenderer({
+    cesium,
+    imageSource: {
+      getImage: async () => ({
+        parts: [
+          { url: 'blob:left', width: 512, height: 512, bounds: left },
+          { url: 'blob:right', width: 23, height: 512, bounds: right },
+        ],
+        metadata: { credit: 'Contains modified Copernicus Sentinel data 2026' },
+        release: () => released++,
+      }),
+    },
+  });
+  const globe = fakeCollection();
+  renderer.rebind({ collection: globe, kind: 'globe' });
+  renderer.showSlot(
+    'a',
+    { key: 'exact-acquisition', product: 'S2', day: '2026-10-01' },
+    BOX,
+    { alpha: 0.4, splitDirection: 'left' },
+  );
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.equal(renderer.ownedCount(), 1);
+  assert.equal(globe.layers.length, 2);
+  assert.deepEqual(
+    globe.layers.map((layer) => layer.provider.options.rectangle),
+    [left, right],
+  );
+  assert.deepEqual(
+    globe.layers.map((layer) => [layer.alpha, layer.splitDirection]),
+    [
+      [0.4, -1],
+      [0.4, -1],
+    ],
+  );
+  renderer.hideSlot('a');
+  assert.equal(globe.layers.length, 0);
+  assert.equal(released, 1);
+  renderer.destroy();
+});
+
+test('a failed S2 PNG decode never becomes loaded and releases the native snapshot', async () => {
+  let released = 0;
+  const events = [];
+  const cesium = {
+    ...fakeCesium(),
+    SingleTileImageryProvider: class {
+      requestImage() {
+        return new Promise((resolve, reject) => {
+          this.reject = reject;
+        });
+      }
+    },
+  };
+  const renderer = createRecentImageryRenderer({
+    cesium,
+    imageSource: {
+      getImage: async () => ({
+        url: 'blob:invalid',
+        width: 128,
+        height: 128,
+        release: () => released++,
+      }),
+    },
+  });
+  const globe = fakeCollection();
+  renderer.rebind({ collection: globe, kind: 'globe' });
+  renderer.subscribe((event) => events.push(event));
+  renderer.showSlot(
+    'a',
+    { key: 'decode', product: 'S2', day: '2026-10-01' },
+    BOX,
+  );
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.equal(renderer.getDisplayState().a.loaded, false);
+  assert.equal(renderer.getSnapshot('a'), null);
+  const invalid = globe.layers[0].provider.requestImage();
+  globe.layers[0].provider.reject(new Error('invalid PNG'));
+  await assert.rejects(invalid, /invalid PNG/);
+  assert.equal(renderer.getOwned().a, null);
+  assert.equal(released, 1);
+  assert.equal(events.filter((event) => event.type === 'loaded').length, 0);
+  assert.equal(events.filter((event) => event.type === 'error').length, 1);
+  renderer.destroy();
+});
+
+test('S2 partial chunk mount is transactional and a missing host cancels pending assignments', async () => {
+  const requests = [],
+    events = [];
+  let releases = 0,
+    constructed = 0;
+  const cesium = {
+    ...fakeCesium(),
+    SingleTileImageryProvider: class {
+      constructor() {
+        if (++constructed === 2) throw new Error('fixture mount refused');
+      }
+      requestImage() {
+        return Promise.resolve({ decoded: true });
+      }
+    },
+  };
+  const renderer = createRecentImageryRenderer({
+    cesium,
+    imageSource: {
+      getImage(candidate, box, { signal }) {
+        return new Promise((resolve) => requests.push({ resolve, signal }));
+      },
+    },
+  });
+  const globe = fakeCollection();
+  renderer.rebind({ collection: globe, kind: 'globe' });
+  renderer.subscribe((event) => events.push(event));
+  const candidate = { key: 'transaction', product: 'S2', day: '2026-10-01' };
+  renderer.showSlot('a', candidate, BOX);
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  requests[0].resolve({
+    parts: [
+      { url: 'blob:1', width: 512, height: 1 },
+      { url: 'blob:2', width: 1, height: 1 },
+    ],
+    release: () => releases++,
+  });
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.equal(globe.layers.length, 0);
+  assert.equal(renderer.ownedCount(), 0);
+  assert.equal(releases, 1);
+  assert.equal(events.filter((event) => event.type === 'error').length, 1);
+  renderer.showSlot('a', candidate, BOX);
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  renderer.rebind(null);
+  assert.equal(requests[1].signal.aborted, true);
+  requests[1].resolve({
+    url: 'blob:obsolete',
+    width: 1,
+    height: 1,
+    release: () => releases++,
+  });
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  renderer.rebind({ collection: globe, kind: 'globe' });
+  renderer.showSlot('a', candidate, BOX);
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.equal(
+    requests.length,
+    3,
+    'a cancelled no-host generation cannot strand the slot',
+  );
+  renderer.destroy();
+  requests[2].resolve({
+    url: 'blob:late',
+    width: 1,
+    height: 1,
+    release: () => releases++,
+  });
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.equal(releases, 3);
+  assert.equal(globe.layers.length, 0);
+});
+
+test('local S2 preflight resolves a four-chunk offscreen assignment without waiting for Cesium culling', async () => {
+  const requested = [],
+    calls = [];
+  const cesium = {
+    ...fakeCesium(),
+    SingleTileImageryProvider: class {
+      constructor(options) {
+        this.options = options;
+      }
+      requestImage() {
+        requested.push(this.options.url);
+        return Promise.resolve({ decoded: true });
+      }
+    },
+  };
+  const renderer = createRecentImageryRenderer({
+    cesium,
+    imageSource: {
+      getImage: async (...args) => {
+        calls.push(args);
+        return {
+          parts: Array.from({ length: 4 }, (_, index) => ({
+            url: `blob:offscreen-${index}`,
+            width: index === 3 ? 23 : 512,
+            height: 512,
+            bounds: {
+              ...BOX,
+              west: BOX.west + ((BOX.east - BOX.west) * index) / 4,
+              east: BOX.west + ((BOX.east - BOX.west) * (index + 1)) / 4,
+            },
+          })),
+          release() {},
+        };
+      },
+    },
+  });
+  const globe = fakeCollection();
+  renderer.rebind({ collection: globe, kind: 'globe' });
+  renderer.showSlot(
+    'a',
+    { key: 'offscreen', product: 'S2', day: '2026-10-01' },
+    BOX,
+  );
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.deepEqual(requested.sort(), [
+    'blob:offscreen-0',
+    'blob:offscreen-1',
+    'blob:offscreen-2',
+    'blob:offscreen-3',
+  ]);
+  assert.equal(renderer.getDisplayState().a.loaded, true);
+  await globe.layers[0].provider.requestImage(0, 0, 0);
+  assert.equal(
+    requested.length,
+    4,
+    'the visible chunk reuses its primed decode',
+  );
+  assert.equal(
+    calls.length,
+    1,
+    'local decode does not issue another Process acquisition',
+  );
+  renderer.destroy();
+});

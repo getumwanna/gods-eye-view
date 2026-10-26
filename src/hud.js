@@ -1,3 +1,4 @@
+import { imageryResolutionLabel } from './custom/imagery/viewport.js';
 import { applicationServices } from './services/application.js';
 /**
  * @module hud
@@ -461,9 +462,15 @@ export class IntelHUD {
       Math.min(9, 10.25 - 3.32 * Math.log10(gsdInches)),
     );
     const gsdEl = document.getElementById('hud-gsd');
-    if (gsdEl)
+    if (gsdEl) {
+      const imagery =
+        globalThis.window?.__gevRecentImagery?.layer?.getImageryHudState?.();
+      const cameraGsd = gsd.toFixed(2),
+        cameraNiirs = niirs.toFixed(1);
       // i18n-ignore: sensor codes
-      gsdEl.textContent = `GSD: ${gsd.toFixed(2)}m  NIIRS: ${niirs.toFixed(1)}`;
+      const cameraResolution = `GSD: ${cameraGsd}m  NIIRS: ${cameraNiirs}`;
+      gsdEl.textContent = imageryResolutionLabel(imagery) || cameraResolution;
+    }
 
     // Altitude — reported as height above MEAN SEA LEVEL. `altM` is the raw
     // ellipsoidal camera height, which reads far below zero wherever the geoid
